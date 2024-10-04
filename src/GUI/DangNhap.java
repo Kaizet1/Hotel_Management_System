@@ -45,6 +45,7 @@ public class DangNhap extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setExtendedState(MAXIMIZED_BOTH);
         setSize(1920, 1080);
+        setResizable(false);
 
         JPanel leftPanel = createLeftPanel();
         leftPanel.setFocusable(true);

@@ -27,14 +27,14 @@ public class GiaoDienChinh extends JFrame {
 	private JPanel centerPanel;
 	private CardLayout cardLayout;
 	private RoundedButton selectedButton;
-
+	private JLabel pageLabel;
 	public GiaoDienChinh() {
 		setTitle("Hệ thống quản lý khách sạn");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(new BorderLayout());
-
+		setSize(1920, 1080);
+        setResizable(false);
 		JPanel sidebarPanel = createSidebar();
-
 		JPanel rightPanel = new JPanel(new BorderLayout());
 		JPanel leftHeaderPanel = createLeftHeader();
 		JPanel rightHeaderPanel = createRightHeader();
@@ -101,6 +101,7 @@ public class GiaoDienChinh extends JFrame {
 						selectedButton.setBackground(new Color(24, 24, 28));
 						selectedButton = menuButton;
 						selectedButton.setBackground(new Color(91, 122, 249));
+						pageLabel.setText(item[0].toUpperCase());
 						cardLayout.show(centerPanel, item[1]);
 					}
 				}
@@ -129,12 +130,18 @@ public class GiaoDienChinh extends JFrame {
 		leftHeader.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, new Color(45, 45, 48)));
 
 		JLabel phoneIcon = new JLabel(new ImageIcon("imgs/PhoneIcon.png"));
+		pageLabel = new JLabel("THÔNG TIN CHUNG");
 		JLabel phoneLabel = new JLabel("1900-1000-0000");
+		
 		phoneIcon.setBounds(1070, 25, 30, 30);
+		pageLabel.setFont(FontManager.getManrope(Font.BOLD, 28));
+		pageLabel.setForeground(Color.white);
+		pageLabel.setBounds(10, 23, 260, pageLabel.getPreferredSize().height);
 		phoneLabel.setFont(FontManager.getManrope(Font.BOLD, 24));
 		phoneLabel.setForeground(new Color(10, 213, 118));
-		phoneLabel.setBounds(1120, 20, 200, 40);
+		phoneLabel.setBounds(1120, 24, phoneLabel.getPreferredSize().width, phoneLabel.getPreferredSize().height);
 		leftHeader.add(phoneIcon);
+		leftHeader.add(pageLabel);
 		leftHeader.add(phoneLabel);
 		return leftHeader;
 	}
@@ -186,22 +193,12 @@ public class GiaoDienChinh extends JFrame {
 
 	public static void main(String[] args) {
 		try {
-            // Thiết lập Look and Feel "Nimbus"
-            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
+			 UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+	         UIManager.put("nimbusBase", new Color(38, 38, 42));
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        // Khởi chạy ứng dụng Swing của bạn
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
                 new GiaoDienChinh();
-            }
-        });
 	}
 }

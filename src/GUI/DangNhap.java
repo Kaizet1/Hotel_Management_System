@@ -12,6 +12,10 @@ import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -23,6 +27,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.border.CompoundBorder;
 
 public class DangNhap extends JFrame {
     private static final long serialVersionUID = 1L;
@@ -30,12 +36,11 @@ public class DangNhap extends JFrame {
     private static final Color BACKGROUND_COLOR = new Color(16, 16, 20);
     private static final Color BUTTON_COLOR_SUBMIT = new Color(66, 99, 235);
     private static final Color BUTTON_COLOR_EXIT = new Color(151, 69, 35);
-    private static final Color BUTTON_COLOR_SUBMIT_HOVER = new Color(85, 128, 255);
-    private static final Color BUTTON_COLOR_EXIT_HOVER = new Color(195, 87, 40);
     private static final int MAX_WIDTH = 600;
     private static final int BUTTON_HEIGHT = 55;
-
-    public DangNhap() {
+    private Connection con = null;
+    public DangNhap(Connection connection) {
+    	this.con = connection;
         buildUI();
         setVisible(true);
     }
@@ -115,9 +120,11 @@ public class DangNhap extends JFrame {
         userField.setBackground(new Color(40, 40, 44));
         userField.setForeground(new Color(255, 255, 255, 127));
         userField.setFont(FontManager.getManrope(Font.PLAIN, 16));
+        CompoundBorder combinedBorder = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(83, 152, 255)), BorderFactory.createEmptyBorder(10, 10, 10, 10));
         userField.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
+            	userField.setBorder(combinedBorder);
                 if (userField.getText().equals("Nhập tên đăng nhập")) {
                 	userField.setText("");
                 	userField.setForeground(Color.WHITE);
@@ -126,6 +133,7 @@ public class DangNhap extends JFrame {
 
             @Override
             public void focusLost(FocusEvent e) {
+            	userField.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
                 if (userField.getText().isEmpty()) {
                 	userField.setForeground(new Color(255, 255, 255, 127));
                 	userField.setText("Nhập tên đăng nhập");
@@ -146,6 +154,7 @@ public class DangNhap extends JFrame {
         passField.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
+            	passField.setBorder(combinedBorder);
                 if (new String(passField.getPassword()).equals("Nhập mật khẩu")) {
                 	passField.setText("");
                 	passField.setForeground(Color.WHITE);
@@ -155,6 +164,7 @@ public class DangNhap extends JFrame {
 
             @Override
             public void focusLost(FocusEvent e) {
+            	passField.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
                 if (new String(passField.getPassword()).isEmpty()) {
                 	passField.setForeground(new Color(255, 255, 255, 127));
                 	passField.setText("Nhập mật khẩu");
@@ -162,8 +172,8 @@ public class DangNhap extends JFrame {
                 }
             }
         });
-        JButton submitButton = createButton("Xác nhận", BUTTON_COLOR_SUBMIT, BUTTON_COLOR_SUBMIT_HOVER);
-        JButton exitButton = createButton("Thoát", BUTTON_COLOR_EXIT, BUTTON_COLOR_EXIT_HOVER);
+        JButton submitButton = createButton("Xác nhận", BUTTON_COLOR_SUBMIT);
+        JButton exitButton = createButton("Thoát", BUTTON_COLOR_EXIT);
         
         submitButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         exitButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -171,8 +181,23 @@ public class DangNhap extends JFrame {
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-            	new GiaoDienChinh();
-            	dispose();
+//            	String tenDN = 
+//            	try {
+//            		String sql = "SELECT * FROM TaiKhoan WHERE tenDn = '" + tenDn + "' AND matKhau = '" + mk + "'";
+//            		Statement statement = con.createStatement();
+//            		ResultSet rs = statement.executeQuery(sql);
+//
+//			        
+					try {
+	                	UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+	                } catch (Exception ex) {
+	                    ex.printStackTrace();
+	                }
+	            	new GiaoDienChinh();
+	            	dispose();
+//				} catch (SQLException e1) {
+//					e1.printStackTrace();
+//				}
             }
             
         });
@@ -224,29 +249,13 @@ public class DangNhap extends JFrame {
         return label;
     }
 
-    private JButton createButton(String text, Color backgroundColor, Color hoverColor) {
+    private JButton createButton(String text, Color backgroundColor) {
         JButton button = new JButton(text);
         button.setMaximumSize(new Dimension(295, BUTTON_HEIGHT));
-        button.setFocusPainted(false); // Không tô màu khi có focus
-        button.setBorderPainted(false); 
-        button.setContentAreaFilled(false);
-        button.setOpaque(true);
         button.setBackground(backgroundColor);
-        button.setForeground(Color.white);
-        button.setFont(FontManager.getManrope(Font.PLAIN, 16));
-        
-        button.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                button.setBackground(hoverColor);
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                button.setBackground(backgroundColor);
-            }
-        });
-        
+        button.setFont(new Font("Manrope", Font.PLAIN, 15));
+        button.setForeground(Color.WHITE);
+		button.setFont(FontManager.getManrope(Font.PLAIN, 16));
         return button;
     }
 }

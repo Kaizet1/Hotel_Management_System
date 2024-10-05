@@ -95,7 +95,7 @@ public class ThongTinChung extends JPanel {
 		tableModel.addRow(row3);
 		tableModel.addRow(row3);
 		tableModel.addRow(row3);
-		
+		tableModel.addRow(row3);
 		// Thiết lập màu nền cho JTable
 		table.setBackground(new Color(24, 24, 28));
 		table.setForeground(Color.WHITE);
@@ -118,28 +118,6 @@ public class ThongTinChung extends JPanel {
 		scroll.setBorder(BorderFactory.createEmptyBorder(9, 9, 9, 9));
 		scroll.getViewport().setOpaque(false);
 		scroll.setViewportBorder(null);
-		JScrollBar verticalScrollBar = scroll.getVerticalScrollBar();
-        verticalScrollBar.setUI(new BasicScrollBarUI() {
-            @Override
-            protected void configureScrollBarColors() {
-                this.thumbColor = new Color(58, 58, 72);
-                this.trackColor = new Color(24, 24, 28);
-            }
-
-            @Override
-            protected JButton createDecreaseButton(int orientation) {
-                JButton button = super.createDecreaseButton(orientation);
-                button.setBackground(new Color(38, 38, 42));
-                return button;
-            }
-
-            @Override
-            protected JButton createIncreaseButton(int orientation) {
-                JButton button = super.createIncreaseButton(orientation);
-                button.setBackground(new Color(38, 38, 42));
-                return button;
-            }
-        });
         
 		centerPanel.add(titlePanel);
 		centerPanel.add(scroll);

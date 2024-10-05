@@ -56,5 +56,22 @@ public class RoundedPanel extends JPanel {
 			graphics.setStroke(new java.awt.BasicStroke(borderThickness));
 		}
 		graphics.drawRoundRect(0, 0, width - 1, height - 1, arcs.width, arcs.height);
+//		Graphics2D g2 = (Graphics2D) g;
+//    	g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+//    	if (backgroundColor != null) {
+//    		g2.setColor(backgroundColor);
+//		} else {
+//			g2.setColor(getBackground());
+//		}
+//        g2.fillRoundRect(0, 0, getWidth(), getHeight(), cornerRadius, cornerRadius);
+//        if (borderColor != null) {
+//        	g2.setColor(borderColor);
+//		}
+//		if (borderThickness > 0) {
+//			g2.setStroke(new java.awt.BasicStroke(borderThickness));
+//		}
+//        g2.fillRoundRect(2, 2, getWidth() - 4, getHeight() - 4, cornerRadius, cornerRadius);
+        
+//        super.paintComponent(g);
 	}
 }

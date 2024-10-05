@@ -20,7 +20,9 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 
+import ManHinh.DatPhong;
 import ManHinh.ThongTinChung;
+import ManHinh.TraCuu;
 
 public class GiaoDienChinh extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -136,7 +138,7 @@ public class GiaoDienChinh extends JFrame {
 		phoneIcon.setBounds(1070, 25, 30, 30);
 		pageLabel.setFont(FontManager.getManrope(Font.BOLD, 28));
 		pageLabel.setForeground(Color.white);
-		pageLabel.setBounds(10, 23, 260, pageLabel.getPreferredSize().height);
+		pageLabel.setBounds(10, 23, 400, pageLabel.getPreferredSize().height);
 		phoneLabel.setFont(FontManager.getManrope(Font.BOLD, 24));
 		phoneLabel.setForeground(new Color(10, 213, 118));
 		phoneLabel.setBounds(1120, 24, phoneLabel.getPreferredSize().width, phoneLabel.getPreferredSize().height);
@@ -166,8 +168,8 @@ public class GiaoDienChinh extends JFrame {
 
 		// Tạo các màn hình khác nhau
 		JPanel thongTinPanel = new ThongTinChung();
-		JPanel traCuuPanel = new JPanel();
-		JPanel datPhongPanel = new JPanel();
+		JPanel traCuuPanel = new TraCuu();
+		JPanel datPhongPanel = new DatPhong();
 		JPanel datDichVuPanel = new JPanel();
 		JPanel lapHoaDonPanel = new JPanel();
 		JPanel quanLyPhongPanel = new JPanel();
@@ -194,7 +196,7 @@ public class GiaoDienChinh extends JFrame {
 	public static void main(String[] args) {
 		try {
 			 UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-	         UIManager.put("nimbusBase", new Color(38, 38, 42));
+	         UIManager.put("nimbusBase", Color.BLACK);
 
         } catch (Exception e) {
             e.printStackTrace();

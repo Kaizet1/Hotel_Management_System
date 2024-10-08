@@ -9,13 +9,12 @@ import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
@@ -27,7 +26,24 @@ import GUI.RoundedPanel;
 
 public class ThongTinChung extends JPanel {
 	private static final long serialVersionUID = 1L;
-
+	private int currentPage = 1;
+	private final int rowsPerPage = 7;
+	DefaultTableModel tableModel;
+	Object[][] data = { { "DP001", "101", "Nguyen Van A", "2023-10-01", "2023-10-03", 2, 2000000 },
+			{ "DP002", "102", "Tran Thi B", "2023-10-02", "2023-10-04", 2, 2200000 },
+			{ "DP003", "103", "Le Van C", "2023-10-01", "2023-10-02", 1, 1100000 },
+			{ "DP004", "104", "Pham Thi D", "2023-10-03", "2023-10-06", 3, 3300000 },
+			{ "DP005", "105", "Doan Van E", "2023-10-05", "2023-10-07", 2, 2000000 },
+			{ "DP006", "106", "Hoang Thi F", "2023-10-01", "2023-10-05", 4, 4000000 },
+			{ "DP007", "107", "Nguyen Van G", "2023-10-06", "2023-10-08", 2, 2100000 },
+			{ "DP008", "108", "Le Thi H", "2023-10-04", "2023-10-06", 2, 2300000 },
+			{ "DP009", "109", "Pham Van I", "2023-10-07", "2023-10-09", 2, 2400000 },
+			{ "DP010", "110", "Tran Thi J", "2023-10-08", "2023-10-11", 3, 3500000 }, 
+			{ "DP008", "108", "Le Thi H", "2023-10-04", "2023-10-06", 2, 2300000 },
+			{ "DP009", "109", "Pham Van I", "2023-10-07", "2023-10-09", 2, 2400000 },
+			{ "DP010", "110", "Tran Thi J", "2023-10-08", "2023-10-11", 3, 3500000 },
+			};
+	JLabel pageLabel;
 	public ThongTinChung() {
 		setBackground(new Color(16, 16, 20));
 		setLayout(new BorderLayout());
@@ -73,30 +89,17 @@ public class ThongTinChung extends JPanel {
 		titlePanel.add(Box.createHorizontalGlue());
 
 		String[] tableHeaders = "Mã đặt phòng;Phòng;Tên khách;Ngày đến;Ngày đi;Số đêm;Doanh thu".split(";");
-		DefaultTableModel tableModel = new DefaultTableModel(tableHeaders, 0) {
+		tableModel = new DefaultTableModel(tableHeaders, 0) {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-		JTable table = new JTable(tableModel);
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
 
-		Object[] row1 = { "DP001", "101", "Nguyen Van A", "2023-10-01", "2023-10-03", 2, "1.200.000 VND" };
-		Object[] row2 = { "DP002", "102", "Tran Thi B", "2023-10-02", "2023-10-04", 2, "1.500.000 VND" };
-		Object[] row3 = { "DP003", "103", "Le Van C", "2023-10-01", "2023-10-02", 1, "600.000 VND" };
-		tableModel.addRow(row1);
-		tableModel.addRow(row2);
-		tableModel.addRow(row3);
-		tableModel.addRow(row3);
-		tableModel.addRow(row3);
-		tableModel.addRow(row3);
-		tableModel.addRow(row3);
-		tableModel.addRow(row3);
-		tableModel.addRow(row3);
-		tableModel.addRow(row3);
 		// Thiết lập màu nền cho JTable
+		JTable table = new JTable(tableModel);
 		table.setBackground(new Color(24, 24, 28));
 		table.setForeground(Color.WHITE);
 		table.setFont(FontManager.getManrope(Font.PLAIN, 14));
@@ -109,30 +112,73 @@ public class ThongTinChung extends JPanel {
 		header.setReorderingAllowed(false);
 
 		CustomCellRenderer cellRenderer = new CustomCellRenderer();
-        for (int i = 0; i < table.getColumnCount(); i++) {
-            TableColumn column = table.getColumnModel().getColumn(i);
-            column.setCellRenderer(cellRenderer);
-        }
+		for (int i = 0; i < table.getColumnCount(); i++) {
+			TableColumn column = table.getColumnModel().getColumn(i);
+			column.setCellRenderer(cellRenderer);
+		}
 		// Thiết lập JScrollPane
-		JScrollPane scroll = new JScrollPane(table);
+		JScrollPane scroll = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
+				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scroll.setPreferredSize(new Dimension(1642, 335));
 		scroll.setBorder(BorderFactory.createEmptyBorder(9, 9, 9, 9));
 		scroll.getViewport().setOpaque(false);
 		scroll.setViewportBorder(null);
-        
+		Dimension navButtonSize = new Dimension(35, 35);
+		Color navButtonColor = Color.black;
+		Color pageLabelColor = new Color(27, 112, 213);
+		JButton prevButton = new JButton(new ImageIcon("imgs/prevIcon.png"));
+		prevButton.setPreferredSize(navButtonSize);
+		prevButton.setBackground(navButtonColor);
+		RoundedPanel pagePanel = new RoundedPanel(5, 0, new Color(255, 255, 255, 0), pageLabelColor);
+		pagePanel.setOpaque(false);
+		pageLabel = new JLabel("1", JLabel.CENTER);
+		pageLabel.setFont(FontManager.getManrope(Font.BOLD, 14));
+		pageLabel.setForeground(pageLabelColor);
+		pagePanel.setPreferredSize(new Dimension(29, 29));
+		pagePanel.add(pageLabel);
+		JButton nextButton = new JButton(new ImageIcon("imgs/nextIcon.png"));
+		nextButton.setPreferredSize(navButtonSize);
+		nextButton.setBackground(navButtonColor);
+
+		prevButton.addActionListener(e -> {
+			if (currentPage > 1) {
+				currentPage--;
+				loadPage(currentPage);
+			}
+		});
+
+		nextButton.addActionListener(e -> {
+			if (currentPage < getTotalPages()) {
+				currentPage++;
+				loadPage(currentPage);
+			}
+		});
+
+		JPanel navPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		navPanel.setOpaque(false);
+		navPanel.setPreferredSize(new Dimension(1655, 50));
+		navPanel.setMaximumSize(new Dimension(1655, 50));
+		navPanel.setMinimumSize(new Dimension(1655, 50));
+		navPanel.add(prevButton);
+		navPanel.add(pagePanel);
+		navPanel.add(nextButton);
+		JPanel doanhThuPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		doanhThuPanel.setOpaque(false);
+		doanhThuPanel.setPreferredSize(new Dimension(0, 0));
 		centerPanel.add(titlePanel);
 		centerPanel.add(scroll);
-		JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		southPanel.setOpaque(false);
-
+		centerPanel.add(navPanel);
+		centerPanel.add(doanhThuPanel);
 		JLabel tongDoanhThuLabel = new JLabel("Tổng doanh thu: 3.300.000 VND");
 		tongDoanhThuLabel.setFont(FontManager.getManrope(Font.BOLD, 16));
 		tongDoanhThuLabel.setForeground(Color.white);
 		tongDoanhThuLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
 
-		southPanel.add(tongDoanhThuLabel);
+		doanhThuPanel.add(tongDoanhThuLabel);
 		add(northPanel, BorderLayout.NORTH);
 		add(centerPanel, BorderLayout.CENTER);
-		add(southPanel, BorderLayout.SOUTH);
+
+		loadPage(currentPage);
 	}
 
 	private RoundedPanel createInfoBox(int number, String infoTitle, Color boxColor) {
@@ -175,5 +221,19 @@ public class ThongTinChung extends JPanel {
 		infoBox.setMinimumSize(new Dimension(400, 200));
 		infoBox.setMaximumSize(new Dimension(400, 200));
 		return infoBox;
+	}
+
+	private void loadPage(int page) {
+		pageLabel.setText(String.valueOf(currentPage));
+		tableModel.setRowCount(0);
+		int start = (page - 1) * rowsPerPage;
+		int end = Math.min(start + rowsPerPage, data.length);
+		for (int i = start; i < end; i++) {
+			tableModel.addRow(data[i]);
+		}
+	}
+
+	private int getTotalPages() {
+		return (int) Math.ceil((double) data.length / rowsPerPage);
 	}
 }

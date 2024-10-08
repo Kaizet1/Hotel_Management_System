@@ -28,6 +28,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
+import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 
 public class DangNhap extends JFrame {
@@ -115,12 +116,13 @@ public class DangNhap extends JFrame {
         JLabel userLabel = createLabel("Tên đăng nhập", new Font("Manrope Regular", Font.PLAIN, 14), Color.white);
         JLabel starLabel = createLabel("*", new Font("Manrope Regular", Font.PLAIN, 14), Color.red);
         JTextField userField = new JTextField("Nhập tên đăng nhập");
+        Border emptyBorder = BorderFactory.createEmptyBorder(10, 10, 10, 10);
         userField.setMaximumSize(new Dimension(MAX_WIDTH, 55));
-        userField.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        userField.setBorder(emptyBorder);
         userField.setBackground(new Color(40, 40, 44));
         userField.setForeground(new Color(255, 255, 255, 127));
         userField.setFont(FontManager.getManrope(Font.PLAIN, 16));
-        CompoundBorder combinedBorder = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(83, 152, 255)), BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        CompoundBorder combinedBorder = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(83, 152, 255)), emptyBorder);
         userField.addFocusListener(new FocusAdapter() {
             @Override
             public void focusGained(FocusEvent e) {
@@ -133,7 +135,7 @@ public class DangNhap extends JFrame {
 
             @Override
             public void focusLost(FocusEvent e) {
-            	userField.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+            	userField.setBorder(emptyBorder);
                 if (userField.getText().isEmpty()) {
                 	userField.setForeground(new Color(255, 255, 255, 127));
                 	userField.setText("Nhập tên đăng nhập");
@@ -146,7 +148,7 @@ public class DangNhap extends JFrame {
         JLabel star2Label = createLabel("*", new Font("Manrope Regular", Font.PLAIN, 14), Color.red);
         JPasswordField passField = new JPasswordField("Nhập mật khẩu");
         passField.setMaximumSize(new Dimension(MAX_WIDTH, 55));
-        passField.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        passField.setBorder(emptyBorder);
         passField.setBackground(new Color(40, 40, 44));
         passField.setForeground(new Color(255, 255, 255, 127));
         passField.setFont(FontManager.getManrope(Font.PLAIN, 16));
@@ -164,7 +166,7 @@ public class DangNhap extends JFrame {
 
             @Override
             public void focusLost(FocusEvent e) {
-            	passField.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+            	passField.setBorder(emptyBorder);
                 if (new String(passField.getPassword()).isEmpty()) {
                 	passField.setForeground(new Color(255, 255, 255, 127));
                 	passField.setText("Nhập mật khẩu");

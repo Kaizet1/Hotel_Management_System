@@ -1,4 +1,4 @@
-package GUI;
+package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -39,9 +39,7 @@ public class DangNhap extends JFrame {
     private static final Color BUTTON_COLOR_EXIT = new Color(151, 69, 35);
     private static final int MAX_WIDTH = 600;
     private static final int BUTTON_HEIGHT = 55;
-    private Connection con = null;
-    public DangNhap(Connection connection) {
-    	this.con = connection;
+    public DangNhap() {
         buildUI();
         setVisible(true);
     }

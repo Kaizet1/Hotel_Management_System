@@ -1,4 +1,4 @@
-package ManHinh;
+package manhinh;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -19,12 +19,12 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 
-import GUI.CustomCellRenderer;
-import GUI.CustomHeaderRenderer;
-import GUI.FontManager;
-import GUI.RoundedPanel;
+import gui.CustomCellRenderer;
+import gui.CustomHeaderRenderer;
+import gui.FontManager;
+import gui.RoundedPanel;
 
-public class ThongTinChung extends JPanel {
+public class TrangChu extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private int currentPage = 1;
 	private final int rowsPerPage = 7;
@@ -43,8 +43,8 @@ public class ThongTinChung extends JPanel {
 			{ "DP009", "109", "Pham Van I", "2023-10-07", "2023-10-09", 2, 2400000 },
 			{ "DP010", "110", "Tran Thi J", "2023-10-08", "2023-10-11", 3, 3500000 },
 			};
-	JLabel pageLabel;
-	public ThongTinChung() {
+	JLabel pageNumber;
+	public TrangChu() {
 		setBackground(new Color(16, 16, 20));
 		setLayout(new BorderLayout());
 
@@ -125,17 +125,17 @@ public class ThongTinChung extends JPanel {
 		scroll.setViewportBorder(null);
 		Dimension navButtonSize = new Dimension(35, 35);
 		Color navButtonColor = Color.black;
-		Color pageLabelColor = new Color(27, 112, 213);
+		Color pageNumberColor = new Color(27, 112, 213);
 		JButton prevButton = new JButton(new ImageIcon("imgs/prevIcon.png"));
 		prevButton.setPreferredSize(navButtonSize);
 		prevButton.setBackground(navButtonColor);
-		RoundedPanel pagePanel = new RoundedPanel(5, 0, new Color(255, 255, 255, 0), pageLabelColor);
+		RoundedPanel pagePanel = new RoundedPanel(5, 0, new Color(255, 255, 255, 0), pageNumberColor);
 		pagePanel.setOpaque(false);
-		pageLabel = new JLabel("1", JLabel.CENTER);
-		pageLabel.setFont(FontManager.getManrope(Font.BOLD, 14));
-		pageLabel.setForeground(pageLabelColor);
+		pageNumber = new JLabel("1", JLabel.CENTER);
+		pageNumber.setFont(FontManager.getManrope(Font.BOLD, 14));
+		pageNumber.setForeground(pageNumberColor);
 		pagePanel.setPreferredSize(new Dimension(29, 29));
-		pagePanel.add(pageLabel);
+		pagePanel.add(pageNumber);
 		JButton nextButton = new JButton(new ImageIcon("imgs/nextIcon.png"));
 		nextButton.setPreferredSize(navButtonSize);
 		nextButton.setBackground(navButtonColor);
@@ -224,7 +224,7 @@ public class ThongTinChung extends JPanel {
 	}
 
 	private void loadPage(int page) {
-		pageLabel.setText(String.valueOf(currentPage));
+		pageNumber.setText(String.valueOf(currentPage));
 		tableModel.setRowCount(0);
 		int start = (page - 1) * rowsPerPage;
 		int end = Math.min(start + rowsPerPage, data.length);

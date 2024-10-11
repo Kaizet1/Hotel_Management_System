@@ -1,4 +1,4 @@
-package Main;
+package main;
 
 import java.awt.Color;
 import java.sql.Connection;
@@ -9,17 +9,9 @@ import java.sql.Statement;
 
 import javax.swing.UIManager;
 
-import GUI.DangNhap;
+import gui.DangNhap;
 
 public class Start {
-	private static Connection connectDatabase() throws SQLException {
-		Connection con = null;
-        String url = "jdbc:sqlserver://localhost:1434;databaseName=HeThongQuanLyKhachSan;trustServerCertificate=true;encrypt=true";
-        String user = "sa";
-        String password = "sapassword";
-        con = DriverManager.getConnection(url, user, password);
-        return con;
-	}
 	public static void main(String[] args) throws SQLException {
 		try {
 			 UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
@@ -28,6 +20,6 @@ public class Start {
        } catch (Exception e) {
            e.printStackTrace();
        }
-		new DangNhap(connectDatabase());
+		new DangNhap();
 	}
 }

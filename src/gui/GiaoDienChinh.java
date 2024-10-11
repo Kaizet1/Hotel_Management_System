@@ -1,4 +1,4 @@
-package GUI;
+package gui;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -16,32 +16,39 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 
-import ManHinh.DatPhong;
-import ManHinh.ThongTinChung;
-import ManHinh.TraCuu;
+import manhinh.DatPhong;
+import manhinh.TrangChu;
+
+import java.util.ArrayList;
 
 public class GiaoDienChinh extends JFrame {
 	private static final long serialVersionUID = 1L;
+	private JPanel sidebar;
 	private JPanel centerPanel;
 	private CardLayout cardLayout;
-	private RoundedButton selectedButton;
-	private JLabel pageLabel;
+	private ArrayList<SubMenuPanel> dsSubMenuPanel;
+	public JLabel pageLabel;
+	public RoundedButton selectedButton;
+	
 	public GiaoDienChinh() {
+		dsSubMenuPanel = new ArrayList<SubMenuPanel>(10);
 		setTitle("Hệ thống quản lý khách sạn");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(new BorderLayout());
 		setSize(1920, 1080);
-        setResizable(false);
+		setResizable(false);
+		centerPanel = createCenter();
 		JPanel sidebarPanel = createSidebar();
 		JPanel rightPanel = new JPanel(new BorderLayout());
 		JPanel leftHeaderPanel = createLeftHeader();
 		JPanel rightHeaderPanel = createRightHeader();
 		JPanel headerPanel = createHeader();
-		centerPanel = createCenter();
+		
 
 		headerPanel.add(leftHeaderPanel, BorderLayout.WEST);
 		headerPanel.add(rightHeaderPanel, BorderLayout.EAST);
@@ -55,7 +62,7 @@ public class GiaoDienChinh extends JFrame {
 	}
 
 	private JPanel createSidebar() {
-		JPanel sidebar = new JPanel();
+		sidebar = new JPanel();
 		sidebar.setPreferredSize(new Dimension(260, getHeight()));
 		sidebar.setLayout(new BoxLayout(sidebar, BoxLayout.Y_AXIS));
 		sidebar.setBackground(new Color(24, 24, 28));
@@ -67,20 +74,66 @@ public class GiaoDienChinh extends JFrame {
 
 		Box sidebarMenu = Box.createVerticalBox();
 		sidebarMenu.setAlignmentX(CENTER_ALIGNMENT);
-		String[][] menuItems = { { "Thông tin chung", "ThongTin" }, { "Tra cứu", "TraCuu" },
-				{ "Đặt phòng", "DatPhong" }, { "Đặt dịch vụ", "DatDichVu" }, { "Lập Hóa Đơn", "LapHoaDon" },
-				{ "Quản lý phòng", "QuanLyPhong" }, { "Quản lý khách hàng", "QuanLyKhachHang" },
-				{ "Quản lý dịch vụ", "QuanLyDichVu" }, { "Quản lý hóa đơn", "QuanLyHoaDon" },
-				{ "Thống kê", "ThongKe" }, };
-		for (String[] item : menuItems) {
-			RoundedButton menuButton = new RoundedButton(item[0], new ImageIcon("imgs/" + item[1] + "Icon.png"), 5);
+
+		// Các menu item và submenu tương ứng
+		String[][] menuItems = { 
+				{ "Trang chủ", "TrangChu", "TrangChu" }, // Không có submenu
+				{ "Phòng", null, "Phong" },
+				{ "Khách hàng", null, "KhachHang" },
+				{ "Dịch vụ", null, "DichVu" },
+				{ "Hóa đơn", null, "HoaDon"},
+				{ "Thống kê", null, "ThongKe"},
+		};
+
+		String[][][] subMenuItems = { 
+			null, // Trang chủ
+			{ 
+			 { "Đặt phòng", "DatPhong" },
+			 { "Hủy đặt phòng", "HuyDatPhong" },
+			 { "Đổi phòng", "DoiPhong" },
+			 { "Sơ đồ phòng", "SoDoPhong" },
+			 { "Tìm kiếm phòng", "TimKiemPhong"},
+			 { "Cập nhật phòng", "CapNhatPhong" },
+			 
+			}, // Phòng
+			{
+				{"Tìm kiếm khách hàng", "TimKiemKhachHang"},
+				{"Cập nhật khách hàng", "CapNhatKhachHang"}
+			}, // Khách hàng
+			{ 
+			 { "Đặt dịch vụ", "DatDichVu" }, 
+			 { "Hủy đặt dịch vụ", "HuyDatDichVu" },
+			 { "Tìm kiếm dịch vụ", "TimKiemDichVu"},
+		     { "Cập nhật dịch vụ", "CapNhatDichVu" },
+		    
+			}, // Dịch vụ
+			{
+			 {"Lập hóa đơn", "LapHoaDon"},
+			 { "Tìm kiếm hóa đơn", "TimKiemHoaDon"},
+			 {"Cập nhật hóa đơn", "CapNhatHoaDon"},
+			}, // Hóa đơn
+			{
+			 {"Thống kê chung", "ThongKeChung"},
+			 {"Thống kê doanh thu", "ThongKeDoanhThu"},
+			 {"Thống kê abcxyz", ""}
+			}
+		};
+
+		for (int i = 0; i < menuItems.length; i++) {
+			String[] item = menuItems[i];
+			String[][] subItems = subMenuItems[i];
+
+			RoundedButton menuButton = new RoundedButton(item[0], new ImageIcon("imgs/" + item[2] + "Icon.png"), 5);
 			menuButton.setHorizontalAlignment(SwingConstants.LEFT);
 			menuButton.setIconTextGap(19);
 			menuButton.setFont(FontManager.getManrope(Font.PLAIN, 16));
+			menuButton.setPreferredSize(new Dimension(230, 50));
 			menuButton.setMaximumSize(new Dimension(230, 50));
+			menuButton.setMinimumSize(new Dimension(230, 50));
 			menuButton.setBackground(new Color(24, 24, 28));
 			menuButton.setForeground(Color.WHITE);
 			menuButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
 			menuButton.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseEntered(MouseEvent e) {
@@ -99,29 +152,55 @@ public class GiaoDienChinh extends JFrame {
 
 				@Override
 				public void mouseClicked(MouseEvent e) {
-					if (selectedButton != menuButton) {
+					if (selectedButton != menuButton && subItems == null) {
 						selectedButton.setBackground(new Color(24, 24, 28));
 						selectedButton = menuButton;
 						selectedButton.setBackground(new Color(91, 122, 249));
 						pageLabel.setText(item[0].toUpperCase());
-						cardLayout.show(centerPanel, item[1]);
+						cardLayout.show(centerPanel, item[2]);
+						updateButtonColor();
 					}
 				}
 			});
-			if (item[1] == "ThongTin") {
+			if (item[1] == "TrangChu") {
 				selectedButton = menuButton;
 				selectedButton.setBackground(new Color(91, 122, 249));
 			}
-			sidebarMenu.add(menuButton);
+			
+			// Nếu có submenu, thêm SubMenuPanel vào dưới menu chính
+			if (subItems != null) {
+				SubMenuPanel subMenu = new SubMenuPanel(subItems, cardLayout, centerPanel, menuButton, this);
+				subMenu.setVisible(false); // Ban đầu submenu ẩn
+				sidebarMenu.add(menuButton);
+				sidebarMenu.add(subMenu);
+				menuButton.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						subMenu.setVisible(!subMenu.isVisible()); // Toggle submenu
+						sidebar.revalidate();
+						sidebar.repaint();
+					}
+				});
+				dsSubMenuPanel.add(subMenu);
+			} else {
+				sidebarMenu.add(menuButton);
+			}
+			
 			sidebarMenu.add(Box.createVerticalStrut(20));
 		}
+
 		JLabel sidebarLogo = new JLabel(new ImageIcon("imgs/SidebarLogo.png"));
 		sidebarLogo.setAlignmentX(CENTER_ALIGNMENT);
 		sidebar.add(Box.createVerticalStrut(15));
 		sidebar.add(sidebarLogo);
 		sidebar.add(Box.createVerticalStrut(40));
-		sidebar.add(sidebarMenu);
-
+		JScrollPane scrollSideBar =  new JScrollPane(sidebarMenu, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scrollSideBar.setBorder(null);
+		scrollSideBar.getViewport().setOpaque(false);
+		scrollSideBar.setViewportBorder(null);
+		scrollSideBar.getVerticalScrollBar().setPreferredSize(new Dimension(5, Integer.MAX_VALUE));
+		scrollSideBar.getVerticalScrollBar().setUnitIncrement(10);
+		sidebar.add(scrollSideBar);
 		return sidebar;
 	}
 
@@ -132,9 +211,9 @@ public class GiaoDienChinh extends JFrame {
 		leftHeader.setBorder(BorderFactory.createMatteBorder(0, 0, 0, 1, new Color(45, 45, 48)));
 
 		JLabel phoneIcon = new JLabel(new ImageIcon("imgs/PhoneIcon.png"));
-		pageLabel = new JLabel("THÔNG TIN CHUNG");
+		pageLabel = new JLabel("TRANG CHỦ");
 		JLabel phoneLabel = new JLabel("1900-1000-0000");
-		
+
 		phoneIcon.setBounds(1070, 25, 30, 30);
 		pageLabel.setFont(FontManager.getManrope(Font.BOLD, 28));
 		pageLabel.setForeground(Color.white);
@@ -166,41 +245,43 @@ public class GiaoDienChinh extends JFrame {
 		cardLayout = new CardLayout();
 		JPanel center = new JPanel(cardLayout);
 
-		// Tạo các màn hình khác nhau
-		JPanel thongTinPanel = new ThongTinChung();
-		JPanel traCuuPanel = new TraCuu();
+		// Các màn hình
+		JPanel trangChuPanel = new TrangChu();
 		JPanel datPhongPanel = new DatPhong();
-		JPanel datDichVuPanel = new JPanel();
-		JPanel lapHoaDonPanel = new JPanel();
-		JPanel quanLyPhongPanel = new JPanel();
-		JPanel quanLyKhachHangPanel = new JPanel();
-		JPanel quanLyDichVuPanel = new JPanel();
-		JPanel quanLyHoaDonPanel = new JPanel();
-		JPanel thongKePanel = new JPanel();
+		JPanel huyDatPhongPanel = new JPanel();
+		JPanel doiPhongPanel = new JPanel();
+		JPanel soDoPhongPanel = new JPanel();
+		JPanel danhSachPhongPanel = new JPanel();
 
-		// Thêm các màn hình vào centerPanel
-		center.add(thongTinPanel, "ThongTin");
-		center.add(traCuuPanel, "TraCuu");
+		// Thêm màn hình
+		center.add(trangChuPanel, "TrangChu");
 		center.add(datPhongPanel, "DatPhong");
-		center.add(datDichVuPanel, "DatDichVu");
-		center.add(lapHoaDonPanel, "LapHoaDon");
-		center.add(quanLyPhongPanel, "QuanLyPhong");
-		center.add(quanLyKhachHangPanel, "QuanLyKhachHang");
-		center.add(quanLyDichVuPanel, "QuanLyDichVu");
-		center.add(quanLyHoaDonPanel, "QuanLyHoaDon");
-		center.add(thongKePanel, "ThongKe");
-
+		center.add(huyDatPhongPanel, "HuyDatPhong");
+		center.add(doiPhongPanel, "DoiPhong");
+		center.add(soDoPhongPanel, "SoDoPhong");
+		center.add(danhSachPhongPanel, "danhSachPhong");
 		return center;
 	}
-
+	
+	public void updateButtonColor() {
+		for (SubMenuPanel subMenuPanel: dsSubMenuPanel) {
+			if (subMenuPanel.getSelectedSubMenu() != null) {
+				subMenuPanel.getSelectedSubMenu().setForeground(new Color(148, 148, 148));
+				subMenuPanel.setSelectedSubMenu(null);
+				break;
+			}
+			
+		}
+	}
+	
 	public static void main(String[] args) {
 		try {
-			 UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-	         UIManager.put("nimbusBase", Color.BLACK);
+			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+			UIManager.put("nimbusBase", Color.BLACK);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-                new GiaoDienChinh();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		new GiaoDienChinh();
 	}
 }

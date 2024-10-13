@@ -7,14 +7,14 @@ import java.util.ArrayList;
 public class NhanVien_DAO {
     private ArrayList<NhanVien> dsNV;
     public NhanVien_DAO (){
-        dsNV = new ArrayList<NhanVien>(20);
+        dsNV = new ArrayList<NhanVien>();
     }
     //them mot nhan vien
     public boolean themNV(NhanVien nv) {
         if (dsNV.contains(nv)) {
             return false;
         }
-        return true;
+        return dsNV.add(nv);
     }
     //xoa mot nhan vien
     public boolean xoaNV(int i) {

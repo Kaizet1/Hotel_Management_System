@@ -21,6 +21,7 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 
+import manhinh.LapHoaDon;
 import manhinh.DatPhong;
 import manhinh.TrangChu;
 
@@ -34,7 +35,7 @@ public class GiaoDienChinh extends JFrame {
 	private ArrayList<SubMenuPanel> dsSubMenuPanel;
 	public JLabel pageLabel;
 	public RoundedButton selectedButton;
-	
+
 	public GiaoDienChinh() {
 		dsSubMenuPanel = new ArrayList<SubMenuPanel>(10);
 		setTitle("Hệ thống quản lý khách sạn");
@@ -48,7 +49,6 @@ public class GiaoDienChinh extends JFrame {
 		JPanel leftHeaderPanel = createLeftHeader();
 		JPanel rightHeaderPanel = createRightHeader();
 		JPanel headerPanel = createHeader();
-		
 
 		headerPanel.add(leftHeaderPanel, BorderLayout.WEST);
 		headerPanel.add(rightHeaderPanel, BorderLayout.EAST);
@@ -76,47 +76,47 @@ public class GiaoDienChinh extends JFrame {
 		sidebarMenu.setAlignmentX(CENTER_ALIGNMENT);
 
 		// Các menu item và submenu tương ứng
-		String[][] menuItems = { 
+		String[][] menuItems = {
 				{ "Trang chủ", "TrangChu", "TrangChu" }, // Không có submenu
 				{ "Phòng", null, "Phong" },
 				{ "Khách hàng", null, "KhachHang" },
 				{ "Dịch vụ", null, "DichVu" },
-				{ "Hóa đơn", null, "HoaDon"},
-				{ "Thống kê", null, "ThongKe"},
+				{ "Hóa đơn", null, "HoaDon" },
+				{ "Thống kê", null, "ThongKe" },
 		};
 
-		String[][][] subMenuItems = { 
-			null, // Trang chủ
-			{ 
-			 { "Đặt phòng", "DatPhong" },
-			 { "Hủy đặt phòng", "HuyDatPhong" },
-			 { "Đổi phòng", "DoiPhong" },
-			 { "Sơ đồ phòng", "SoDoPhong" },
-			 { "Tìm kiếm phòng", "TimKiemPhong"},
-			 { "Cập nhật phòng", "CapNhatPhong" },
-			 
-			}, // Phòng
-			{
-				{"Tìm kiếm khách hàng", "TimKiemKhachHang"},
-				{"Cập nhật khách hàng", "CapNhatKhachHang"}
-			}, // Khách hàng
-			{ 
-			 { "Đặt dịch vụ", "DatDichVu" }, 
-			 { "Hủy đặt dịch vụ", "HuyDatDichVu" },
-			 { "Tìm kiếm dịch vụ", "TimKiemDichVu"},
-		     { "Cập nhật dịch vụ", "CapNhatDichVu" },
-		    
-			}, // Dịch vụ
-			{
-			 {"Lập hóa đơn", "LapHoaDon"},
-			 { "Tìm kiếm hóa đơn", "TimKiemHoaDon"},
-			 {"Cập nhật hóa đơn", "CapNhatHoaDon"},
-			}, // Hóa đơn
-			{
-			 {"Thống kê chung", "ThongKeChung"},
-			 {"Thống kê doanh thu", "ThongKeDoanhThu"},
-			 {"Thống kê abcxyz", ""}
-			}
+		String[][][] subMenuItems = {
+				null, // Trang chủ
+				{
+						{ "Đặt phòng", "DatPhong" },
+						{ "Hủy đặt phòng", "HuyDatPhong" },
+						{ "Đổi phòng", "DoiPhong" },
+						{ "Sơ đồ phòng", "SoDoPhong" },
+						{ "Tìm kiếm phòng", "TimKiemPhong" },
+						{ "Cập nhật phòng", "CapNhatPhong" },
+
+				}, // Phòng
+				{
+						{ "Tìm kiếm khách hàng", "TimKiemKhachHang" },
+						{ "Cập nhật khách hàng", "CapNhatKhachHang" }
+				}, // Khách hàng
+				{
+						{ "Đặt dịch vụ", "DatDichVu" },
+						{ "Hủy đặt dịch vụ", "HuyDatDichVu" },
+						{ "Tìm kiếm dịch vụ", "TimKiemDichVu" },
+						{ "Cập nhật dịch vụ", "CapNhatDichVu" },
+
+				}, // Dịch vụ
+				{
+						{ "Lập hóa đơn", "LapHoaDon" },
+						{ "Tìm kiếm hóa đơn", "TimKiemHoaDon" },
+						{ "Cập nhật hóa đơn", "CapNhatHoaDon" },
+				}, // Hóa đơn
+				{
+						{ "Thống kê chung", "ThongKeChung" },
+						{ "Thống kê doanh thu", "ThongKeDoanhThu" },
+						{ "Thống kê abcxyz", "" }
+				}
 		};
 
 		for (int i = 0; i < menuItems.length; i++) {
@@ -166,7 +166,7 @@ public class GiaoDienChinh extends JFrame {
 				selectedButton = menuButton;
 				selectedButton.setBackground(new Color(91, 122, 249));
 			}
-			
+
 			// Nếu có submenu, thêm SubMenuPanel vào dưới menu chính
 			if (subItems != null) {
 				SubMenuPanel subMenu = new SubMenuPanel(subItems, cardLayout, centerPanel, menuButton, this);
@@ -185,7 +185,7 @@ public class GiaoDienChinh extends JFrame {
 			} else {
 				sidebarMenu.add(menuButton);
 			}
-			
+
 			sidebarMenu.add(Box.createVerticalStrut(20));
 		}
 
@@ -194,7 +194,8 @@ public class GiaoDienChinh extends JFrame {
 		sidebar.add(Box.createVerticalStrut(15));
 		sidebar.add(sidebarLogo);
 		sidebar.add(Box.createVerticalStrut(40));
-		JScrollPane scrollSideBar =  new JScrollPane(sidebarMenu, JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		JScrollPane scrollSideBar = new JScrollPane(sidebarMenu, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
+				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollSideBar.setBorder(null);
 		scrollSideBar.getViewport().setOpaque(false);
 		scrollSideBar.setViewportBorder(null);
@@ -252,7 +253,7 @@ public class GiaoDienChinh extends JFrame {
 		JPanel doiPhongPanel = new JPanel();
 		JPanel soDoPhongPanel = new JPanel();
 		JPanel danhSachPhongPanel = new JPanel();
-
+		JPanel lapHoaDoPanel = new LapHoaDon();
 		// Thêm màn hình
 		center.add(trangChuPanel, "TrangChu");
 		center.add(datPhongPanel, "DatPhong");
@@ -260,20 +261,21 @@ public class GiaoDienChinh extends JFrame {
 		center.add(doiPhongPanel, "DoiPhong");
 		center.add(soDoPhongPanel, "SoDoPhong");
 		center.add(danhSachPhongPanel, "danhSachPhong");
+		center.add(lapHoaDoPanel, "LapHoaDon");
 		return center;
 	}
-	
+
 	public void updateButtonColor() {
-		for (SubMenuPanel subMenuPanel: dsSubMenuPanel) {
+		for (SubMenuPanel subMenuPanel : dsSubMenuPanel) {
 			if (subMenuPanel.getSelectedSubMenu() != null) {
 				subMenuPanel.getSelectedSubMenu().setForeground(new Color(148, 148, 148));
 				subMenuPanel.setSelectedSubMenu(null);
 				break;
 			}
-			
+
 		}
 	}
-	
+
 	public static void main(String[] args) {
 		try {
 			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");

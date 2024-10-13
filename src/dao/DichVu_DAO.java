@@ -5,4 +5,5 @@ public class DichVu_DAO {
     ///def
     private String maDichVu;
     private String tenDichVu;
+    private String moTa;
 }

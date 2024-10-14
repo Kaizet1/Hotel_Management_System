@@ -29,7 +29,7 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
-
+import javax.swing.SwingConstants;
 
 
 public class LapHoaDon extends JPanel implements ActionListener{
@@ -41,12 +41,31 @@ private JButton btnlaphd;
 private JLabel day;
 private DefaultTableModel tableModel1;
 private JTable table1;
+private JLabel lbhoten1;
+private JLabel lbsophong;
+private JLabel lbsophong1;
+private JLabel lbsdt;
+private JLabel lbsdt1;
+private JLabel lbcccd;
+private JLabel lbcccd1;
+private JLabel lbngaynhan;
+private JLabel lbngaynhan1;
+private JLabel lbngaytra;
+private JLabel lbngaytra1;
+private JLabel lbdiachi;
+private JLabel lbdiachi1;
+private JLabel lbmasothue;
+private JLabel lbmasothue1;
+private Font f;
+private Font f1;
 
 
 public LapHoaDon() {
 	setBackground(new Color (16, 16, 20));
 			Box b = Box.createVerticalBox();
 			b.add(Box.createVerticalStrut(10));
+
+			// Tim kiem		
 			 JTextField searchField = new JTextField("Tìm kiếm");
 		        Border emptyBorder = BorderFactory.createEmptyBorder(13, 52, 12, 0);
 		        searchField.setBounds(0, 0, 280, 45);
@@ -94,7 +113,8 @@ public LapHoaDon() {
 		        bsearch.add(Box.createGlue());
 		        b.add(bsearch);
 			b.add(Box.createVerticalStrut(20));
-			
+
+			// Tieu de
 			JLabel titleLabel = new JLabel("Danh sách khách hàng");
 			titleLabel.setFont(FontManager.getManrope(Font.BOLD, 16));
 			titleLabel.setForeground(Color.white);
@@ -111,6 +131,8 @@ public LapHoaDon() {
 			titlePanel.add(Box.createHorizontalGlue());
 			b.add(titlePanel);
 			b.add(Box.createVerticalStrut(5));
+
+			// Tạo bang
 			Box b2 = Box.createHorizontalBox();
 			String [] colName = {"Mã đặt phòng","Loại phòng","Tên phòng","Phòng","Trạng thái","Tên khách","Ngày đến","Ngày đi","Số đêm"};
 			Object [][] data = {
@@ -129,7 +151,7 @@ public LapHoaDon() {
 			b2.add(scroll = new JScrollPane( table = new JTable(tableModel),JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
 			table.setBackground(new Color(24, 24, 28));
 			table.setForeground(Color.WHITE);
-			table.setFont(FontManager.getManrope(Font.PLAIN, 14));
+			table.setFont(FontManager.getManrope(Font.PLAIN, 16));
 			table.setRowHeight(55);
 			
 			JTableHeader header = table.getTableHeader();
@@ -143,10 +165,12 @@ public LapHoaDon() {
 			scroll.setViewportBorder(null);
 			b.add(b2);
 			b.add(Box.createVerticalStrut(300));
+
+			// Tạo nut
 			Box bbutton = Box.createHorizontalBox();
 			bbutton.add(Box.createHorizontalStrut(1400));
 			bbutton.add(btnlaphd = new JButton("Lập hóa đơn"));
-			btnlaphd.setFont(FontManager.getManrope(Font.PLAIN, 15));
+			btnlaphd.setFont(FontManager.getManrope(Font.PLAIN, 16));
 			btnlaphd.setForeground(Color.WHITE);
 			btnlaphd.setBackground(new Color(66, 99, 235));
 			btnlaphd.setOpaque(false);
@@ -179,11 +203,11 @@ public void openHoaDon() {
     // Thêm tiêu đề và ngày tháng vào JPanel
     JLabel titleDialog = new JLabel("   HÓA ĐƠN");
     titleDialog.setForeground(Color.WHITE);
-    titleDialog.setFont(new Font("SansSerif", Font.BOLD, 22));
+    titleDialog.setFont(new Font("Montserrat", Font.BOLD, 32));
     
     JLabel day = new JLabel("Ngày 27 tháng 09 năm 2024");
     day.setForeground(Color.WHITE);
-    
+    day.setFont(new Font("Montserrat", Font.PLAIN, 16));
     Box bheader = Box.createHorizontalBox();
     pheader.add(titleDialog);
     pheader.add(day);
@@ -193,7 +217,6 @@ public void openHoaDon() {
 
     // Tạo JPanel cho thông tin khách hàng
     JPanel customerInfoPanel = new JPanel();
-    customerInfoPanel.setBackground(new Color(16, 16, 20));
     customerInfoPanel.setForeground(Color.WHITE);
     customerInfoPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
     customerInfoPanel.setBackground(new Color(40, 40, 44));
@@ -202,18 +225,95 @@ public void openHoaDon() {
 	customerInfoPanel.setMinimumSize(new Dimension(700,200));
 	customerInfoPanel.setMaximumSize(new Dimension(700,200));
     // Thêm các thông tin khách hàng
-   
-    customerInfoPanel.add(createLabel("Họ tên khách hàng:"));
-    customerInfoPanel.add(createLabel("Cao Thành Đông"));
-    customerInfoPanel.add(createLabel("Số điện thoại:"));
-    customerInfoPanel.add(createLabel("0909123456"));
-    customerInfoPanel.add(createLabel("Số CCCD:"));
-    customerInfoPanel.add(createLabel("01524001238"));
-    customerInfoPanel.add(createLabel("Ngày nhận phòng:"));
-    customerInfoPanel.add(createLabel("25/09/2024"));
-    customerInfoPanel.add(createLabel("Ngày trả phòng:"));
-    customerInfoPanel.add(createLabel("27/09/2024"));
-    
+   Box bcustomerInfo = Box.createVerticalBox();
+   //hoten
+   Box bhoten = Box.createHorizontalBox();
+	JLabel lbhoten;
+	bhoten.add(lbhoten = new JLabel("Họ tên khách hàng:"));
+	bhoten.add(lbhoten1 = new JLabel("Cao Thành Đông"));
+	bhoten.setAlignmentX(LEFT_ALIGNMENT);
+	bhoten.add(Box.createHorizontalStrut(200));
+	bhoten.add(lbsophong = new JLabel("Số phòng:"));
+	bhoten.add(lbsophong1 = new JLabel("A001"));
+	bcustomerInfo.add(bhoten);
+	bcustomerInfo.add(Box.createVerticalStrut(15));
+	//sdt
+	Box bsodt = Box.createHorizontalBox();
+	bsodt.add(lbsdt = new JLabel("Số điện thoại:"));
+	bsodt.add(lbsdt1 = new JLabel("0909123456"));
+	bsodt.add(Box.createHorizontalStrut(270));
+	bsodt.add(lbcccd = new JLabel("Số CCCD:"));
+	bsodt.add(lbcccd1 = new JLabel("01524001238"));
+	bsodt.setAlignmentX(LEFT_ALIGNMENT);
+	bcustomerInfo.add(bsodt);
+	bcustomerInfo.add(Box.createVerticalStrut(15));
+	//ngay
+	Box bngay = Box.createHorizontalBox();
+	bngay.add(lbngaynhan = new JLabel("Ngày nhân phòng:"));
+	bngay.add(lbngaynhan1 = new JLabel("25/09/2024"));
+	bngay.add(Box.createHorizontalStrut(243));
+	bngay.add(lbngaytra = new JLabel("Ngày trả phòng:"));
+	bngay.add(lbngaytra1 = new JLabel("27/09/2024"));
+	bngay.setAlignmentX(LEFT_ALIGNMENT);
+	bcustomerInfo.add(bngay);
+	bcustomerInfo.add(Box.createVerticalStrut(15));
+	//diachi
+	Box bdiachi = Box.createHorizontalBox();
+	bdiachi.add(lbdiachi = new JLabel("Địa chỉ:"));
+	bdiachi.add(lbdiachi1 = new JLabel("480/16, Hàng Ngang, Hà Nội"));
+	bdiachi.setAlignmentX(LEFT_ALIGNMENT);
+	bcustomerInfo.add(bdiachi);
+	bcustomerInfo.add(Box.createVerticalStrut(15));
+	//masothue
+	Box bmasothue = Box.createHorizontalBox();
+	bmasothue.add(lbmasothue = new JLabel("Mã số thuế:"));
+	bmasothue.add(lbmasothue1 = new JLabel("0101010123456"));
+	bmasothue.setAlignmentX(LEFT_ALIGNMENT);
+	bcustomerInfo.add(bmasothue);
+
+	f= new Font("Montserrat",Font.BOLD, 16);
+	f1 = new Font("Montserrat",Font.PLAIN, 16);
+    lbhoten.setForeground(Color.WHITE);
+	lbhoten.setFont(f);
+	lbhoten1.setForeground(Color.WHITE);
+	lbhoten1.setFont(f1);
+	lbsophong1.setForeground(Color.WHITE);
+	lbsophong1.setFont(f1);
+	lbsophong.setForeground(Color.WHITE);
+	lbsophong.setFont(f);
+	lbsdt1.setForeground(Color.WHITE);
+	lbsdt1.setFont(f1);
+	lbsdt.setForeground(Color.WHITE);
+	lbsdt.setFont(f);
+	lbcccd1.setForeground(Color.WHITE);
+	lbcccd1.setFont(f1);
+	lbcccd.setForeground(Color.WHITE);
+	lbcccd.setFont(f);
+	lbngaynhan1.setForeground(Color.WHITE);
+	lbngaynhan1.setFont(f1);
+	lbngaynhan.setForeground(Color.WHITE);
+	lbngaynhan.setFont(f);	
+	lbngaytra.setForeground(Color.WHITE);
+	lbngaytra.setFont(f);
+	lbngaytra1.setForeground(Color.WHITE);
+	lbngaytra1.setFont(f1);
+	lbdiachi.setForeground(Color.WHITE);
+	lbdiachi.setFont(f);
+	lbdiachi1.setForeground(Color.WHITE);
+	lbdiachi1.setFont(f1);
+	lbmasothue.setForeground(Color.WHITE);
+	lbmasothue.setFont(f);
+	lbmasothue1.setForeground(Color.WHITE);
+	lbmasothue1.setFont(f1);
+	
+	bcustomerInfo.add(Box.createHorizontalStrut(10));
+
+	Box CusInfo = Box.createHorizontalBox();
+	CusInfo.add(Box.createHorizontalStrut(0));
+	CusInfo.add(bcustomerInfo);
+	CusInfo.add(Box.createHorizontalGlue());
+	customerInfoPanel.add(CusInfo);
+
     bdialog.add(customerInfoPanel);
     bdialog.add(Box.createVerticalStrut(10));
 
@@ -252,6 +352,7 @@ public void openHoaDon() {
 	Box btotal = Box.createHorizontalBox();
     JLabel totalLabel = new JLabel("Tổng tiền: 905.000đ", SwingConstants.RIGHT);
     totalLabel.setForeground(Color.WHITE);
+	totalLabel.setFont(new Font("Montserrat", Font.PLAIN, 16));
    // totalLabel.setBorder(new EmptyBorder(10, 10, 10, 10));
     btotal.add(Box.createHorizontalStrut(500));
     btotal.add(totalLabel);
@@ -263,14 +364,16 @@ public void openHoaDon() {
     buttonPanel.setBackground(new Color(40, 40, 44));
 
     JButton btnXacNhan = new JButton("Xác nhận");
-    btnXacNhan.setPreferredSize(new Dimension(100, 40));
-    btnXacNhan.setBackground(new Color(34, 139, 34));
+    btnXacNhan.setPreferredSize(new Dimension(150, 40));
+    btnXacNhan.setBackground(new Color(74, 74 ,66));
     btnXacNhan.setForeground(Color.WHITE);
+	btnXacNhan.setFont(f1);
 
     JButton btnXuatHD = new JButton("Xuất hóa đơn");
-    btnXuatHD.setPreferredSize(new Dimension(120, 40));
-    btnXuatHD.setBackground(new Color(70, 130, 180));
+    btnXuatHD.setPreferredSize(new Dimension(150, 40));
+    btnXuatHD.setBackground(new Color(51, 70, 50));
     btnXuatHD.setForeground(Color.WHITE);
+	btnXuatHD.setFont(f1);
 
     buttonPanel.add(btnXacNhan);
     buttonPanel.add(btnXuatHD);

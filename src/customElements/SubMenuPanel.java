@@ -1,4 +1,4 @@
-package customelements;
+package customElements;
 
 import gui.GiaoDienChinh_GUI;
 

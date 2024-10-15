@@ -1,8 +1,8 @@
 package gui;
 
-import customelements.BackgroundPanel;
-import customelements.FontManager;
-import customelements.RoundedPanel;
+import customElements.BackgroundPanel;
+import customElements.FontManager;
+import customElements.RoundedPanel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

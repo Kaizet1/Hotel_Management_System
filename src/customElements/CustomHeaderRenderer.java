@@ -1,4 +1,4 @@
-package customelements;
+package customElements;
 
 import java.awt.Color;
 import java.awt.Component;

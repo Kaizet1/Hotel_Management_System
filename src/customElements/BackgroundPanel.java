@@ -1,4 +1,4 @@
-package customelements;
+package customElements;
 
 import java.awt.Graphics;
 import java.awt.Image;

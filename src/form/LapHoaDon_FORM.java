@@ -1,9 +1,9 @@
 package form;
 
-import customelements.CustomCellRenderer;
-import customelements.CustomHeaderRenderer;
-import customelements.FontManager;
-import customelements.RoundedPanel;
+import customElements.CustomCellRenderer;
+import customElements.CustomHeaderRenderer;
+import customElements.FontManager;
+import customElements.RoundedPanel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

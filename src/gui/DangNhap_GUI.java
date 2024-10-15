@@ -1,8 +1,11 @@
 package gui;
 
+import connectDB.ConnectDB;
 import customElements.BackgroundPanel;
 import customElements.FontManager;
 import customElements.RoundedPanel;
+import dao.TaiKhoan_DAO;
+import entity.TaiKhoan;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -14,18 +17,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
-import javax.swing.UIManager;
+import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 
@@ -35,9 +32,11 @@ public class DangNhap_GUI extends JFrame {
     private static final Color BACKGROUND_COLOR = new Color(16, 16, 20);
     private static final Color BUTTON_COLOR_SUBMIT = new Color(66, 99, 235);
     private static final Color BUTTON_COLOR_EXIT = new Color(151, 69, 35);
-    private static final int MAX_WIDTH = 600;
+    private static final int FIELD_WIDTH = 600;
     private static final int BUTTON_HEIGHT = 55;
+    private TaiKhoan_DAO taiKhoanDAO = new TaiKhoan_DAO();
     public DangNhap_GUI() {
+        ConnectDB.getInstance().connect();
         buildUI();
         setVisible(true);
     }
@@ -113,7 +112,7 @@ public class DangNhap_GUI extends JFrame {
         JLabel starLabel = createLabel("*", new Font("Manrope Regular", Font.PLAIN, 14), Color.red);
         JTextField userField = new JTextField("Nhập tên đăng nhập");
         Border emptyBorder = BorderFactory.createEmptyBorder(10, 10, 10, 10);
-        userField.setMaximumSize(new Dimension(MAX_WIDTH, 55));
+        userField.setMaximumSize(new Dimension(FIELD_WIDTH, 55));
         userField.setBorder(emptyBorder);
         userField.setBackground(new Color(40, 40, 44));
         userField.setForeground(new Color(255, 255, 255, 127));
@@ -143,7 +142,7 @@ public class DangNhap_GUI extends JFrame {
         JLabel passLabel = createLabel("Mật khẩu", new Font("Manrope Regular", Font.PLAIN, 14), Color.white);
         JLabel star2Label = createLabel("*", new Font("Manrope Regular", Font.PLAIN, 14), Color.red);
         JPasswordField passField = new JPasswordField("Nhập mật khẩu");
-        passField.setMaximumSize(new Dimension(MAX_WIDTH, 55));
+        passField.setMaximumSize(new Dimension(FIELD_WIDTH, 55));
         passField.setBorder(emptyBorder);
         passField.setBackground(new Color(40, 40, 44));
         passField.setForeground(new Color(255, 255, 255, 127));
@@ -179,27 +178,27 @@ public class DangNhap_GUI extends JFrame {
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//            	String tenDN = 
-//            	try {
-//            		String sql = "SELECT * FROM TaiKhoan WHERE tenDn = '" + tenDn + "' AND matKhau = '" + mk + "'";
-//            		Statement statement = con.createStatement();
-//            		ResultSet rs = statement.executeQuery(sql);
-//
-//			        
-					try {
-	                	UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-	                } catch (Exception ex) {
-	                    ex.printStackTrace();
-	                }
-	            	new GiaoDienChinh_GUI();
-	            	dispose();
-//				} catch (SQLException e1) {
-//					e1.printStackTrace();
-//				}
+                String tenDN = userField.getText();
+                String matKhau = new String(passField.getPassword());
+
+                TaiKhoan taiKhoan = taiKhoanDAO.checkDangNhap(tenDN, matKhau);
+
+                if (taiKhoan != null) {
+                    try {
+                        UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                    new GiaoDienChinh_GUI();
+                    dispose();
+                } else {
+                    JOptionPane.showMessageDialog(DangNhap_GUI.this, "Tên đăng nhập hoặc mật khẩu không đúng!", "Lỗi đăng nhập", JOptionPane.ERROR_MESSAGE);
+                }
             }
-            
         });
-        
+
+
+
         exitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -208,17 +207,17 @@ public class DangNhap_GUI extends JFrame {
         });
         
         Box userBox = Box.createHorizontalBox();
-        userBox.setMaximumSize(new Dimension(MAX_WIDTH, 20));
+        userBox.setMaximumSize(new Dimension(FIELD_WIDTH, 20));
         userBox.add(userLabel);
         userBox.add(starLabel);
 
         Box passBox = Box.createHorizontalBox();
-        passBox.setMaximumSize(new Dimension(MAX_WIDTH, 20));
+        passBox.setMaximumSize(new Dimension(FIELD_WIDTH, 20));
         passBox.add(passLabel);
         passBox.add(star2Label);
 
         Box buttonBox = Box.createHorizontalBox();
-        buttonBox.setMaximumSize(new Dimension(MAX_WIDTH, BUTTON_HEIGHT));
+        buttonBox.setMaximumSize(new Dimension(FIELD_WIDTH, BUTTON_HEIGHT));
         buttonBox.add(submitButton);
         buttonBox.add(Box.createHorizontalStrut(13));
         buttonBox.add(exitButton);
@@ -256,4 +255,6 @@ public class DangNhap_GUI extends JFrame {
 		button.setFont(FontManager.getManrope(Font.PLAIN, 16));
         return button;
     }
+
+
 }

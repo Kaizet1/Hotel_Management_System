@@ -70,6 +70,10 @@ public class KhachHang {
         this(maKH,"hoTen","diaChi","sdt","email","cCCD");  
     }
 
+public KhachHang() {
+        //TODO Auto-generated constructor stub
+    }
+
 @Override
 public int hashCode() {
     final int prime = 31;

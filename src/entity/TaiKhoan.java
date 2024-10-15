@@ -5,13 +5,12 @@ import java.util.Objects;
 public class TaiKhoan {
     private String tenDN;
     private String matKhau;
+    private NhanVien nhanVien;
 
-    public TaiKhoan(String tenDN, String matKhau) {
+    public TaiKhoan(String tenDN, String matKhau, NhanVien nhanVien) {
         this.tenDN = tenDN;
         this.matKhau = matKhau;
-    }
-    public TaiKhoan(String tenDN) {
-        this(tenDN, "matKhau");
+        this.nhanVien = nhanVien;
     }
 
     public String getTenDN() {
@@ -28,6 +27,10 @@ public class TaiKhoan {
 
     public void setMatKhau(String matKhau) {
         this.matKhau = matKhau;
+    }
+
+    public String getNhanVienId() {
+        return nhanVien.getMaNV();
     }
 
     @Override

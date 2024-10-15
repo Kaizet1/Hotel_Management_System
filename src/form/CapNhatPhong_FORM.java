@@ -71,7 +71,28 @@ public class CapNhatPhong_FORM extends JPanel {
         b2.add(createFormBox("Giá phòng", ""));
         b2.add(createFormBox("Số người", ""));
 
+        Box b3 = Box.createHorizontalBox();
+        Box b4 = Box.createVerticalBox();
+        JLabel lblMota = new JLabel("Mô tả");
+        lblMota.setFont(FontManager.getManrope(Font.PLAIN, 15));
+        lblMota.setForeground(Color.WHITE);
+        lblMota.setPreferredSize(new Dimension(259, 20));
+        lblMota.setMaximumSize(new Dimension(259, 20));
+        lblMota.setMinimumSize(new Dimension(259, 20));
+        JTextArea txaMoTa = new JTextArea();
+        Dimension txaMoTaSize = new Dimension(1252, 220);
+        txaMoTa.setPreferredSize(txaMoTaSize);
+        txaMoTa.setMaximumSize(txaMoTaSize);
+        txaMoTa.setMinimumSize(txaMoTaSize);
+        txaMoTa.setBackground(new Color(40, 40, 44));
+
+        b4.add(lblMota);
+        b4.add(txaMoTa);
+
+        b3.add(b4);
+
         b1.add(b2);
+        b1.add(b3);
 
         mainBox.add(searchBox);
         mainBox.add(Box.createVerticalStrut(20));

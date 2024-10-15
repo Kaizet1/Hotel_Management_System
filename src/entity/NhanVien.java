@@ -6,15 +6,15 @@ import java.util.Objects;
 public class NhanVien {
     private String maNV;
     private String hoTen;
-    private int chucVu;
-    private int soDT;
+    private String chucVu;
+    private String soDT;
     private String diaChi;
     private String email;
     private Date ngaySinh;
     private Date ngayVaoLam;
     private double luongCoBan;
     private double heSoLuong;
-    public NhanVien(String maNV, String hoTen, int chucVu, int soDT, String diaChi, String email, Date ngaySinh, Date ngayVaoLam, double luongCoBan, double heSoLuong) {
+    public NhanVien(String maNV, String hoTen, String chucVu, String soDT, String diaChi, String email, Date ngaySinh, Date ngayVaoLam, double luongCoBan, double heSoLuong) {
         this.maNV = maNV;
         this.hoTen = hoTen;
         this.chucVu = chucVu;
@@ -28,7 +28,7 @@ public class NhanVien {
     }
 
     public NhanVien(String maNV) {
-        this(maNV, "hoTen", 0, 0, "diaChi", "email", new Date(), new Date(), 0.0, 0.0);
+        this(maNV, "", "", "", "", "", new Date(), new Date(), 0.0, 0.0);
     }
     public String getMaNV() {
         return maNV;
@@ -45,19 +45,19 @@ public class NhanVien {
         this.hoTen = hoTen;
     }
 
-    public int getChucVu() {
+    public String getChucVu() {
         return chucVu;
     }
 
-    public void setChucVu(int chucVu) {
+    public void setChucVu(String chucVu) {
         this.chucVu = chucVu;
     }
 
-    public int getSoDT() {
+    public String getSoDT() {
         return soDT;
     }
 
-    public void setSoDT(int soDT) {
+    public void setSoDT(String soDT) {
         this.soDT = soDT;
     }
 

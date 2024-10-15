@@ -27,6 +27,7 @@ import customElements.SubMenuPanel;
 import form.LapHoaDon_FORM;
 import form.DatPhong_FORM;
 import form.TrangChu_FORM;
+import form.CapNhatPhong_FORM;
 
 import java.util.ArrayList;
 
@@ -255,16 +256,16 @@ public class GiaoDienChinh_GUI extends JFrame {
 		JPanel huyDatPhongPanel = new JPanel();
 		JPanel doiPhongPanel = new JPanel();
 		JPanel soDoPhongPanel = new JPanel();
-		JPanel danhSachPhongPanel = new JPanel();
-		JPanel lapHoaDoPanel = new LapHoaDon_FORM();
+		JPanel capNhatPhongPanel = new CapNhatPhong_FORM();
+		JPanel lapHoaDonPanel = new LapHoaDon_FORM();
 		// Thêm màn hình
 		center.add(trangChuPanel, "TrangChu");
 		center.add(datPhongPanel, "DatPhong");
 		center.add(huyDatPhongPanel, "HuyDatPhong");
 		center.add(doiPhongPanel, "DoiPhong");
 		center.add(soDoPhongPanel, "SoDoPhong");
-		center.add(danhSachPhongPanel, "danhSachPhong");
-		center.add(lapHoaDoPanel, "LapHoaDon");
+		center.add(capNhatPhongPanel, "CapNhatPhong");
+		center.add(lapHoaDonPanel, "LapHoaDon");
 		return center;
 	}
 

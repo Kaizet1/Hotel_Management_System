@@ -2,16 +2,14 @@ package manhinh;
 
 import java.awt.*;
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 
-import gui.CustomCellRenderer;
-import gui.CustomHeaderRenderer;
-import gui.FontManager;
-import gui.RoundedPanel;
+import customelement.CustomCellRenderer;
+import customelement.CustomHeaderRenderer;
+import customelement.FontManager;
+import customelement.RoundedPanel;
 
 public class DatPhong extends JPanel {
 	private JTextField txtNgayDat;

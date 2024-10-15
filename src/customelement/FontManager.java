@@ -1,4 +1,4 @@
-package gui;
+package customelement;
 
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;

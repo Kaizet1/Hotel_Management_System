@@ -1,4 +1,6 @@
-package gui;
+package customelement;
+
+import gui.GiaoDienChinh;
 
 import javax.swing.*;
 import java.awt.*;

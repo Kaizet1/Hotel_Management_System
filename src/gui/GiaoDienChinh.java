@@ -21,6 +21,9 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 
+import customelement.FontManager;
+import customelement.RoundedButton;
+import customelement.SubMenuPanel;
 import manhinh.LapHoaDon;
 import manhinh.DatPhong;
 import manhinh.TrangChu;

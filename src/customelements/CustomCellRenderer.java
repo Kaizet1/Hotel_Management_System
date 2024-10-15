@@ -1,4 +1,4 @@
-package customelement;
+package customelements;
 
 import java.awt.Component;
 

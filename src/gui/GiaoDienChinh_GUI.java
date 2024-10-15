@@ -21,16 +21,16 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 
-import customelement.FontManager;
-import customelement.RoundedButton;
-import customelement.SubMenuPanel;
-import manhinh.LapHoaDon;
-import manhinh.DatPhong;
-import manhinh.TrangChu;
+import customelements.FontManager;
+import customelements.RoundedButton;
+import customelements.SubMenuPanel;
+import form.LapHoaDon_FORM;
+import form.DatPhong_FORM;
+import form.TrangChu_FORM;
 
 import java.util.ArrayList;
 
-public class GiaoDienChinh extends JFrame {
+public class GiaoDienChinh_GUI extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel sidebar;
 	private JPanel centerPanel;
@@ -39,7 +39,7 @@ public class GiaoDienChinh extends JFrame {
 	public JLabel pageLabel;
 	public RoundedButton selectedButton;
 
-	public GiaoDienChinh() {
+	public GiaoDienChinh_GUI() {
 		dsSubMenuPanel = new ArrayList<SubMenuPanel>(10);
 		setTitle("Hệ thống quản lý khách sạn");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -250,13 +250,13 @@ public class GiaoDienChinh extends JFrame {
 		JPanel center = new JPanel(cardLayout);
 
 		// Các màn hình
-		JPanel trangChuPanel = new TrangChu();
-		JPanel datPhongPanel = new DatPhong();
+		JPanel trangChuPanel = new TrangChu_FORM();
+		JPanel datPhongPanel = new DatPhong_FORM();
 		JPanel huyDatPhongPanel = new JPanel();
 		JPanel doiPhongPanel = new JPanel();
 		JPanel soDoPhongPanel = new JPanel();
 		JPanel danhSachPhongPanel = new JPanel();
-		JPanel lapHoaDoPanel = new LapHoaDon();
+		JPanel lapHoaDoPanel = new LapHoaDon_FORM();
 		// Thêm màn hình
 		center.add(trangChuPanel, "TrangChu");
 		center.add(datPhongPanel, "DatPhong");
@@ -287,6 +287,6 @@ public class GiaoDienChinh extends JFrame {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		new GiaoDienChinh();
+		new GiaoDienChinh_GUI();
 	}
 }

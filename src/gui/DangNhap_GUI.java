@@ -1,8 +1,8 @@
 package gui;
 
-import customelement.BackgroundPanel;
-import customelement.FontManager;
-import customelement.RoundedPanel;
+import customelements.BackgroundPanel;
+import customelements.FontManager;
+import customelements.RoundedPanel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -29,7 +29,7 @@ import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
 
-public class DangNhap extends JFrame {
+public class DangNhap_GUI extends JFrame {
     private static final long serialVersionUID = 1L;
 
     private static final Color BACKGROUND_COLOR = new Color(16, 16, 20);
@@ -37,7 +37,7 @@ public class DangNhap extends JFrame {
     private static final Color BUTTON_COLOR_EXIT = new Color(151, 69, 35);
     private static final int MAX_WIDTH = 600;
     private static final int BUTTON_HEIGHT = 55;
-    public DangNhap() {
+    public DangNhap_GUI() {
         buildUI();
         setVisible(true);
     }
@@ -191,7 +191,7 @@ public class DangNhap extends JFrame {
 	                } catch (Exception ex) {
 	                    ex.printStackTrace();
 	                }
-	            	new GiaoDienChinh();
+	            	new GiaoDienChinh_GUI();
 	            	dispose();
 //				} catch (SQLException e1) {
 //					e1.printStackTrace();

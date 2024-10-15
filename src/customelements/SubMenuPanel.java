@@ -1,6 +1,6 @@
-package customelement;
+package customelements;
 
-import gui.GiaoDienChinh;
+import gui.GiaoDienChinh_GUI;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,7 +11,7 @@ public class SubMenuPanel extends JPanel {
     private static final long serialVersionUID = 1L;
     private RoundedButton selectedSubMenu = null;
 
-    public SubMenuPanel(String[][] subItems, CardLayout cardLayout, JPanel centerPanel, RoundedButton parentMenuButton, GiaoDienChinh parentFrame) {
+    public SubMenuPanel(String[][] subItems, CardLayout cardLayout, JPanel centerPanel, RoundedButton parentMenuButton, GiaoDienChinh_GUI parentFrame) {
         setOpaque(false);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         add(Box.createVerticalStrut(5));

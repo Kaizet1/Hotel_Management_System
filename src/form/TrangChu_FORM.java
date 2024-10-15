@@ -1,20 +1,33 @@
-package manhinh;
+package form;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 
-import customelement.CustomCellRenderer;
-import customelement.CustomHeaderRenderer;
-import customelement.FontManager;
-import customelement.RoundedPanel;
+import customelements.CustomCellRenderer;
+import customelements.CustomHeaderRenderer;
+import customelements.FontManager;
+import customelements.RoundedPanel;
 
-public class DatPhong extends JPanel {
-	private JTextField txtNgayDat;
+public class TrangChu_FORM extends JPanel {
+	private static final long serialVersionUID = 1L;
 	private int currentPage = 1;
-	private final int rowsPerPage = 5;
+	private final int rowsPerPage = 7;
 	DefaultTableModel tableModel;
 	Object[][] data = { { "DP001", "101", "Nguyen Van A", "2023-10-01", "2023-10-03", 2, 2000000 },
 			{ "DP002", "102", "Tran Thi B", "2023-10-02", "2023-10-04", 2, 2200000 },
@@ -25,61 +38,42 @@ public class DatPhong extends JPanel {
 			{ "DP007", "107", "Nguyen Van G", "2023-10-06", "2023-10-08", 2, 2100000 },
 			{ "DP008", "108", "Le Thi H", "2023-10-04", "2023-10-06", 2, 2300000 },
 			{ "DP009", "109", "Pham Van I", "2023-10-07", "2023-10-09", 2, 2400000 },
-			{ "DP010", "110", "Tran Thi J", "2023-10-08", "2023-10-11", 3, 3500000 },
+			{ "DP010", "110", "Tran Thi J", "2023-10-08", "2023-10-11", 3, 3500000 }, 
 			{ "DP008", "108", "Le Thi H", "2023-10-04", "2023-10-06", 2, 2300000 },
 			{ "DP009", "109", "Pham Van I", "2023-10-07", "2023-10-09", 2, 2400000 },
-			{ "DP010", "110", "Tran Thi J", "2023-10-08", "2023-10-11", 3, 3500000 }, };
-	private JLabel pageNumber;
-
-//	private static final long serialVersionUID = 1L;
-//	private JLabel lbl1, lbl2, lbl3, lbl4, lbl5, lbl6, 
-//		lbl7, lbl8, lbl9, lbl10, lbl11, lbl12;
-//	private JTextField tf1, tf2, tf3, tf4, 
-//		tf5 ,tf6, tf7, tf8, tf11;
-//	JComboBox tf10;
-//	JComboBox tf9;
-//	//private JLabel star;
-//	private DefaultTableModel tableModel;
-//	private JTable table;
-//	private JLabel star;
-	public DatPhong() {
-		setLayout(new BorderLayout());
+			{ "DP010", "110", "Tran Thi J", "2023-10-08", "2023-10-11", 3, 3500000 },
+			};
+	JLabel pageNumber;
+	public TrangChu_FORM() {
 		setBackground(new Color(16, 16, 20));
-		// north
+		setLayout(new BorderLayout());
+
+		RoundedPanel infoBox1 = createInfoBox(4, "PHÒNG ĐẾN TRONG NGÀY", new Color(10, 213, 157, 179));
+		RoundedPanel infoBox2 = createInfoBox(2, "PHÒNG ĐI TRONG NGÀY", new Color(255, 191, 91, 179));
+		RoundedPanel infoBox3 = createInfoBox(4, "PHÒNG CÓ KHÁCH", new Color(116, 185, 255, 179), "10%");
+		RoundedPanel infoBox4 = createInfoBox(6, "KHÁCH ĐANG Ở", new Color(255, 118, 117, 179));
+
+		Box infoBoxContainer = Box.createHorizontalBox();
+		infoBoxContainer.add(infoBox1);
+		infoBoxContainer.add(Box.createHorizontalStrut(14));
+		infoBoxContainer.add(infoBox2);
+		infoBoxContainer.add(Box.createHorizontalStrut(14));
+		infoBoxContainer.add(infoBox3);
+		infoBoxContainer.add(Box.createHorizontalStrut(14));
+		infoBoxContainer.add(infoBox4);
+
 		JPanel northPanel = new JPanel();
+		northPanel.setLayout(new BoxLayout(northPanel, BoxLayout.Y_AXIS));
 		northPanel.setOpaque(false);
-		northPanel.setBorder(BorderFactory.createEmptyBorder(50, 0, 0, 0));
-		JPanel form = new JPanel();
-		form.setPreferredSize(new Dimension(1400, 350));
-		form.setOpaque(false);
-		// BoxForm
-		Box boxForm1 = createFormBox("Ngày đặt", "");
-		Box boxForm2 = createFormBox("Ngày đến", "");
-		Box boxForm3 = createFormBox("Ngày đi", "");
-		Box boxForm4 = createFormBox("Tên khách hàng", "");
-		Box boxForm5 = createFormBox("Ngày sinh", "");
-		Box boxForm6 = createFormBox("Số điện thoại", "");
-		Box boxForm7 = createFormBox("Email", "");
-		Box boxForm8 = createFormBox("CCCD", "");
-		Box boxForm9 = createFormBox("Loại phòng", "");
-		Box boxForm10 = createFormBox("Số phòng", "");
-		Box boxForm11 = createFormBox("Tên phòng", "");
-		Box boxForm12 = createFormBox("Số khách", "");
-		form.add(boxForm1);
-		form.add(boxForm2);
-		form.add(boxForm3);
-		form.add(boxForm4);
-		form.add(boxForm5);
-		form.add(boxForm6);
-		form.add(boxForm7);
-		form.add(boxForm8);
-		form.add(boxForm9);
-		form.add(boxForm10);
-		form.add(boxForm11);
-		form.add(boxForm12);
-		northPanel.add(form);
-		// center
-		JLabel titleLabel = new JLabel("Lịch sử đặt phòng");
+		northPanel.add(Box.createVerticalStrut(35));
+		northPanel.add(infoBoxContainer);
+		northPanel.add(Box.createVerticalStrut(55));
+
+		JPanel centerPanel = new JPanel();
+		centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+		centerPanel.setOpaque(false);
+
+		JLabel titleLabel = new JLabel("Thống kê hôm nay");
 		titleLabel.setFont(FontManager.getManrope(Font.BOLD, 16));
 		titleLabel.setForeground(Color.white);
 
@@ -89,10 +83,10 @@ public class DatPhong extends JPanel {
 		titlePanel.setMaximumSize(new Dimension(1642, 50));
 		titlePanel.setOpaque(false);
 		titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.X_AXIS));
+
 		titlePanel.add(Box.createHorizontalStrut(15));
 		titlePanel.add(titleLabel);
 		titlePanel.add(Box.createHorizontalGlue());
-		
 
 		String[] tableHeaders = "Mã đặt phòng;Phòng;Tên khách;Ngày đến;Ngày đi;Số đêm;Doanh thu".split(";");
 		tableModel = new DefaultTableModel(tableHeaders, 0) {
@@ -125,8 +119,8 @@ public class DatPhong extends JPanel {
 		// Thiết lập JScrollPane
 		JScrollPane scroll = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_NEVER,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-		scroll.setBorder(null);
-		scroll.setPreferredSize(new Dimension(1642, 330));
+		scroll.setPreferredSize(new Dimension(1642, 335));
+		scroll.setBorder(BorderFactory.createEmptyBorder(9, 9, 9, 9));
 		scroll.getViewport().setOpaque(false);
 		scroll.setViewportBorder(null);
 		Dimension navButtonSize = new Dimension(35, 35);
@@ -168,52 +162,65 @@ public class DatPhong extends JPanel {
 		navPanel.add(prevButton);
 		navPanel.add(pagePanel);
 		navPanel.add(nextButton);
-		
-		JPanel centerPanel = new JPanel();
-		centerPanel.setOpaque(false);
+		JPanel doanhThuPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+		doanhThuPanel.setOpaque(false);
+		doanhThuPanel.setPreferredSize(new Dimension(0, 0));
 		centerPanel.add(titlePanel);
 		centerPanel.add(scroll);
 		centerPanel.add(navPanel);
+		centerPanel.add(doanhThuPanel);
+		JLabel tongDoanhThuLabel = new JLabel("Tổng doanh thu: 3.300.000 VND");
+		tongDoanhThuLabel.setFont(FontManager.getManrope(Font.BOLD, 16));
+		tongDoanhThuLabel.setForeground(Color.white);
+		tongDoanhThuLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 5));
 
-		JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-		southPanel.setOpaque(false);
-		JButton submitButton = createButton("Xác nhận", new Color(66, 99, 235));
-		JButton refreshButton = createButton("Làm mới", new Color(151, 69, 35));
-		southPanel.add(submitButton);
-		southPanel.add(refreshButton);
+		doanhThuPanel.add(tongDoanhThuLabel);
 		add(northPanel, BorderLayout.NORTH);
 		add(centerPanel, BorderLayout.CENTER);
-		add(southPanel, BorderLayout.SOUTH);
-		loadPage(1);
+
+		loadPage(currentPage);
 	}
 
-	private JButton createButton(String buttonLabel, Color buttonColor) {
-		JButton button = new JButton(buttonLabel);
-		button.setBackground(buttonColor);
-		button.setForeground(Color.white);
-		button.setPreferredSize(new Dimension(259, 45));
-		button.setFont(FontManager.getManrope(Font.PLAIN, 16));
-		return button;
+	private RoundedPanel createInfoBox(int number, String infoTitle, Color boxColor) {
+		return createInfoBox(number, infoTitle, boxColor, null);
 	}
 
-	private Box createFormBox(String label, String placeholder) {
-		Box b = Box.createVerticalBox();
-		b.setPreferredSize(new Dimension(331, 106));
-		JLabel lbl = new JLabel(label);
-		lbl.setFont(FontManager.getManrope(Font.PLAIN, 15));
-		lbl.setForeground(Color.WHITE);
-		lbl.setPreferredSize(new Dimension(259, 20));
-		lbl.setMaximumSize(new Dimension(259, 20));
-		lbl.setMinimumSize(new Dimension(259, 20));
-//		lbl.setAlignmentX(LEFT_ALIGNMENT);
-//		lbl.setBorder(BorderFactory.createLineBorder(Color.pink));
-		JTextField text = new JTextField(placeholder);
-		text.setBackground(new Color(40, 40, 44));
-		b.add(lbl);
-		b.add(Box.createVerticalStrut(6));
-		b.add(text);
-		b.setBorder(BorderFactory.createEmptyBorder(0, 36, 35, 36));
-		return b;
+	private RoundedPanel createInfoBox(int number, String infoTitle, Color boxColor, String percent) {
+		RoundedPanel infoBox = new RoundedPanel(10, 0, boxColor);
+		infoBox.setLayout(new BoxLayout(infoBox, BoxLayout.Y_AXIS));
+		JLabel numberLabel = new JLabel(String.valueOf(number));
+		JLabel titleLabel = new JLabel(infoTitle);
+		numberLabel.setForeground(Color.WHITE);
+		titleLabel.setForeground(Color.WHITE);
+		numberLabel.setFont(FontManager.getManrope(Font.BOLD, 64));
+		titleLabel.setFont(FontManager.getManrope(Font.BOLD, 24));
+		Box box1 = Box.createHorizontalBox();
+		Box box2 = Box.createHorizontalBox();
+		box1.add(Box.createHorizontalStrut(15));
+		box1.add(numberLabel);
+		box1.setAlignmentX(LEFT_ALIGNMENT);
+		box2.add(Box.createHorizontalStrut(15));
+		box2.add(titleLabel);
+		box2.setAlignmentX(LEFT_ALIGNMENT);
+
+		if (percent != null) {
+			JLabel percentLabel = new JLabel(percent);
+			percentLabel.setForeground(Color.WHITE);
+			percentLabel.setFont(FontManager.getManrope(Font.BOLD, 24));
+			box2.add(Box.createHorizontalGlue());
+			box2.add(percentLabel);
+			box2.add(Box.createHorizontalStrut(15));
+		}
+
+		infoBox.add(Box.createVerticalStrut(68));
+		infoBox.add(box1);
+		infoBox.add(Box.createVerticalStrut(5));
+		infoBox.add(box2);
+		infoBox.setOpaque(false);
+		infoBox.setPreferredSize(new Dimension(400, 200));
+		infoBox.setMinimumSize(new Dimension(400, 200));
+		infoBox.setMaximumSize(new Dimension(400, 200));
+		return infoBox;
 	}
 
 	private void loadPage(int page) {

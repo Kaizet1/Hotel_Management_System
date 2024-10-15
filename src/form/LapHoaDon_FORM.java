@@ -1,9 +1,9 @@
-package manhinh;
+package form;
 
-import customelement.CustomCellRenderer;
-import customelement.CustomHeaderRenderer;
-import customelement.FontManager;
-import customelement.RoundedPanel;
+import customelements.CustomCellRenderer;
+import customelements.CustomHeaderRenderer;
+import customelements.FontManager;
+import customelements.RoundedPanel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -34,7 +34,7 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 
 
-public class LapHoaDon extends JPanel implements ActionListener {
+public class LapHoaDon_FORM extends JPanel implements ActionListener {
     private static final long serialVersionUID = 1L;
     private JTextField txttimkiem;
     private DefaultTableModel tableModel;
@@ -62,7 +62,7 @@ public class LapHoaDon extends JPanel implements ActionListener {
     private Font f1;
 
 
-    public LapHoaDon() {
+    public LapHoaDon_FORM() {
         setBackground(new Color(16, 16, 20));
         Box b = Box.createVerticalBox();
         b.add(Box.createVerticalStrut(10));

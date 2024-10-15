@@ -1,15 +1,11 @@
 package main;
 
 import java.awt.Color;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import javax.swing.UIManager;
 
-import gui.DangNhap;
+import gui.DangNhap_GUI;
 
 public class Start {
 	public static void main(String[] args) throws SQLException {
@@ -20,6 +16,6 @@ public class Start {
        } catch (Exception e) {
            e.printStackTrace();
        }
-		new DangNhap();
+		new DangNhap_GUI();
 	}
 }

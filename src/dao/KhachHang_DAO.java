@@ -6,8 +6,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import connectDB.ConnectDB;
 import entity.KhachHang;
+
 import java.util.*;
 import java.sql.PreparedStatement;
+
 
 public class KhachHang_DAO {
  private ArrayList<KhachHang> dsKhachHang;

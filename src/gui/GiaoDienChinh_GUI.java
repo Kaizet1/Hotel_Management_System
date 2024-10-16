@@ -114,7 +114,7 @@ public class GiaoDienChinh_GUI extends JFrame {
 				{
 						{ "Lập hóa đơn", "LapHoaDon" },
 						{ "Tìm kiếm hóa đơn", "TimKiemHoaDon" },
-						{ "Cập nhật hóa đơn", "CapNhatHoaDon" },
+//						{ "Cập nhật hóa đơn", "CapNhatHoaDon" },
 				}, // Hóa đơn
 				{
 						{ "Thống kê chung", "ThongKeChung" },

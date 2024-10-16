@@ -18,9 +18,14 @@ public class RoundedButton extends JButton {
         setContentAreaFilled(false); // Không tô màu nền mặc định
         setFocusPainted(false); // Không tô màu khi có focus
         setBorderPainted(false); // Không tô viền mặc định
-//        setOpaque(false);
     }
-
+    public RoundedButton(String text, int radius) {
+        super(text);
+        this.radius = radius;
+        setContentAreaFilled(false);
+        setFocusPainted(false);
+        setBorderPainted(false);
+    }
     @Override
     protected void paintComponent(Graphics g) {
         

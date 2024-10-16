@@ -1,16 +1,20 @@
 package form;
 
-import customElements.FontManager;
-import customElements.RoundedButton;
+import customElements.*;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 
 public class CapNhatPhong_FORM extends JPanel {
+    private DefaultTableModel tableModel;
+    private JTable table;
 
     public CapNhatPhong_FORM() {
         setBackground(new Color(16, 16, 20));
@@ -71,42 +75,49 @@ public class CapNhatPhong_FORM extends JPanel {
         b2.add(createFormBox("Loại phòng", ""));
         b2.add(createFormBox("Giá phòng", ""));
         b2.add(createFormBox("Số người", ""));
-//        b2.add(Box.createHorizontalGlue());
-//        Dimension b2Size = new Dimension(b2.getPreferredSize().width + 300, b2.getPreferredSize().height);
-//        b2.setPreferredSize(b2Size);
-//        b2.setMaximumSize(b2Size);
-//        b2.setMinimumSize(b2Size);
-//        b2.setAlignmentX(LEFT_ALIGNMENT/);
-        b2.add(Box.createHorizontalStrut(50));
+        Dimension b2Size = new Dimension(1642, 100);
+        b2.setPreferredSize(b2Size);
+        b2.setMinimumSize(b2Size);
+        b2.setMaximumSize(b2Size);
 
-        b2.setBorder(BorderFactory.createLineBorder(Color.pink));
+
         Box b3 = Box.createHorizontalBox();
         Box b4 = Box.createVerticalBox();
         JLabel lblMota = new JLabel("Mô tả");
         lblMota.setFont(FontManager.getManrope(Font.PLAIN, 15));
         lblMota.setForeground(Color.WHITE);
-        lblMota.setPreferredSize(new Dimension(259, 20));
-        lblMota.setMaximumSize(new Dimension(259, 20));
-        lblMota.setMinimumSize(new Dimension(259, 20));
+        Dimension lblMotaSize = new Dimension(1245, 20);
+
+        Box lblMotaBox = Box.createHorizontalBox();
+        lblMotaBox.setOpaque(false);
+        lblMotaBox.setPreferredSize(lblMotaSize);
+        lblMotaBox.setMaximumSize(lblMotaSize);
+        lblMotaBox.setMinimumSize(lblMotaSize);
+
         JTextArea txaMoTa = new JTextArea();
-        Dimension txaMoTaSize = new Dimension(1252, 220);
+        Dimension txaMoTaSize = new Dimension(1250, 220);
         txaMoTa.setPreferredSize(txaMoTaSize);
         txaMoTa.setMaximumSize(txaMoTaSize);
         txaMoTa.setMinimumSize(txaMoTaSize);
         txaMoTa.setBackground(new Color(40, 40, 44));
 
-        b4.add(lblMota);
+        lblMotaBox.add(lblMota);
+        b4.add(lblMotaBox);
         b4.add(txaMoTa);
         Box b5 = Box.createVerticalBox();
-        JPanel btnThem = createHandleButton("Thêm");
-        JPanel btnSua = createHandleButton("Sửa");
-        JPanel btnXoa = createHandleButton("Xóa");
-        JPanel btnLamMoi = createHandleButton("Làm mới");
+
+        RoundedButton btnThem = createHandleButton("Thêm");
+        RoundedButton btnSua = createHandleButton("Sửa");
+        RoundedButton btnXoa = createHandleButton("Xóa");
+        RoundedButton btnLamMoi = createHandleButton("Làm mới");
 
         b5.add(Box.createVerticalStrut(20));
         b5.add(btnThem);
+        b5.add(Box.createVerticalStrut(20));
         b5.add(btnSua);
+        b5.add(Box.createVerticalStrut(20));
         b5.add(btnXoa);
+        b5.add(Box.createVerticalStrut(20));
         b5.add(btnLamMoi);
 
 
@@ -116,34 +127,105 @@ public class CapNhatPhong_FORM extends JPanel {
 
         b1.add(b2);
         b1.add(b3);
-        searchBox.setBorder(BorderFactory.createLineBorder(Color.pink));
+
+
+        // Tieu de
+        JLabel titleLabel = new JLabel("Danh sách phòng");
+        titleLabel.setFont(FontManager.getManrope(Font.BOLD, 16));
+        titleLabel.setForeground(Color.white);
+
+        RoundedPanel titlePanel = new RoundedPanel(10, 0, new Color(27, 112, 213));
+        titlePanel.setPreferredSize(new Dimension(1642, 50));
+        titlePanel.setMinimumSize(new Dimension(1642, 50));
+        titlePanel.setMaximumSize(new Dimension(1642, 50));
+        titlePanel.setOpaque(false);
+        titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.X_AXIS));
+
+        titlePanel.add(Box.createHorizontalStrut(15));
+        titlePanel.add(titleLabel);
+        titlePanel.add(Box.createHorizontalGlue());
+
+
+        // Tạo bang
+        Box b6 = Box.createHorizontalBox();
+        String[] colName = {"Mã đặt phòng", "Loại phòng", "Tên phòng", "Phòng", "Trạng thái", "Tên khách", "Ngày đến", "Ngày đi", "Số đêm"};
+        Object[][] data = {
+                {"PDP2024-001", "STAN", "Phòng đơn", "A001", "Đang sử dụng", "Cao Thành Đông", "25/09/2024", "27/09/2024", 2},
+                {"PDP2024-002", "SUIT", "Phòng đôi", "B002", "Đang sử dụng", "Trần Văn Hậu", "25/09/2024", "26/09/2024", 1},
+                {"PDP2024-003", "DELU", "Phòng gia đình", "C004", "Đã đặt trước", "Trần Thế Gian", "24/09/2024", "25/09/2024", 1},
+                {"PDP2024-004", "SUPE", "Phòng VIP", "D002", "Đã đặt trước", "Huỳnh Kim Đảm", "26/09/2024", "28/09/2024", 2},
+
+                {"PDP2024-001", "STAN", "Phòng đơn", "A001", "Đang sử dụng", "Cao Thành Đông", "25/09/2024", "27/09/2024", 2},
+                {"PDP2024-002", "SUIT", "Phòng đôi", "B002", "Đang sử dụng", "Trần Văn Hậu", "25/09/2024", "26/09/2024", 1},
+                {"PDP2024-003", "DELU", "Phòng gia đình", "C004", "Đã đặt trước", "Trần Thế Gian", "24/09/2024", "25/09/2024", 1},
+                {"PDP2024-004", "SUPE", "Phòng VIP", "D002", "Đã đặt trước", "Huỳnh Kim Đảm", "26/09/2024", "28/09/2024", 2},
+        };
+        tableModel = new DefaultTableModel(data, colName);
+        JScrollPane scroll;
+        b6.add(scroll = new JScrollPane(table = new JTable(tableModel), JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
+        table.setBackground(new Color(24, 24, 28));
+        table.setForeground(Color.WHITE);
+        table.setFont(FontManager.getManrope(Font.PLAIN, 16));
+        table.setRowHeight(55);
+
+        JTableHeader header = table.getTableHeader();
+        header.setDefaultRenderer(new CustomHeaderRenderer(new Color(38, 38, 42), Color.white));
+        header.setPreferredSize(new Dimension(header.getPreferredSize().width, 55));
+        header.setReorderingAllowed(false);
+
+        CustomCellRenderer cellRenderer = new CustomCellRenderer();
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            TableColumn column = table.getColumnModel().getColumn(i);
+            column.setCellRenderer(cellRenderer);
+        }
+
+        scroll.setBounds(30, 380, 1642, 200);
+        scroll.setBorder(null);
+        scroll.getViewport().setOpaque(false);
+        scroll.setViewportBorder(null);
+
+//        mainBox.add(Box.createVerticalStrut(300));
+        
         mainBox.add(searchBox);
         mainBox.add(Box.createVerticalStrut(20));
         mainBox.add(b1);
+        mainBox.add(Box.createVerticalStrut(20));
+        mainBox.add(titlePanel);
+        mainBox.add(Box.createVerticalStrut(5));
+        mainBox.add(b6);
         add(mainBox);
     }
 
     private Box createFormBox(String label, String placeholder) {
         Box b = Box.createVerticalBox();
-        b.setPreferredSize(new Dimension(295, 106));
+        Dimension boxSize = new Dimension(332, 110);
+        b.setPreferredSize(boxSize);
+        b.setMaximumSize(boxSize);
+        b.setMaximumSize(boxSize);
+
         JLabel lbl = new JLabel(label);
         lbl.setFont(FontManager.getManrope(Font.PLAIN, 15));
         lbl.setForeground(Color.WHITE);
-        lbl.setPreferredSize(new Dimension(259, 20));
-        lbl.setMaximumSize(new Dimension(259, 20));
-        lbl.setMinimumSize(new Dimension(259, 20));
-        JTextField text = new JTextField(placeholder);
-        text.setBackground(new Color(40, 40, 44));
-        b.add(lbl);
+
+        Box lblBox = Box.createHorizontalBox();
+        lblBox.setPreferredSize(new Dimension(255, 20));
+        lblBox.setMaximumSize(new Dimension(255, 20));
+        lblBox.setMinimumSize(new Dimension(255, 20));
+        lblBox.add(lbl);
+        JTextField txt = new JTextField(placeholder);
+        txt.setBackground(new Color(40, 40, 44));
+        Dimension txtFieldSize = new Dimension(260, 45);
+        txt.setPreferredSize(txtFieldSize);
+        txt.setMaximumSize(txtFieldSize);
+        txt.setMinimumSize(txtFieldSize);
+        b.add(lblBox);
         b.add(Box.createVerticalStrut(6));
-        b.add(text);
+        b.add(txt);
         b.setBorder(BorderFactory.createEmptyBorder(0, 0 , 35, 72));
         return b;
     }
 
-    private JPanel createHandleButton(String buttonLabel) {
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setOpaque(false);
+    private RoundedButton createHandleButton(String buttonLabel) {
         RoundedButton button = new RoundedButton(buttonLabel, 0);
         Dimension buttonSize = new Dimension(259, 45);
         button.setPreferredSize(buttonSize);
@@ -151,10 +233,10 @@ public class CapNhatPhong_FORM extends JPanel {
         button.setMinimumSize(buttonSize);
         button.setBackground(new Color(80, 80, 88));
         button.setForeground(Color.white);
+        button.setFont(FontManager.getManrope(Font.PLAIN, 16));
         button.setContentAreaFilled(false);
         button.setFocusPainted(false);
         button.setBorderPainted(false);
-        buttonPanel.add(button);
-        return buttonPanel;
+        return button;
     }
 }

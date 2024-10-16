@@ -18,7 +18,6 @@ public Phong(String maPhong, String tenPhong, double giaPhong, String loaiPhong,
     this.moTa = moTa;
     this.soNguoi = soNguoi;
 }
-
 public Phong(String maPhong) {
     this(maPhong, "tenPhong", 0.0, "loaiPhong", "trangThai", "moTa", 0);
 }

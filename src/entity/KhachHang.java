@@ -7,7 +7,7 @@ public class KhachHang {
     private String sdt;
     private String email;
     private String cCCD;
-
+    //
     public String getMaKH() {
         return maKH;
     }

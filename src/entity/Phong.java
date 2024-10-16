@@ -22,7 +22,8 @@ public Phong(String maPhong, String tenPhong, double giaPhong, String loaiPhong,
 public Phong(String maPhong) {
     this(maPhong, "tenPhong", 0.0, "loaiPhong", "trangThai", "moTa", 0);
 }
-
+public Phong (){
+}
     public String getMaPhong() {
         return maPhong;
     }

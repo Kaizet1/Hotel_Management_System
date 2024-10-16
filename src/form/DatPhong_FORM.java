@@ -205,8 +205,6 @@ public class DatPhong_FORM extends JPanel {
 		lbl.setPreferredSize(new Dimension(259, 20));
 		lbl.setMaximumSize(new Dimension(259, 20));
 		lbl.setMinimumSize(new Dimension(259, 20));
-//		lbl.setAlignmentX(LEFT_ALIGNMENT);
-//		lbl.setBorder(BorderFactory.createLineBorder(Color.pink));
 		JTextField text = new JTextField(placeholder);
 		text.setBackground(new Color(40, 40, 44));
 		b.add(lbl);

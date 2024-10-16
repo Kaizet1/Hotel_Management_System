@@ -1,6 +1,7 @@
 package form;
 
 import customElements.FontManager;
+import customElements.RoundedButton;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -70,18 +71,61 @@ public class CapNhatPhong_FORM extends JPanel {
         b2.add(createFormBox("Loại phòng", ""));
         b2.add(createFormBox("Giá phòng", ""));
         b2.add(createFormBox("Số người", ""));
+//        b2.add(Box.createHorizontalGlue());
+//        Dimension b2Size = new Dimension(b2.getPreferredSize().width + 300, b2.getPreferredSize().height);
+//        b2.setPreferredSize(b2Size);
+//        b2.setMaximumSize(b2Size);
+//        b2.setMinimumSize(b2Size);
+//        b2.setAlignmentX(LEFT_ALIGNMENT/);
+        b2.add(Box.createHorizontalStrut(50));
+
+        b2.setBorder(BorderFactory.createLineBorder(Color.pink));
+        Box b3 = Box.createHorizontalBox();
+        Box b4 = Box.createVerticalBox();
+        JLabel lblMota = new JLabel("Mô tả");
+        lblMota.setFont(FontManager.getManrope(Font.PLAIN, 15));
+        lblMota.setForeground(Color.WHITE);
+        lblMota.setPreferredSize(new Dimension(259, 20));
+        lblMota.setMaximumSize(new Dimension(259, 20));
+        lblMota.setMinimumSize(new Dimension(259, 20));
+        JTextArea txaMoTa = new JTextArea();
+        Dimension txaMoTaSize = new Dimension(1252, 220);
+        txaMoTa.setPreferredSize(txaMoTaSize);
+        txaMoTa.setMaximumSize(txaMoTaSize);
+        txaMoTa.setMinimumSize(txaMoTaSize);
+        txaMoTa.setBackground(new Color(40, 40, 44));
+
+        b4.add(lblMota);
+        b4.add(txaMoTa);
+        Box b5 = Box.createVerticalBox();
+        JPanel btnThem = createHandleButton("Thêm");
+        JPanel btnSua = createHandleButton("Sửa");
+        JPanel btnXoa = createHandleButton("Xóa");
+        JPanel btnLamMoi = createHandleButton("Làm mới");
+
+        b5.add(Box.createVerticalStrut(20));
+        b5.add(btnThem);
+        b5.add(btnSua);
+        b5.add(btnXoa);
+        b5.add(btnLamMoi);
+
+
+        b3.add(b4);
+        b3.add(Box.createHorizontalStrut(80));
+        b3.add(b5);
 
         b1.add(b2);
-
+        b1.add(b3);
+        searchBox.setBorder(BorderFactory.createLineBorder(Color.pink));
         mainBox.add(searchBox);
         mainBox.add(Box.createVerticalStrut(20));
         mainBox.add(b1);
-
         add(mainBox);
     }
+
     private Box createFormBox(String label, String placeholder) {
         Box b = Box.createVerticalBox();
-        b.setPreferredSize(new Dimension(331, 106));
+        b.setPreferredSize(new Dimension(295, 106));
         JLabel lbl = new JLabel(label);
         lbl.setFont(FontManager.getManrope(Font.PLAIN, 15));
         lbl.setForeground(Color.WHITE);
@@ -93,8 +137,24 @@ public class CapNhatPhong_FORM extends JPanel {
         b.add(lbl);
         b.add(Box.createVerticalStrut(6));
         b.add(text);
-        b.setBorder(BorderFactory.createEmptyBorder(0, 36, 35, 36));
+        b.setBorder(BorderFactory.createEmptyBorder(0, 0 , 35, 72));
         return b;
     }
 
+    private JPanel createHandleButton(String buttonLabel) {
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setOpaque(false);
+        RoundedButton button = new RoundedButton(buttonLabel, 0);
+        Dimension buttonSize = new Dimension(259, 45);
+        button.setPreferredSize(buttonSize);
+        button.setMaximumSize(buttonSize);
+        button.setMinimumSize(buttonSize);
+        button.setBackground(new Color(80, 80, 88));
+        button.setForeground(Color.white);
+        button.setContentAreaFilled(false);
+        button.setFocusPainted(false);
+        button.setBorderPainted(false);
+        buttonPanel.add(button);
+        return buttonPanel;
+    }
 }

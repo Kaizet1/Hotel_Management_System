@@ -19,32 +19,25 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 
+import connectDB.ConnectDB;
 import customElements.CustomCellRenderer;
 import customElements.CustomHeaderRenderer;
 import customElements.FontManager;
 import customElements.RoundedPanel;
 
+import java.sql.*;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 public class TrangChu_FORM extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private int currentPage = 1;
 	private final int rowsPerPage = 7;
 	DefaultTableModel tableModel;
-	Object[][] data = { { "DP001", "101", "Nguyen Van A", "2023-10-01", "2023-10-03", 2, 2000000 },
-			{ "DP002", "102", "Tran Thi B", "2023-10-02", "2023-10-04", 2, 2200000 },
-			{ "DP003", "103", "Le Van C", "2023-10-01", "2023-10-02", 1, 1100000 },
-			{ "DP004", "104", "Pham Thi D", "2023-10-03", "2023-10-06", 3, 3300000 },
-			{ "DP005", "105", "Doan Van E", "2023-10-05", "2023-10-07", 2, 2000000 },
-			{ "DP006", "106", "Hoang Thi F", "2023-10-01", "2023-10-05", 4, 4000000 },
-			{ "DP007", "107", "Nguyen Van G", "2023-10-06", "2023-10-08", 2, 2100000 },
-			{ "DP008", "108", "Le Thi H", "2023-10-04", "2023-10-06", 2, 2300000 },
-			{ "DP009", "109", "Pham Van I", "2023-10-07", "2023-10-09", 2, 2400000 },
-			{ "DP010", "110", "Tran Thi J", "2023-10-08", "2023-10-11", 3, 3500000 }, 
-			{ "DP008", "108", "Le Thi H", "2023-10-04", "2023-10-06", 2, 2300000 },
-			{ "DP009", "109", "Pham Van I", "2023-10-07", "2023-10-09", 2, 2400000 },
-			{ "DP010", "110", "Tran Thi J", "2023-10-08", "2023-10-11", 3, 3500000 },
-			};
 	JLabel pageNumber;
+	private ArrayList<Object[]> data;
 	public TrangChu_FORM() {
+		data = new ArrayList<>();
 		setBackground(new Color(16, 16, 20));
 		setLayout(new BorderLayout());
 
@@ -88,7 +81,7 @@ public class TrangChu_FORM extends JPanel {
 		titlePanel.add(titleLabel);
 		titlePanel.add(Box.createHorizontalGlue());
 
-		String[] tableHeaders = "Mã đặt phòng;Phòng;Tên khách;Ngày đến;Ngày đi;Số đêm;Doanh thu".split(";");
+		String[] tableHeaders = "Mã đặt phòng;Phòng;Tên khách;Ngày đến;Ngày đi;Thời gian;Doanh thu".split(";");
 		tableModel = new DefaultTableModel(tableHeaders, 0) {
 			private static final long serialVersionUID = 1L;
 
@@ -178,6 +171,7 @@ public class TrangChu_FORM extends JPanel {
 		add(northPanel, BorderLayout.NORTH);
 		add(centerPanel, BorderLayout.CENTER);
 
+		loadListThongKeHomNay();
 		loadPage(currentPage);
 	}
 
@@ -227,13 +221,49 @@ public class TrangChu_FORM extends JPanel {
 		pageNumber.setText(String.valueOf(currentPage));
 		tableModel.setRowCount(0);
 		int start = (page - 1) * rowsPerPage;
-		int end = Math.min(start + rowsPerPage, data.length);
+		int end = Math.min(start + rowsPerPage, data.size());
 		for (int i = start; i < end; i++) {
-			tableModel.addRow(data[i]);
+			tableModel.addRow(data.get(i));
 		}
 	}
 
 	private int getTotalPages() {
-		return (int) Math.ceil((double) data.length / rowsPerPage);
+		return (int) Math.ceil((double) data.size() / rowsPerPage);
+	}
+
+	private void loadListThongKeHomNay() {
+		Connection con = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			// Kết nối đến cơ sở dữ liệu
+			con = ConnectDB.getInstance().getConnection();
+			String sql = "SELECT * FROM PhieuDatPhong pdp " +
+					"JOIN ChiTietPhieuDatPhong ctpdp ON pdp.maPDP = ctpdp.maPDP " +
+					"JOIN KhachHang kh ON pdp.maKH = kh.maKH";
+			stmt = con.createStatement();
+			rs = stmt.executeQuery(sql);
+			while (rs.next()) {
+				String maPDP = rs.getString("maPDP");
+				String maPhong = rs.getString("maPhong");
+				String hoTen = rs.getString("hoTen");
+
+				// Lấy ngày từ ResultSet và chuyển sang LocalDate
+				Date ngayDenDate = rs.getDate("ngayNhanPhong");
+				Date ngayDiDate = rs.getDate("ngayTraPhongDuKien");
+
+				// Chuyển đổi Date thành LocalDate
+				LocalDate ngayDen = ngayDenDate.toLocalDate();
+				LocalDate ngayDi = ngayDiDate.toLocalDate();
+
+				// Tính số ngày
+				long soNgay = ChronoUnit.DAYS.between(ngayDen, ngayDi);
+
+				Object[] rowData = {maPDP, maPhong, hoTen, ngayDen, ngayDi, soNgay, 0};
+				data.add(rowData);  // Thêm vào ArrayList
+			}
+		} catch (SQLException e){
+			e.printStackTrace();
+		}
 	}
 }

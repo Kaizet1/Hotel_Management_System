@@ -1,27 +1,28 @@
 package entity;
 
 public class Phong {
-private String maPhong;
-private String tenPhong;
-private double giaPhong;
-private String loaiPhong;
-private String trangThai;
-private String moTa;
-private int soNguoi;
-public Phong(String maPhong, String tenPhong, double giaPhong, String loaiPhong, String trangThai, String moTa,
-        int soNguoi) {
-    this.maPhong = maPhong;
-    this.tenPhong = tenPhong;
-    this.giaPhong = giaPhong;
-    this.loaiPhong = loaiPhong;
-    this.trangThai = trangThai;
-    this.moTa = moTa;
-    this.soNguoi = soNguoi;
-}
+    private String maPhong;
+    private String tenPhong;
+    private double giaPhong;
+    private String loaiPhong;
+    private int trangThai;
+    private String moTa;
+    private int soNguoi;
 
-public Phong(String maPhong) {
-    this(maPhong, "tenPhong", 0.0, "loaiPhong", "trangThai", "moTa", 0);
-}
+    public Phong(String maPhong, String tenPhong, double giaPhong, String loaiPhong, int trangThai, String moTa,
+                 int soNguoi) {
+        this.maPhong = maPhong;
+        this.tenPhong = tenPhong;
+        this.giaPhong = giaPhong;
+        this.loaiPhong = loaiPhong;
+        this.trangThai = trangThai;
+        this.moTa = moTa;
+        this.soNguoi = soNguoi;
+    }
+
+    public Phong(String maPhong) {
+        this(maPhong, "tenPhong", 0.0, "loaiPhong", 0, "moTa", 0);
+    }
 
     public String getMaPhong() {
         return maPhong;
@@ -56,10 +57,27 @@ public Phong(String maPhong) {
     }
 
     public String getTrangThai() {
-        return trangThai;
+        String trangThaiStr = "";
+        switch (trangThai) {
+            case 0:
+                trangThaiStr = "Còn trống";
+                break;
+            case 1:
+                trangThaiStr = "Đã đặt trước";
+                break;
+            case 2:
+                trangThaiStr = "Đang sử dụng";
+                break;
+            case 3:
+                trangThaiStr = "Đang sửa chữa";
+                break;
+            default:
+                break;
+        }
+        return trangThaiStr;
     }
 
-    public void setTrangThai(String trangThai) {
+    public void setTrangThai(int trangThai) {
         this.trangThai = trangThai;
     }
 
@@ -78,6 +96,7 @@ public Phong(String maPhong) {
     public void setSoNguoi(int soNguoi) {
         this.soNguoi = soNguoi;
     }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -85,7 +104,7 @@ public Phong(String maPhong) {
         result = prime * result + ((maPhong == null) ? 0 : maPhong.hashCode());
         return result;
     }
-    
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -103,5 +122,5 @@ public Phong(String maPhong) {
         return true;
     }
 
-    
+
 }

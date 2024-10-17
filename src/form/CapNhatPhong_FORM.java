@@ -1,6 +1,8 @@
 package form;
 
 import customElements.*;
+import dao.Phong_DAO;
+import entity.Phong;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -9,15 +11,18 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import java.awt.*;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
+import java.awt.event.*;
+import java.util.ArrayList;
 
-public class CapNhatPhong_FORM extends JPanel {
+public class CapNhatPhong_FORM extends JPanel implements ActionListener {
     private DefaultTableModel tableModel;
     private JTable table;
-
+    private Phong_DAO phongDAO;
+    private JTextField txtTenPhong, txtLoaiPhong, txtGiaPhong, txtSoNguoi;
+    private JComboBox<String> cmbTrangThai;
     public CapNhatPhong_FORM() {
         setBackground(new Color(16, 16, 20));
+        phongDAO = new Phong_DAO();
         Box mainBox = Box.createVerticalBox();
         mainBox.add(Box.createVerticalStrut(10));
         // Tim kiem
@@ -71,10 +76,13 @@ public class CapNhatPhong_FORM extends JPanel {
         // Form
         Box b1 = Box.createVerticalBox();
         Box b2 = Box.createHorizontalBox();
-        b2.add(createFormBox("Tên phòng", ""));
-        b2.add(createFormBox("Loại phòng", ""));
-        b2.add(createFormBox("Giá phòng", ""));
-        b2.add(createFormBox("Số người", ""));
+        b2.add(createFormBox("Tên phòng", txtTenPhong = new JTextField()));
+        b2.add(createFormBox("Loại phòng", txtLoaiPhong = new JTextField()));
+        b2.add(createFormBox("Giá phòng", txtGiaPhong = new JTextField()));
+        b2.add(createFormBox("Số người", txtSoNguoi = new JTextField()));
+
+        String[] trangThaiOptions = {"Còn trống", "Đã đặt trước", "Đang sử dụng", "Đang sửa chữa"};
+        b2.add(createFormBox("Trạng thái", cmbTrangThai = new JComboBox<>(trangThaiOptions)));
         Dimension b2Size = new Dimension(1642, 100);
         b2.setPreferredSize(b2Size);
         b2.setMinimumSize(b2Size);
@@ -100,6 +108,9 @@ public class CapNhatPhong_FORM extends JPanel {
         txaMoTa.setMaximumSize(txaMoTaSize);
         txaMoTa.setMinimumSize(txaMoTaSize);
         txaMoTa.setBackground(new Color(40, 40, 44));
+        txaMoTa.setForeground(Color.white);
+        txaMoTa.setFont(FontManager.getManrope(Font.PLAIN, 14));
+        txaMoTa.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 0));
 
         lblMotaBox.add(lblMota);
         b4.add(lblMotaBox);
@@ -148,19 +159,15 @@ public class CapNhatPhong_FORM extends JPanel {
 
         // Tạo bang
         Box b6 = Box.createHorizontalBox();
-        String[] colName = {"Mã đặt phòng", "Loại phòng", "Tên phòng", "Phòng", "Trạng thái", "Tên khách", "Ngày đến", "Ngày đi", "Số đêm"};
-        Object[][] data = {
-                {"PDP2024-001", "STAN", "Phòng đơn", "A001", "Đang sử dụng", "Cao Thành Đông", "25/09/2024", "27/09/2024", 2},
-                {"PDP2024-002", "SUIT", "Phòng đôi", "B002", "Đang sử dụng", "Trần Văn Hậu", "25/09/2024", "26/09/2024", 1},
-                {"PDP2024-003", "DELU", "Phòng gia đình", "C004", "Đã đặt trước", "Trần Thế Gian", "24/09/2024", "25/09/2024", 1},
-                {"PDP2024-004", "SUPE", "Phòng VIP", "D002", "Đã đặt trước", "Huỳnh Kim Đảm", "26/09/2024", "28/09/2024", 2},
+        String[] colName = {"Mã phòng", "Tên phòng", "Loại phòng", "Giá phòng", "Số người", "Trạng thái"};
+        tableModel = new DefaultTableModel(colName, 0) {
+            private static final long serialVersionUID = 1L;
 
-                {"PDP2024-001", "STAN", "Phòng đơn", "A001", "Đang sử dụng", "Cao Thành Đông", "25/09/2024", "27/09/2024", 2},
-                {"PDP2024-002", "SUIT", "Phòng đôi", "B002", "Đang sử dụng", "Trần Văn Hậu", "25/09/2024", "26/09/2024", 1},
-                {"PDP2024-003", "DELU", "Phòng gia đình", "C004", "Đã đặt trước", "Trần Thế Gian", "24/09/2024", "25/09/2024", 1},
-                {"PDP2024-004", "SUPE", "Phòng VIP", "D002", "Đã đặt trước", "Huỳnh Kim Đảm", "26/09/2024", "28/09/2024", 2},
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
         };
-        tableModel = new DefaultTableModel(data, colName);
         JScrollPane scroll;
         b6.add(scroll = new JScrollPane(table = new JTable(tableModel), JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED));
         table.setBackground(new Color(24, 24, 28));
@@ -184,7 +191,6 @@ public class CapNhatPhong_FORM extends JPanel {
         scroll.getViewport().setOpaque(false);
         scroll.setViewportBorder(null);
 
-//        mainBox.add(Box.createVerticalStrut(300));
         
         mainBox.add(searchBox);
         mainBox.add(Box.createVerticalStrut(20));
@@ -194,9 +200,10 @@ public class CapNhatPhong_FORM extends JPanel {
         mainBox.add(Box.createVerticalStrut(5));
         mainBox.add(b6);
         add(mainBox);
-    }
 
-    private Box createFormBox(String label, String placeholder) {
+        loadTableData();
+    }
+    private Box createFormBox(String label, JTextField txt) {
         Box b = Box.createVerticalBox();
         Dimension boxSize = new Dimension(332, 110);
         b.setPreferredSize(boxSize);
@@ -212,31 +219,133 @@ public class CapNhatPhong_FORM extends JPanel {
         lblBox.setMaximumSize(new Dimension(255, 20));
         lblBox.setMinimumSize(new Dimension(255, 20));
         lblBox.add(lbl);
-        JTextField txt = new JTextField(placeholder);
+
         txt.setBackground(new Color(40, 40, 44));
         Dimension txtFieldSize = new Dimension(260, 45);
         txt.setPreferredSize(txtFieldSize);
         txt.setMaximumSize(txtFieldSize);
         txt.setMinimumSize(txtFieldSize);
+        txt.setForeground(Color.white);
+        txt.setFont(FontManager.getManrope(Font.PLAIN, 14));
+        txt.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+
         b.add(lblBox);
         b.add(Box.createVerticalStrut(6));
         b.add(txt);
-        b.setBorder(BorderFactory.createEmptyBorder(0, 0 , 35, 72));
+        b.setBorder(BorderFactory.createEmptyBorder(0, 0, 35, 72));
+
+        return b;
+    }
+
+    private Box createFormBox(String label, JComboBox<String> cmb) {
+        Box b = Box.createVerticalBox();
+        Dimension boxSize = new Dimension(332, 110);
+        b.setPreferredSize(boxSize);
+        b.setMaximumSize(boxSize);
+        b.setMaximumSize(boxSize);
+
+        JLabel lbl = new JLabel(label);
+        lbl.setFont(FontManager.getManrope(Font.PLAIN, 15));
+        lbl.setForeground(Color.WHITE);
+
+        Box lblBox = Box.createHorizontalBox();
+        lblBox.setPreferredSize(new Dimension(255, 20));
+        lblBox.setMaximumSize(new Dimension(255, 20));
+        lblBox.setMinimumSize(new Dimension(255, 20));
+        lblBox.add(lbl);
+
+        cmb.setBackground(new Color(40, 40, 44));
+        Dimension txtFieldSize = new Dimension(260, 45);
+        cmb.setPreferredSize(txtFieldSize);
+        cmb.setMaximumSize(txtFieldSize);
+        cmb.setMinimumSize(txtFieldSize);
+        cmb.setForeground(Color.white);
+        cmb.setFont(FontManager.getManrope(Font.PLAIN, 14));
+        cmb.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
+
+        b.add(lblBox);
+        b.add(Box.createVerticalStrut(6));
+        b.add(cmb);
+        b.setBorder(BorderFactory.createEmptyBorder(0, 0, 35, 72));
+
         return b;
     }
 
     private RoundedButton createHandleButton(String buttonLabel) {
-        RoundedButton button = new RoundedButton(buttonLabel, 0);
+        RoundedButton button = new RoundedButton(buttonLabel, 5);
         Dimension buttonSize = new Dimension(259, 45);
         button.setPreferredSize(buttonSize);
         button.setMaximumSize(buttonSize);
         button.setMinimumSize(buttonSize);
-        button.setBackground(new Color(80, 80, 88));
+        Color defaultBackground = new Color(80, 80, 88);
+        Color hoverBackground = new Color(89, 98, 136);
+
+        button.setBackground(defaultBackground);
         button.setForeground(Color.white);
         button.setFont(FontManager.getManrope(Font.PLAIN, 16));
         button.setContentAreaFilled(false);
         button.setFocusPainted(false);
         button.setBorderPainted(false);
+        button.addActionListener(this);
+
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                button.setBackground(hoverBackground);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                button.setBackground(defaultBackground);
+            }
+        });
+
         return button;
+    }
+
+
+    private void loadTableData() {
+        ArrayList<Phong> dsPhong = phongDAO.getDsPhong();
+        for (Phong p : dsPhong) {
+            tableModel.addRow(new Object[]{
+                    p.getMaPhong(),
+                    p.getTenPhong(),
+                    p.getLoaiPhong(),
+                    p.getGiaPhong(),
+                    p.getSoNguoi(),
+                    p.getTrangThai()
+            });
+        }
+    }
+
+    private void addPhong() {
+        String tenPhong = txtTenPhong.getText();
+        String loaiPhong = txtLoaiPhong.getText();
+        String giaPhong = txtGiaPhong.getText();
+        String soNguoi = txtSoNguoi.getText();
+        String trangThai = (String) cmbTrangThai.getSelectedItem();
+
+        // Kiểm tra và xử lý dữ liệu nhập trước khi thêm vào đối tượng Phong
+        System.out.println("Tên phòng: " + tenPhong);
+        System.out.println("Loại phòng: " + loaiPhong);
+        System.out.println("Giá phòng: " + giaPhong);
+        System.out.println("Số người: " + soNguoi);
+        System.out.println("Trạng thái: " + trangThai);
+    }
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        RoundedButton btn = (RoundedButton) e.getSource();
+        String buttonLabel = btn.getText();
+        switch (buttonLabel) {
+            case "Thêm":
+                addPhong();
+                break;
+            case "Sửa":
+                break;
+            case "Xóa":
+                break;
+            case "Làm mới":
+                break;
+        }
     }
 }

@@ -259,7 +259,6 @@ public class CapNhatPhong_FORM extends JPanel implements ActionListener {
         cmb.setPreferredSize(txtFieldSize);
         cmb.setMaximumSize(txtFieldSize);
         cmb.setMinimumSize(txtFieldSize);
-        cmb.setForeground(Color.white);
         cmb.setFont(FontManager.getManrope(Font.PLAIN, 14));
         cmb.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 0));
 

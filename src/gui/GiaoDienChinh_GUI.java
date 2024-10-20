@@ -119,7 +119,7 @@ public class GiaoDienChinh_GUI extends JFrame {
 				{
 						{ "Thống kê chung", "ThongKeChung" },
 						{ "Thống kê doanh thu", "ThongKeDoanhThu" },
-						{ "Thống kê abcxyz", "" }
+//{ "Thống kê abcxyz", "" }
 				}
 		};
 

@@ -14,131 +14,43 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-public class CapNhatPhong_FORM extends JPanel implements ActionListener {
+public class TimKiemPhong_FORM extends JPanel  implements ActionListener {
+    private JTextField txtMaPhong, txtTenPhong, txtSoNguoi;
+    private JComboBox<String> cmbLoaiPhong, cmbTrangThai;
     private DefaultTableModel tableModel;
     private JTable table;
     private Phong_DAO phongDAO;
-    private JTextField txtTenPhong, txtGiaPhong, txtSoNguoi;
-    private JComboBox<String> cmbLoaiPhong, cmbTrangThai;
-    public CapNhatPhong_FORM() {
+    public TimKiemPhong_FORM() {
         phongDAO = new Phong_DAO();
+        setLayout(new BorderLayout());
         setBackground(new Color(16, 16, 20));
-        Box mainBox = Box.createVerticalBox();
-        mainBox.add(Box.createVerticalStrut(10));
-        // Tim kiem
-        JTextField txtSearch = new JTextField("Tìm kiếm tên phòng");
-        Border emptyBorder = BorderFactory.createEmptyBorder(13, 52, 12, 0);
-        txtSearch.setBounds(0, 0, 280, 45);
-        txtSearch.setBorder(emptyBorder);
-        txtSearch.setBackground(new Color(40, 40, 44));
-        txtSearch.setForeground(new Color(255, 255, 255, 125));
-        txtSearch.setFont(FontManager.getManrope(Font.PLAIN, 15));
-        CompoundBorder combinedBorder = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(83, 152, 255)), emptyBorder);
-        txtSearch.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                txtSearch.setBorder(combinedBorder);
-                if (txtSearch.getText().equals("Tìm kiếm")) {
-                    txtSearch.setText("");
-                    txtSearch.setForeground(Color.WHITE);
-                }
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                txtSearch.setBorder(emptyBorder);
-                if (txtSearch.getText().isEmpty()) {
-                    txtSearch.setForeground(new Color(255, 255, 255, 125));
-                    txtSearch.setText("Tìm kiếm");
-                }
-            }
-        });
-
-        JLabel searchIcon = new JLabel(new ImageIcon("imgs/TimKiemIcon.png"));
-        searchIcon.setBounds(12, 12, 24, 24);
-
-        JPanel searchPanel = new JPanel();
-        searchPanel.setOpaque(false);
-        searchPanel.setLayout(null);
-        Dimension searchPanelSize = new Dimension(280, 45);
-        searchPanel.setPreferredSize(searchPanelSize);
-        searchPanel.setMinimumSize(searchPanelSize);
-        searchPanel.setMaximumSize(searchPanelSize);
-
-        searchPanel.add(searchIcon);
-        searchPanel.add(txtSearch);
-        Box searchBox = Box.createHorizontalBox();
-        searchBox.add(Box.createHorizontalStrut(0));
-        searchBox.add(searchPanel);
-        searchBox.add(Box.createGlue());
+        JPanel northPanel = new JPanel();
+        northPanel.setOpaque(false);
+//        northPanel.setBorder(BorderFactory.createLineBorder(Color.pink));
+        northPanel.setBorder(BorderFactory.createEmptyBorder(21, 34, 50, 50));
+        northPanel.setLayout(new BoxLayout(northPanel, BoxLayout.Y_AXIS));
+        String[] loaiPhongOptions = {"Tất cả"};
+        String[] trangThaiOptions = {"Tất cả", "Còn trống", "Đã đặt trước", "Đang sử dụng", "Đang sửa chữa"};
 
 
-        // Form
-        Box b1 = Box.createVerticalBox();
-        Box b2 = Box.createHorizontalBox();
-        b2.add(createFormBox("Tên phòng", txtTenPhong = new JTextField()));
-        b2.add(createFormBox("Loại phòng", cmbLoaiPhong = new JComboBox<>()));
-        b2.add(createFormBox("Giá phòng", txtGiaPhong = new JTextField()));
-        b2.add(createFormBox("Số người", txtSoNguoi = new JTextField()));
-
-        String[] trangThaiOptions = {"Còn trống", "Đã đặt trước", "Đang sử dụng", "Đang sửa chữa"};
-        b2.add(createFormBox("Trạng thái", cmbTrangThai = new JComboBox<>(trangThaiOptions)));
-        Dimension b2Size = new Dimension(1642, 100);
-        b2.setPreferredSize(b2Size);
-        b2.setMinimumSize(b2Size);
-        b2.setMaximumSize(b2Size);
-
-
-        Box b3 = Box.createHorizontalBox();
-        Box b4 = Box.createVerticalBox();
-        JLabel lblMota = new JLabel("Mô tả");
-        lblMota.setFont(FontManager.getManrope(Font.PLAIN, 15));
-        lblMota.setForeground(Color.WHITE);
-        Dimension lblMotaSize = new Dimension(1245, 20);
-
-        Box lblMotaBox = Box.createHorizontalBox();
-        lblMotaBox.setOpaque(false);
-        lblMotaBox.setPreferredSize(lblMotaSize);
-        lblMotaBox.setMaximumSize(lblMotaSize);
-        lblMotaBox.setMinimumSize(lblMotaSize);
-
-        JTextArea txaMoTa = new JTextArea();
-        Dimension txaMoTaSize = new Dimension(1250, 220);
-        txaMoTa.setPreferredSize(txaMoTaSize);
-        txaMoTa.setMaximumSize(txaMoTaSize);
-        txaMoTa.setMinimumSize(txaMoTaSize);
-        txaMoTa.setBackground(new Color(40, 40, 44));
-        txaMoTa.setForeground(Color.white);
-        txaMoTa.setFont(FontManager.getManrope(Font.PLAIN, 14));
-        txaMoTa.setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 0));
-
-        lblMotaBox.add(lblMota);
-        b4.add(lblMotaBox);
-        b4.add(txaMoTa);
-        Box b5 = Box.createVerticalBox();
-
-        RoundedButton btnThem = createHandleButton("Thêm");
-        RoundedButton btnSua = createHandleButton("Sửa");
-        RoundedButton btnXoa = createHandleButton("Xóa");
+        RoundedButton btnTimKiem = createHandleButton("Tìm kiếm");
+        RoundedButton btnCapNhatPhong = createHandleButton("Cập nhật phòng");
         RoundedButton btnLamMoi = createHandleButton("Làm mới");
 
-        b5.add(Box.createVerticalStrut(20));
-        b5.add(btnThem);
-        b5.add(Box.createVerticalStrut(20));
-        b5.add(btnSua);
-        b5.add(Box.createVerticalStrut(20));
-        b5.add(btnXoa);
-        b5.add(Box.createVerticalStrut(20));
-        b5.add(btnLamMoi);
+        Box b1 = Box.createHorizontalBox();
+        Box b2 = Box.createHorizontalBox();
+        b1.add(createFormBox("Mã phòng", txtMaPhong = new JTextField()));
+        b1.add(createFormBox("Tên phòng", txtTenPhong = new JTextField()));
+        b1.add(createFormBox("Loại phòng", cmbLoaiPhong = new JComboBox<>(loaiPhongOptions)));
+        b1.add(createFormBox("Số người", txtSoNguoi = new JTextField()));
+        b1.add(createFormBox("Trạng thái", cmbTrangThai = new JComboBox<>(trangThaiOptions)));
 
-
-        b3.add(b4);
-        b3.add(Box.createHorizontalStrut(80));
-        b3.add(b5);
-
-        b1.add(b2);
-        b1.add(b3);
-
+        b2.add(Box.createHorizontalGlue());
+        b2.add(btnTimKiem);
+        b2.add(Box.createHorizontalStrut(70));
+        b2.add(btnCapNhatPhong);
+        b2.add(Box.createHorizontalStrut(70));
+        b2.add(btnLamMoi);
 
         // Tieu de
         JLabel titleLabel = new JLabel("Danh sách phòng");
@@ -191,18 +103,20 @@ public class CapNhatPhong_FORM extends JPanel implements ActionListener {
         scroll.getViewport().setOpaque(false);
         scroll.setViewportBorder(null);
 
-        
-        mainBox.add(searchBox);
-        mainBox.add(Box.createVerticalStrut(20));
-        mainBox.add(b1);
-        mainBox.add(Box.createVerticalStrut(20));
-        mainBox.add(titlePanel);
-        mainBox.add(Box.createVerticalStrut(5));
-        mainBox.add(b6);
-        add(mainBox);
+        northPanel.add(b1);
+        northPanel.add(b2);
+
+        Box centerBox = Box.createVerticalBox();
+        centerBox.add(titlePanel);
+        centerBox.add(Box.createVerticalStrut(5));
+        centerBox.add(scroll);
+        centerBox.setBorder(BorderFactory.createEmptyBorder(0, 10, 50, 10));
+        add(northPanel, BorderLayout.NORTH);
+        add(centerBox, BorderLayout.CENTER);
 
         loadTableData();
     }
+
     private Box createFormBox(String label, JTextField txt) {
         Box b = Box.createVerticalBox();
         Dimension boxSize = new Dimension(332, 110);
@@ -246,7 +160,7 @@ public class CapNhatPhong_FORM extends JPanel implements ActionListener {
         b.add(lblBox);
         b.add(Box.createVerticalStrut(6));
         b.add(txt);
-        b.setBorder(BorderFactory.createEmptyBorder(0, 0, 35, 72));
+        b.setBorder(BorderFactory.createEmptyBorder(0, 0, 35, 68));
 
         return b;
     }
@@ -316,7 +230,6 @@ public class CapNhatPhong_FORM extends JPanel implements ActionListener {
         return button;
     }
 
-
     private void loadTableData() {
         ArrayList<Phong> dsPhong = phongDAO.getDsPhong();
         for (Phong p : dsPhong) {
@@ -331,34 +244,9 @@ public class CapNhatPhong_FORM extends JPanel implements ActionListener {
         }
     }
 
-    private void addPhong() {
-        String tenPhong = txtTenPhong.getText();
-        String loaiPhong = (String) cmbLoaiPhong.getSelectedItem();
-        String giaPhong = txtGiaPhong.getText();
-        String soNguoi = txtSoNguoi.getText();
-        String trangThai = (String) cmbTrangThai.getSelectedItem();
-
-        // Kiểm tra và xử lý dữ liệu nhập trước khi thêm vào đối tượng Phong
-        System.out.println("Tên phòng: " + tenPhong);
-        System.out.println("Loại phòng: " + loaiPhong);
-        System.out.println("Giá phòng: " + giaPhong);
-        System.out.println("Số người: " + soNguoi);
-        System.out.println("Trạng thái: " + trangThai);
-    }
     @Override
     public void actionPerformed(ActionEvent e) {
         RoundedButton btn = (RoundedButton) e.getSource();
-        String buttonLabel = btn.getText();
-        switch (buttonLabel) {
-            case "Thêm":
-                addPhong();
-                break;
-            case "Sửa":
-                break;
-            case "Xóa":
-                break;
-            case "Làm mới":
-                break;
-        }
+
     }
 }

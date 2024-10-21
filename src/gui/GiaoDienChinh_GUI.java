@@ -24,10 +24,7 @@ import javax.swing.border.Border;
 import customElements.FontManager;
 import customElements.RoundedButton;
 import customElements.SubMenuPanel;
-import form.LapHoaDon_FORM;
-import form.DatPhong_FORM;
-import form.TrangChu_FORM;
-import form.CapNhatPhong_FORM;
+import form.*;
 
 import java.util.ArrayList;
 
@@ -119,7 +116,7 @@ public class GiaoDienChinh_GUI extends JFrame {
 				{
 						{ "Thống kê chung", "ThongKeChung" },
 						{ "Thống kê doanh thu", "ThongKeDoanhThu" },
-//{ "Thống kê abcxyz", "" }
+						{ "Thống kê abcxyz", "" }
 				}
 		};
 
@@ -254,17 +251,18 @@ public class GiaoDienChinh_GUI extends JFrame {
 		JPanel trangChuPanel = new TrangChu_FORM();
 		JPanel datPhongPanel = new DatPhong_FORM();
 		JPanel huyDatPhongPanel = new JPanel();
-		JPanel doiPhongPanel = new JPanel();
-		JPanel soDoPhongPanel = new JPanel();
+		JPanel timKiemPhongPanel = new TimKiemPhong_FORM();
 		JPanel capNhatPhongPanel = new CapNhatPhong_FORM();
+
+		JPanel capNhatKhachHangPanel = new CapNhatKhachHang_FORM();
 		JPanel lapHoaDonPanel = new LapHoaDon_FORM();
 		// Thêm màn hình
 		center.add(trangChuPanel, "TrangChu");
 		center.add(datPhongPanel, "DatPhong");
 		center.add(huyDatPhongPanel, "HuyDatPhong");
-		center.add(doiPhongPanel, "DoiPhong");
-		center.add(soDoPhongPanel, "SoDoPhong");
+		center.add(timKiemPhongPanel, "TimKiemPhong");
 		center.add(capNhatPhongPanel, "CapNhatPhong");
+		center.add(capNhatKhachHangPanel, "CapNhatKhachHang");
 		center.add(lapHoaDonPanel, "LapHoaDon");
 		return center;
 	}
@@ -278,16 +276,5 @@ public class GiaoDienChinh_GUI extends JFrame {
 			}
 
 		}
-	}
-
-	public static void main(String[] args) {
-		try {
-			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-			UIManager.put("nimbusBase", Color.BLACK);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		new GiaoDienChinh_GUI();
 	}
 }

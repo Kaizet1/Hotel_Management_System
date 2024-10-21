@@ -1,7 +1,11 @@
 package form;
 
 import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
@@ -205,11 +209,28 @@ public class DatPhong_FORM extends JPanel {
 		lbl.setPreferredSize(new Dimension(259, 20));
 		lbl.setMaximumSize(new Dimension(259, 20));
 		lbl.setMinimumSize(new Dimension(259, 20));
-		JTextField text = new JTextField(placeholder);
-		text.setBackground(new Color(40, 40, 44));
+		JTextField txt = new JTextField(placeholder);
+		txt.setBackground(new Color(40, 40, 44));
+		txt.setForeground(Color.white);
+		txt.setFont(FontManager.getManrope(Font.PLAIN, 14));
+		Border emptyBorder = BorderFactory.createEmptyBorder(0, 10, 0, 0);
+		CompoundBorder combinedBorder = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(83, 152, 255)), emptyBorder);
+		txt.setBorder(emptyBorder);
+
+		txt.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusGained(FocusEvent e) {
+				txt.setBorder(combinedBorder);
+			}
+
+			@Override
+			public void focusLost(FocusEvent e) {
+				txt.setBorder(emptyBorder);
+			}
+		});
 		b.add(lbl);
 		b.add(Box.createVerticalStrut(6));
-		b.add(text);
+		b.add(txt);
 		b.setBorder(BorderFactory.createEmptyBorder(0, 36, 35, 36));
 		return b;
 	}

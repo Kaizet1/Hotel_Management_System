@@ -1,6 +1,7 @@
 package form;
 
 import customElements.*;
+import dao.KhachHang_DAO;
 import dao.Phong_DAO;
 import entity.Phong;
 
@@ -14,19 +15,19 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-public class CapNhatPhong_FORM extends JPanel implements ActionListener {
+public class CapNhatKhachHang_FORM extends JPanel  implements ActionListener {
     private DefaultTableModel tableModel;
     private JTable table;
     private Phong_DAO phongDAO;
     private JTextField txtTenPhong, txtGiaPhong, txtSoNguoi;
     private JComboBox<String> cmbLoaiPhong, cmbTrangThai;
-    public CapNhatPhong_FORM() {
+    public CapNhatKhachHang_FORM() {
         phongDAO = new Phong_DAO();
         setBackground(new Color(16, 16, 20));
         Box mainBox = Box.createVerticalBox();
         mainBox.add(Box.createVerticalStrut(10));
         // Tim kiem
-        JTextField txtSearch = new JTextField("Tìm kiếm tên phòng");
+        JTextField txtSearch = new JTextField("Tìm kiếm tên khách hàng");
         Border emptyBorder = BorderFactory.createEmptyBorder(13, 52, 12, 0);
         txtSearch.setBounds(0, 0, 280, 45);
         txtSearch.setBorder(emptyBorder);
@@ -141,7 +142,7 @@ public class CapNhatPhong_FORM extends JPanel implements ActionListener {
 
 
         // Tieu de
-        JLabel titleLabel = new JLabel("Danh sách phòng");
+        JLabel titleLabel = new JLabel("Danh sách khách hàng");
         titleLabel.setFont(FontManager.getManrope(Font.BOLD, 16));
         titleLabel.setForeground(Color.white);
 
@@ -191,7 +192,7 @@ public class CapNhatPhong_FORM extends JPanel implements ActionListener {
         scroll.getViewport().setOpaque(false);
         scroll.setViewportBorder(null);
 
-        
+
         mainBox.add(searchBox);
         mainBox.add(Box.createVerticalStrut(20));
         mainBox.add(b1);
@@ -345,20 +346,10 @@ public class CapNhatPhong_FORM extends JPanel implements ActionListener {
         System.out.println("Số người: " + soNguoi);
         System.out.println("Trạng thái: " + trangThai);
     }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         RoundedButton btn = (RoundedButton) e.getSource();
-        String buttonLabel = btn.getText();
-        switch (buttonLabel) {
-            case "Thêm":
-                addPhong();
-                break;
-            case "Sửa":
-                break;
-            case "Xóa":
-                break;
-            case "Làm mới":
-                break;
-        }
+
     }
 }

@@ -38,7 +38,7 @@ public class CapNhatPhong_FORM extends JPanel implements ActionListener {
             @Override
             public void focusGained(FocusEvent e) {
                 txtSearch.setBorder(combinedBorder);
-                if (txtSearch.getText().equals("Tìm kiếm")) {
+                if (txtSearch.getText().equals("Tìm kiếm tên phòng")) {
                     txtSearch.setText("");
                     txtSearch.setForeground(Color.WHITE);
                 }
@@ -49,7 +49,7 @@ public class CapNhatPhong_FORM extends JPanel implements ActionListener {
                 txtSearch.setBorder(emptyBorder);
                 if (txtSearch.getText().isEmpty()) {
                     txtSearch.setForeground(new Color(255, 255, 255, 125));
-                    txtSearch.setText("Tìm kiếm");
+                    txtSearch.setText("Tìm kiếm tên phòng");
                 }
             }
         });
@@ -318,7 +318,7 @@ public class CapNhatPhong_FORM extends JPanel implements ActionListener {
 
 
     private void loadTableData() {
-        ArrayList<Phong> dsPhong = phongDAO.getDsPhong();
+        ArrayList<Phong> dsPhong = phongDAO.getDSPhong();
         for (Phong p : dsPhong) {
             tableModel.addRow(new Object[]{
                     p.getMaPhong(),

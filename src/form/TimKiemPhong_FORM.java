@@ -231,7 +231,7 @@ public class TimKiemPhong_FORM extends JPanel  implements ActionListener {
     }
 
     private void loadTableData() {
-        ArrayList<Phong> dsPhong = phongDAO.getDsPhong();
+        ArrayList<Phong> dsPhong = phongDAO.getDSPhong();
         for (Phong p : dsPhong) {
             tableModel.addRow(new Object[]{
                     p.getMaPhong(),

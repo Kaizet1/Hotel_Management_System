@@ -15,7 +15,7 @@ public class Phong_DAO {
     public Phong_DAO() {
         dsPhong = new ArrayList<>();
     }
-    public ArrayList<Phong> getDsPhong() {
+    public ArrayList<Phong> getDSPhong() {
         try{
             Connection con = ConnectDB.getInstance().getConnection();
             String sql = "select * from Phong";

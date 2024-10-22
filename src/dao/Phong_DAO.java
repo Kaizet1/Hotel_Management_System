@@ -14,6 +14,7 @@ public class Phong_DAO {
     private ArrayList<Phong> dsPhong;
     public Phong_DAO() {
         dsPhong = new ArrayList<>();
+
     }
     public ArrayList<Phong> getDSPhong() {
         try{
@@ -91,27 +92,64 @@ public class Phong_DAO {
         }
         return n > 0;
     }
-    public  Phong searchPhong(String maPhong) {
-        ConnectDB.getInstance().connect();
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        Phong phong = null;
-        try{
-            ps = ConnectDB.getConnection().prepareStatement("select * from Phong where MaPhong = ?");
-            ps.setString(1, maPhong);
-            rs = ps.executeQuery();
-            while (rs.next()){
-                String tenPhong = rs.getString(2);
-                double giaPhong = rs.getDouble(3);
-                String loaiPhong = rs.getString(4);
-                int trangThai = rs.getInt(5);
-                String moTa = rs.getString(6);
-                int soNguoi = rs.getInt(7);
-                phong = new Phong(maPhong, tenPhong, giaPhong, loaiPhong, trangThai, moTa, soNguoi);
+
+    public ArrayList<Phong> searchPhong(String maPhong, String tenPhong, String loaiPhong, int soNguoi, int trangThai) throws SQLException {
+        ArrayList<Phong> dsPhong = new ArrayList<>();
+        try {
+            Connection con = ConnectDB.getInstance().getConnection();
+            String query = "SELECT * FROM Phong WHERE 1=1";
+
+            if (maPhong != null && !maPhong.isEmpty()) {
+                query += " AND maPhong LIKE ?";
             }
-        } catch (SQLException e){
-            e.printStackTrace();
+            if (tenPhong != null && !tenPhong.isEmpty()) {
+                query += " AND tenPhong LIKE ?";
+            }
+            if (loaiPhong != null && !loaiPhong.equals("Tất cả")) {
+                query += " AND maLoai = ?";
+            }
+            if (soNguoi != -1) {
+                query += " AND soNguoi = ?";
+            }
+            if (trangThai != -1) {
+                query += " AND tinhTrang = ?";
+            }
+            PreparedStatement ps = con.prepareStatement(query);
+
+            int paramIndex = 1;
+
+            // Thiết lập giá trị cho các điều kiện tìm kiếm
+            if (maPhong != null && !maPhong.isEmpty()) {
+                ps.setString(paramIndex++, "%" + maPhong + "%");
+            }
+            if (tenPhong != null && !tenPhong.isEmpty()) {
+                ps.setString(paramIndex++, "%" + tenPhong + "%");
+            }
+            if (loaiPhong != null && !loaiPhong.equals("Tất cả")) {
+                ps.setString(paramIndex++, loaiPhong);
+            }
+            if (soNguoi != -1) {
+                ps.setInt(paramIndex++, soNguoi);
+            }
+            if (trangThai != -1) {
+                ps.setInt(paramIndex++, trangThai);
+            }
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String ma = rs.getString("maPhong");
+                String ten = rs.getString("tenPhong");
+                String loai = rs.getString("maLoai");
+                double gia = rs.getDouble("giaPhong");
+                int tt = rs.getInt("tinhTrang");
+                int soNg = rs.getInt("soNguoi");
+                String moTa = rs.getString("moTa");
+
+                Phong p = new Phong(ma, ten, gia, loai, tt, moTa, soNg);
+                dsPhong.add(p);
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        return phong;
-    }
+        return dsPhong;
+        }
 }

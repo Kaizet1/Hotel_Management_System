@@ -14,7 +14,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-public class CapNhatKhachHang_FORM extends JPanel  implements ActionListener {
+public class CapNhatKhachHang_FORM extends JPanel  implements ActionListener,MouseListener {
     private DefaultTableModel tableModel;
     private JTable table;
     private KhachHang_DAO khachHangDAO;
@@ -173,7 +173,13 @@ public class CapNhatKhachHang_FORM extends JPanel  implements ActionListener {
         add(mainBox);
 
         loadTableData();
+        table.addMouseListener(this);
+        btnXoa.addActionListener(this);
+        btnSua.addActionListener(this);
+        btnLamMoi.addActionListener(this);
     }
+
+
     private Box createFormBox(String label, JTextField txt) {
         Box b = Box.createVerticalBox();
         Dimension boxSize = new Dimension(332, 110);
@@ -296,8 +302,8 @@ public class CapNhatKhachHang_FORM extends JPanel  implements ActionListener {
                     kh.getHoTen(),
                     kh.getDiaChi(),
                     kh.getSdt(),
-                    kh.getcCCD(),
-                    kh.getEmail()
+                    kh.getEmail(),
+                    kh.getcCCD()
             });
         }
     }
@@ -306,6 +312,97 @@ public class CapNhatKhachHang_FORM extends JPanel  implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         RoundedButton btn = (RoundedButton) e.getSource();
+        if (btn.getText().equals("Sửa")) {
+            updateKhachHang();
+        } else if (btn.getText().equals("Xóa")) {
+            removeKhachHang();
+        } else if (btn.getText().equals("Làm mới")) {
+            refreshFields();
+        }
+    }
 
+    @Override
+    public void mouseClicked(MouseEvent e) {
+       int row = table.getSelectedRow();
+       txtTenKhachHang.setText(tableModel.getValueAt(row, 1).toString());
+       txtDiaChi.setText(tableModel.getValueAt(row, 2).toString());
+       txtSDT.setText(tableModel.getValueAt(row, 3).toString());
+       txtEmail.setText(tableModel.getValueAt(row, 4).toString());
+       txtCCCD.setText(tableModel.getValueAt(row, 5).toString());
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
+    public void updateKhachHang() {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Chọn khách hàng để sửa!", "Cảnh báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Get data from text fields
+        String tenKhachHang = txtTenKhachHang.getText();
+        String diaChi = txtDiaChi.getText();
+        String sdt = txtSDT.getText();
+        String email = txtEmail.getText();
+        String cccd = txtCCCD.getText();
+
+        // Perform validation here...
+
+        KhachHang khachHang = new KhachHang();
+        // Assuming you have a method to get MaKH from the table
+        khachHang.setMaKH((String) tableModel.getValueAt(selectedRow, 0));
+        khachHang.setHoTen(tenKhachHang);
+        khachHang.setDiaChi(diaChi);
+        khachHang.setSdt(sdt);
+        khachHang.setEmail(email);
+        khachHang.setcCCD(cccd);
+
+        // Call DAO method to update the database
+        khachHangDAO.updateKhachHang(khachHang.getMaKH(), khachHang);
+        JOptionPane.showMessageDialog(this,"Sua thanh cong");
+        loadTableData(); // Refresh the table
+
+    }
+
+    public void removeKhachHang() {
+
+            int row = table.getSelectedRow();
+            if(row!=-1) {
+                int confirm = JOptionPane.showConfirmDialog(this, "Ban co chac muon xoa khon?","Xoa",JOptionPane.YES_NO_OPTION);
+                if(confirm == JOptionPane.YES_OPTION) {
+                    tableModel.removeRow(row);
+                }else {
+                    JOptionPane.showMessageDialog(this, "Chua chon dong de xoa");
+                }
+            }
+
+        loadTableData(); // Refresh the table
+    }
+
+    private void refreshFields() {
+        txtTenKhachHang.setText("");
+        txtDiaChi.setText("");
+        txtSDT.setText("");
+        txtEmail.setText("");
+        txtCCCD.setText("");
+        txtTenKhachHang.requestFocus();
     }
 }

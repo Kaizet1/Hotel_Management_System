@@ -8,6 +8,10 @@ public class KhachHang {
     private String email;
     private String cCCD;
 
+    public KhachHang() {
+
+    }
+
     public String getMaKH() {
         return maKH;
     }

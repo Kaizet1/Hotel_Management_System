@@ -239,7 +239,6 @@ public class TrangChu_FORM extends JPanel {
 			// Kết nối đến cơ sở dữ liệu
 			con = ConnectDB.getInstance().getConnection();
 			String sql = "SELECT * FROM PhieuDatPhong pdp " +
-					"JOIN ChiTietPhieuDatPhong ctpdp ON pdp.maPDP = ctpdp.maPDP " +
 					"JOIN KhachHang kh ON pdp.maKH = kh.maKH";
 			stmt = con.createStatement();
 			rs = stmt.executeQuery(sql);
@@ -249,8 +248,8 @@ public class TrangChu_FORM extends JPanel {
 				String hoTen = rs.getString("hoTen");
 
 				// Lấy ngày từ ResultSet và chuyển sang LocalDate
-				Date ngayDenDate = rs.getDate("ngayNhanPhong");
-				Date ngayDiDate = rs.getDate("ngayTraPhongDuKien");
+				Date ngayDenDate = rs.getDate("ngayDen");
+				Date ngayDiDate = rs.getDate("ngayDi");
 
 				// Chuyển đổi Date thành LocalDate
 				LocalDate ngayDen = ngayDenDate.toLocalDate();

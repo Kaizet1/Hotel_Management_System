@@ -12,17 +12,14 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.*;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Objects;
 
-public class TimKiemPhong_FORM extends JPanel  implements ActionListener , MouseListener{
+public class TimKiemPhong_FORM extends JPanel  implements ActionListener {
     private JTextField txtMaPhong, txtTenPhong, txtSoNguoi;
     private JComboBox<String> cmbLoaiPhong, cmbTrangThai;
     private DefaultTableModel tableModel;
     private JTable table;
     private Phong_DAO phongDAO;
-    private CardLayout cardLayout;
     public TimKiemPhong_FORM() {
         phongDAO = new Phong_DAO();
         setLayout(new BorderLayout());
@@ -32,7 +29,7 @@ public class TimKiemPhong_FORM extends JPanel  implements ActionListener , Mouse
 //        northPanel.setBorder(BorderFactory.createLineBorder(Color.pink));
         northPanel.setBorder(BorderFactory.createEmptyBorder(21, 34, 50, 50));
         northPanel.setLayout(new BoxLayout(northPanel, BoxLayout.Y_AXIS));
-        String[] loaiPhongOptions = {"Tất cả", "STAN", "SUPE", "DELU", "SUIT"};
+        String[] loaiPhongOptions = {"Tất cả"};
         String[] trangThaiOptions = {"Tất cả", "Còn trống", "Đã đặt trước", "Đang sử dụng", "Đang sửa chữa"};
 
 
@@ -250,127 +247,6 @@ public class TimKiemPhong_FORM extends JPanel  implements ActionListener , Mouse
     @Override
     public void actionPerformed(ActionEvent e) {
         RoundedButton btn = (RoundedButton) e.getSource();
-        if (btn.getText().equals("Tìm kiếm")) {
-        //    String maTim = txtMaPhong.getText().trim();
-            try {
-                findAction();
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
-            }
-        } else if (btn.getText().equals("Cập nhật phòng")){
-            JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
-            parentFrame.getContentPane().removeAll(); // Remove current content
-            parentFrame.getContentPane().add(new CapNhatPhong_FORM()); // Add new form
-            parentFrame.revalidate();
-            parentFrame.repaint();
-        } else if (btn.getText().equals("Làm mới")) {
-            clearFieldsAction();
-            loadTableData();
-        }
-    }
-    public void clearFieldsAction() {
-        txtMaPhong.setText("");
-        txtTenPhong.setText("");
-        txtSoNguoi.setText("");
-        cmbLoaiPhong.setSelectedItem("Tất cả");
-        cmbTrangThai.setSelectedItem("Tất cả");
-    }
-    public void findAction() throws SQLException {
-        String maPhong = txtMaPhong.getText().trim();
-        String tenPhong = txtTenPhong.getText().trim();
-        String loaiPhong = Objects.requireNonNull(cmbLoaiPhong.getSelectedItem().toString());
-        String soNguoiStr = txtSoNguoi.getText().trim();
-        String trangThaiStr = Objects.requireNonNull(cmbTrangThai.getSelectedItem().toString()) ;
-        int soNguoi = -1;
-        if (!soNguoiStr.isEmpty()) {
-            try {
-                soNguoi = Integer.parseInt(soNguoiStr);
-            } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(this, "Số người phải là số nguyên.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-        }
-
-        int trangThai = -1; // -1 là tìm kiếm không dùng tiêu chí trạng thái
-        switch (trangThaiStr) {
-            case "Còn trống":
-                trangThai = 0;
-                break;
-            case "Đã đặt trước":
-                trangThai = 1;
-                break;
-            case "Đang sử dụng":
-                trangThai = 2;
-                break;
-            case "Đang sửa chữa":
-                trangThai = 3;
-                break;
-            case "Tất cả":
-            default:
-                trangThai = -1;
-                break;
-        }
-
-        // Gọi phương thức tìm kiếm
-        ArrayList<Phong> dsPhong = phongDAO.searchPhong(maPhong, tenPhong, loaiPhong, soNguoi, trangThai);
-        tableModel.setRowCount(0);
-        for (Phong p : dsPhong) {
-            tableModel.addRow(new Object[]{
-                    p.getMaPhong(),
-                    p.getTenPhong(),
-                    p.getLoaiPhong(),
-                    p.getGiaPhong(),
-                    p.getSoNguoi(),
-                    p.getTrangThai(),
-                    p.getMoTa()
-            });
-        }
-        if (tableModel.getRowCount() == 0) {
-            JOptionPane.showMessageDialog(this, "Không tìm thấy kết quả phù hợp.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-        }
-    }
-        private String convertTrangThaiToText(int trangThai) {
-            switch (trangThai) {
-                case 1:
-                    return "Còn trống";
-                case 2:
-                    return "Đã đặt trước";
-                case 3:
-                    return "Đang sử dụng";
-                case 4:
-                    return "Đang sửa chữa";
-                default:
-                    return "Không xác định";
-            }
-        }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        int row = table.getSelectedRow();
-        txtMaPhong.setText(table.getValueAt(row, 0).toString());
-        txtTenPhong.setText(table.getValueAt(row, 1).toString());
-        cmbLoaiPhong.setSelectedItem(table.getValueAt(row, 2).toString());
-        txtSoNguoi.setText(table.getValueAt(row, 3).toString());
-        cmbTrangThai.setSelectedItem(table.getValueAt(row, 4).toString());
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
 
     }
 }

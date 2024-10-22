@@ -14,7 +14,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-public class TimKiemKhachHang_FORM extends JPanel  implements ActionListener,MouseListener {
+public class TimKiemKhachHang_FORM extends JPanel  implements ActionListener {
     private DefaultTableModel tableModel;
     private JTable table;
     private KhachHang_DAO khachHangDAO;
@@ -127,8 +127,6 @@ public class TimKiemKhachHang_FORM extends JPanel  implements ActionListener,Mou
         add(mainBox);
 
         loadTableData();
-
-        table.addMouseListener(this);
     }
     private Box createFormBox(String label, JTextField txt) {
         Box b = Box.createVerticalBox();
@@ -252,8 +250,8 @@ public class TimKiemKhachHang_FORM extends JPanel  implements ActionListener,Mou
                     kh.getHoTen(),
                     kh.getDiaChi(),
                     kh.getSdt(),
-                    kh.getEmail(),
-                    kh.getcCCD()
+                    kh.getcCCD(),
+                    kh.getEmail()
             });
         }
     }
@@ -262,97 +260,6 @@ public class TimKiemKhachHang_FORM extends JPanel  implements ActionListener,Mou
     @Override
     public void actionPerformed(ActionEvent e) {
         RoundedButton btn = (RoundedButton) e.getSource();
-if(btn.getText().equals("Tìm kiếm")){
-    searchKhachHang();
-}
-if(btn.getText().equals("Làm mới")){
-    removeAllKhachHang();
-}
-        if (btn.getText().equals("Cập nhật khách hàng")) {
-            int row = table.getSelectedRow(); // Lấy hàng được chọn
-            if (row != -1) { // Kiểm tra có hàng nào được chọn không
-                String maKH = table.getValueAt(row, 0).toString();
-                String tenKH = table.getValueAt(row, 1).toString();
-                String diaChi = table.getValueAt(row, 2).toString();
-                String sdt = table.getValueAt(row, 3).toString();
-                String email = table.getValueAt(row, 4).toString();
-                String cccd = table.getValueAt(row, 5).toString();
 
-                // Mở cửa sổ cập nhật với thông tin của khách hàng đã chọn
-                CapNhatKhachHang_FORM capNhatForm = new CapNhatKhachHang_FORM();
-                capNhatForm.setVisible(true);
-            } else {
-                JOptionPane.showMessageDialog(this, "Vui lòng chọn một khách hàng để cập nhật.", "Thông báo", JOptionPane.WARNING_MESSAGE);
-            }
-        }
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        int row = table.getSelectedRow();
-        txtMaKhachHang .setText(table.getValueAt(row,0).toString());
-        txtTenKhachHang.setText(table.getValueAt(row,1).toString());
-        txtDiaChi.setText(table.getValueAt(row,2).toString());
-        txtSDT.setText(table.getValueAt(row,3).toString());
-        txtEmail.setText(table.getValueAt(row,4).toString());
-        txtCCCD.setText(table.getValueAt(row,5).toString());
-
-
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-
-    }
-    private void searchKhachHang() {
-        String maKH = txtMaKhachHang.getText();
-        String tenKH = txtTenKhachHang.getText();
-        String diaChi = txtDiaChi.getText();
-        String sdt = txtSDT.getText();
-        String email = txtEmail.getText();
-        String cccd = txtCCCD.getText();
-
-        // Gọi DAO để tìm kiếm
-        ArrayList<KhachHang> result = khachHangDAO.timKiem(maKH, tenKH, diaChi, sdt, email, cccd);
-
-        // Xóa dữ liệu cũ trong bảng
-        tableModel.setRowCount(0);
-
-        // Thêm các khách hàng tìm thấy vào bảng
-        for (KhachHang kh : result) {
-            tableModel.addRow(new Object[]{
-                    kh.getMaKH(),
-                    kh.getHoTen(),
-                    kh.getDiaChi(),
-                    kh.getSdt(),
-                    kh.getEmail(),
-                    kh.getcCCD()
-            });
-        }
-    }
-    public  void removeAllKhachHang() {
-txtMaKhachHang.setText("");
-txtTenKhachHang.setText("");
-txtDiaChi.setText("");
-txtSDT.setText("");
-txtEmail.setText("");
-txtCCCD.setText("");
-loadTableData();
-txtMaKhachHang.requestFocus();
     }
 }

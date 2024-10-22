@@ -14,14 +14,12 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-public class CapNhatPhong_FORM extends JPanel implements ActionListener, MouseListener {
+public class CapNhatPhong_FORM extends JPanel implements ActionListener {
     private DefaultTableModel tableModel;
     private JTable table;
     private Phong_DAO phongDAO;
     private JTextField txtTenPhong, txtGiaPhong, txtSoNguoi;
     private JComboBox<String> cmbLoaiPhong, cmbTrangThai;
-    JTextField etxtMaPhong = new JTextField();
-    JTextArea txaMoTa = new JTextArea();
     public CapNhatPhong_FORM() {
         phongDAO = new Phong_DAO();
         setBackground(new Color(16, 16, 20));
@@ -82,10 +80,9 @@ public class CapNhatPhong_FORM extends JPanel implements ActionListener, MouseLi
         b2.add(createFormBox("Loại phòng", cmbLoaiPhong = new JComboBox<>()));
         b2.add(createFormBox("Giá phòng", txtGiaPhong = new JTextField()));
         b2.add(createFormBox("Số người", txtSoNguoi = new JTextField()));
-        String[] loaiPhongOptions = {"STAN", "SUPE", "DELU", "SUIT"};
+
         String[] trangThaiOptions = {"Còn trống", "Đã đặt trước", "Đang sử dụng", "Đang sửa chữa"};
         b2.add(createFormBox("Trạng thái", cmbTrangThai = new JComboBox<>(trangThaiOptions)));
-        b2.add(createFormBox("Loại phòng", cmbLoaiPhong = new JComboBox<>(loaiPhongOptions)));
         Dimension b2Size = new Dimension(1642, 100);
         b2.setPreferredSize(b2Size);
         b2.setMinimumSize(b2Size);
@@ -352,64 +349,16 @@ public class CapNhatPhong_FORM extends JPanel implements ActionListener, MouseLi
     public void actionPerformed(ActionEvent e) {
         RoundedButton btn = (RoundedButton) e.getSource();
         String buttonLabel = btn.getText();
-        if (btn.getText().equals("Thêm")) {
-            themAction();
-        } else if (btn.getText().equals("Xóa")) {
- //           xoaAction();
-        } else if (btn.getText().equals("Sửa")) {
-  //          suaAction();
-        } else if (btn.getText().equals("Làm mới")) {
-            clearFieldsAction();
-            loadTableData();
-        } //else if ()
-    }
-
-    public void clearFieldsAction() {
-    //    txtMaPhong.setText("");
-        txtTenPhong.setText("");
-        txtSoNguoi.setText("");
-        txtGiaPhong.setText("");
-        cmbLoaiPhong.setSelectedItem("Tất cả");
-        cmbTrangThai.setSelectedItem("Tất cả");
-    }
-
-    public void themAction() {
-        String maPhong = etxtMaPhong.getText().trim();
-        String tenPhong = txtTenPhong.getText().trim();
-        String loaiPhong = (String) cmbLoaiPhong.getSelectedItem();
-        Double giaPhong = Double.parseDouble(txtGiaPhong.getText().trim());
-        String trangThai = (String) cmbTrangThai.getSelectedItem();
-        int soNguoi = Integer.parseInt(txtSoNguoi.getText().trim());
-        String moTa = txaMoTa.getText().trim();
-//        Phong p= new Phong(maPhong, tenPhong, loaiPhong, giaPhong, trangThai, moTa, soNguoi);
-    }
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        int row = table.getSelectedRow();
-        txtTenPhong.setText(table.getValueAt(row, 1).toString());
-        cmbLoaiPhong.setSelectedItem(table.getValueAt(row, 2).toString());
-        txtGiaPhong.setText(table.getValueAt(row, 3).toString());
-        txtSoNguoi.setText(table.getValueAt(row, 4).toString());
-        cmbTrangThai.setSelectedItem(table.getValueAt(row, 5).toString());
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-
+        switch (buttonLabel) {
+            case "Thêm":
+                addPhong();
+                break;
+            case "Sửa":
+                break;
+            case "Xóa":
+                break;
+            case "Làm mới":
+                break;
+        }
     }
 }

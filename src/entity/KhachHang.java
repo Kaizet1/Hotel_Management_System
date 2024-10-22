@@ -8,10 +8,6 @@ public class KhachHang {
     private String email;
     private String cCCD;
 
-    public KhachHang() {
-
-    }
-
     public String getMaKH() {
         return maKH;
     }
@@ -73,6 +69,7 @@ public class KhachHang {
     public KhachHang(String maKH) {
         this(maKH, "hoTen", "diaChi", "sdt", "email", "cCCD");
     }
+
 
     @Override
     public int hashCode() {

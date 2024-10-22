@@ -10,8 +10,9 @@ import java.awt.event.MouseEvent;
 public class SubMenuPanel extends JPanel {
     private static final long serialVersionUID = 1L;
     private RoundedButton selectedSubMenu = null;
-
+    private JPanel centerPanel;
     public SubMenuPanel(String[][] subItems, CardLayout cardLayout, JPanel centerPanel, RoundedButton parentMenuButton, GiaoDienChinh_GUI parentFrame) {
+        this.centerPanel = centerPanel;
         setOpaque(false);
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         add(Box.createVerticalStrut(5));
@@ -47,15 +48,15 @@ public class SubMenuPanel extends JPanel {
 
                 @Override
                 public void mouseClicked(MouseEvent e) {
-                	if (parentFrame.selectedButton != parentMenuButton) {
+                    if (parentFrame.selectedButton != parentMenuButton) {
                         parentFrame.selectedButton.setBackground(new Color(24, 24, 28));
                         parentFrame.selectedButton = parentMenuButton;
                         parentFrame.selectedButton.setBackground(new Color(91, 122, 249));
                         parentFrame.updateButtonColor();
                     }
-                	if (parentFrame.pageLabel.getText() != item[0].toUpperCase()) {
-                		parentFrame.pageLabel.setText(item[0].toUpperCase());
-                	}
+                    if (parentFrame.pageLabel.getText() != item[0].toUpperCase()) {
+                        parentFrame.pageLabel.setText(item[0].toUpperCase());
+                    }
                     if (selectedSubMenu != subMenuButton) {
                         if (selectedSubMenu != null) {
                             selectedSubMenu.setForeground(new Color(148, 148, 148));
@@ -65,10 +66,15 @@ public class SubMenuPanel extends JPanel {
                         selectedSubMenu.setBackground(new Color(34, 34, 38));
                         selectedSubMenu.setForeground(new Color(91, 122, 249));
                         cardLayout.show(centerPanel, item[1]);
+                        int index = getCardIndex(item[1]);
+                        if (index != -1) {
+                            JPanel selectedPanel = (JPanel) centerPanel.getComponent(index);
+                            if (selectedPanel instanceof Openable) {
+                                ((Openable) selectedPanel).open();
+                            }
+                        }
                     }
 
-                    // Cập nhật nút cha trong GiaoDienChinh
-                    
                 }
             });
 
@@ -77,13 +83,24 @@ public class SubMenuPanel extends JPanel {
         }
     }
 
-	public RoundedButton getSelectedSubMenu() {
-		return selectedSubMenu;
-	}
+    private int getCardIndex(String cardName) {
 
-	public void setSelectedSubMenu(RoundedButton selectedSubMenu) {
-		this.selectedSubMenu = selectedSubMenu;
-	}
-    
-    
+        for (int i = 0; i < centerPanel.getComponentCount(); i++) {
+            if (cardName.equals(centerPanel.getComponent(i).getName())) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+
+    public RoundedButton getSelectedSubMenu() {
+        return selectedSubMenu;
+    }
+
+    public void setSelectedSubMenu(RoundedButton selectedSubMenu) {
+        this.selectedSubMenu = selectedSubMenu;
+    }
+
+
 }

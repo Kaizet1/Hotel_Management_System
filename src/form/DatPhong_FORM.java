@@ -5,7 +5,9 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
@@ -16,9 +18,9 @@ import javax.swing.table.TableColumn;
 import customElements.*;
 import dao.KhachHang_DAO;
 import dao.LoaiPhong_DAO;
+import dao.PhieuDatPhong_DAO;
 import dao.Phong_DAO;
-import entity.KhachHang;
-import entity.LoaiPhong;
+import entity.*;
 import org.jdesktop.swingx.JXDatePicker;
 
 public class DatPhong_FORM extends JPanel {
@@ -44,8 +46,9 @@ public class DatPhong_FORM extends JPanel {
     JXDatePicker dateNgayDat, dateNgaySinh;
     JComboBox<String> cmbLoaiPhong, cmbSoPhong;
     JTextField txtSDT, txtTenKhachHang, txtEmail, txtCCCD, txtTenPhong, txtSoKhach;
-
+    PhieuDatPhong_DAO phieuDatPhongDao;
     public DatPhong_FORM() {
+        phieuDatPhongDao = new PhieuDatPhong_DAO();
         setLayout(new BorderLayout());
         setBackground(new Color(16, 16, 20));
         // north
@@ -388,50 +391,64 @@ public class DatPhong_FORM extends JPanel {
         return b;
     }
 
+    public String taoMaPDP() {
+        // Lấy năm hiện tại
+        int namHienTai = Calendar.getInstance().get(Calendar.YEAR);
+
+        // Tạo số ngẫu nhiên từ 0 đến 999
+        Random random = new Random();
+        int soNgauNhien = random.nextInt(1000);
+
+        // Định dạng chuỗi YYY để luôn có 3 chữ số
+        String maPDP = String.format("PDP%d-%03d", namHienTai, soNgauNhien);
+
+        return maPDP;
+    }
 
     private void handleSubmit() {
-        // Lấy giá trị từ các trường nhập liệu
         Date ngayDat = dateNgayDat.getDate();
         Date ngayDen = dateTimeNgayDen.getDate();
         Date ngayDi = dateTimeNgayDi.getDate();
-        String sdt = txtSDT.getText();
+        String sdt = txtSDT.getText().trim();
         Date ngaySinh = dateNgaySinh.getDate();
-        String tenKhachHang = txtTenKhachHang.getText();
-        String email = txtEmail.getText();
-        String cccd = txtCCCD.getText();
+        String tenKhachHang = txtTenKhachHang.getText().trim();
+        String email = txtEmail.getText().trim();
+        String cccd = txtCCCD.getText().trim();
         String loaiPhong = (String) cmbLoaiPhong.getSelectedItem();
         String soPhong = (String) cmbSoPhong.getSelectedItem();
-        String tenPhong = txtTenPhong.getText();
-        String soKhach = txtSoKhach.getText();
+        String tenPhong = txtTenPhong.getText().trim();
+        String soKhach = txtSoKhach.getText().trim();
 
-        // In ra thông tin
-        System.out.println("Ngày đặt: " + ngayDat);
-        System.out.println("Ngày đến: " + ngayDen);
-        System.out.println("Ngày đi: " + ngayDi);
-        System.out.println("Số điện thoại: " + sdt);
-        System.out.println("Ngày sinh: " + ngaySinh);
-        System.out.println("Tên khách hàng: " + tenKhachHang);
-        System.out.println("Email: " + email);
-        System.out.println("CCCD: " + cccd);
-        System.out.println("Loại phòng: " + loaiPhong);
-        System.out.println("Số phòng: " + soPhong);
-        System.out.println("Tên phòng: " + tenPhong);
-        System.out.println("Số khách: " + soKhach);
+        if (ngayDat == null || ngayDen == null || ngayDi == null || ngaySinh == null || sdt.isEmpty() ||
+                tenKhachHang.isEmpty() || cccd.isEmpty() ||
+                loaiPhong.equals("Chọn") || soPhong.equals("Chọn") || soKhach.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng điền đủ thông tin.", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        Phong p = new Phong(soPhong);
+        NhanVien nv = new NhanVien("ADMIN");
+        nv.setHoTen("ADMIN");
+        KhachHang kh = new KhachHang("maKH");
+        kh.setHoTen(tenKhachHang);
+        PhieuDatPhong phieuDatPhong = new PhieuDatPhong(taoMaPDP(), p, nv, kh, ngayDi, ngayDen, ngayDat, 0);
+        if (phieuDatPhongDao.datPhong(phieuDatPhong)){
+            JOptionPane.showMessageDialog(this, "Đã đặt phòng thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        }else {
+            JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi đặt phòng!", "Thông báo", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
-    // Phương thức xử lý sự kiện refresh
     private void handleRefresh() {
-        // Làm sạch tất cả các trường nhập liệu
-        dateNgayDat.setDate(new Date()); // Đặt lại ngày đặt về hiện tại
-        dateTimeNgayDen.setDate(new Date()); // Đặt lại ngày đến về hiện tại
-        dateTimeNgayDi.setDate(new Date()); // Đặt lại ngày đi về hiện tại
+        dateNgayDat.setDate(new Date());
+        dateTimeNgayDen.setDate(new Date());
+        dateTimeNgayDi.setDate(new Date());
         dateNgaySinh.setDate(new Date());
         txtSDT.setText("");
         txtTenKhachHang.setText("");
         txtEmail.setText("");
         txtCCCD.setText("");
-        cmbLoaiPhong.setSelectedIndex(0); // Đặt lại chỉ số về mặc định
-        cmbSoPhong.setSelectedIndex(0); // Đặt lại chỉ số về mặc định
+        cmbLoaiPhong.setSelectedIndex(0);
+        cmbSoPhong.setSelectedIndex(0);
         txtTenPhong.setText("");
         txtSoKhach.setText("");
     }

@@ -55,9 +55,11 @@ public class KhachHang_DAO {
     }
 
     public KhachHang timKiem(String maKH) {
-        KhachHang kh = new KhachHang(maKH);
-        if (dsKH.contains(kh)) {
-            return dsKH.get(dsKH.indexOf(kh));
+        for (KhachHang kh : dsKH) {
+
+            if (kh.getMaKH().equalsIgnoreCase(maKH)) {
+                return kh;
+            }
         }
         return null;
     }

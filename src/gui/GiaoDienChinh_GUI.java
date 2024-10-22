@@ -22,6 +22,7 @@ import javax.swing.UIManager;
 import javax.swing.border.Border;
 
 import customElements.FontManager;
+import customElements.Openable;
 import customElements.RoundedButton;
 import customElements.SubMenuPanel;
 import form.*;
@@ -154,11 +155,20 @@ public class GiaoDienChinh_GUI extends JFrame {
 				@Override
 				public void mouseClicked(MouseEvent e) {
 					if (selectedButton != menuButton && subItems == null) {
+						// Thay đổi màu của menu được chọn
 						selectedButton.setBackground(new Color(24, 24, 28));
 						selectedButton = menuButton;
 						selectedButton.setBackground(new Color(91, 122, 249));
 						pageLabel.setText(item[0].toUpperCase());
+
+						// Chuyển sang trang tương ứng
 						cardLayout.show(centerPanel, item[2]);
+
+						JPanel selectedPanel = (JPanel) centerPanel.getComponent(getCardIndex(item[2]));
+						if (selectedPanel instanceof Openable) {
+							((Openable) selectedPanel).open();
+						}
+
 						updateButtonColor();
 					}
 				}
@@ -206,6 +216,15 @@ public class GiaoDienChinh_GUI extends JFrame {
 		return sidebar;
 	}
 
+	private int getCardIndex(String cardName) {
+		for (int i = 0; i < centerPanel.getComponentCount(); i++) {
+			if (centerPanel.getComponent(i).getName().equals(cardName)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
 	private JPanel createLeftHeader() {
 		JPanel leftHeader = new JPanel(null);
 		leftHeader.setPreferredSize(new Dimension(1360, 80));
@@ -250,13 +269,22 @@ public class GiaoDienChinh_GUI extends JFrame {
 		// Các màn hình
 		JPanel trangChuPanel = new TrangChu_FORM();
 		JPanel datPhongPanel = new DatPhong_FORM();
-		JPanel huyDatPhongPanel = new JPanel();
+		JPanel huyDatPhongPanel = new HuyDatPhong_FORM();
 		JPanel timKiemPhongPanel = new TimKiemPhong_FORM();
 		JPanel capNhatPhongPanel = new CapNhatPhong_FORM();
 
 		JPanel timKiemKhachHangPanel = new TimKiemKhachHang_FORM();
 		JPanel capNhatKhachHangPanel = new CapNhatKhachHang_FORM();
 		JPanel lapHoaDonPanel = new LapHoaDon_FORM();
+
+		trangChuPanel.setName("TrangChu");
+		datPhongPanel.setName("DatPhong");
+		huyDatPhongPanel.setName("HuyDatPhong");
+		timKiemPhongPanel.setName("TimKiemPhong");
+		capNhatPhongPanel.setName("CapNhatPhong");
+		timKiemKhachHangPanel.setName("TimKiemKhachHang");
+		capNhatKhachHangPanel.setName("CapNhatKhach");
+		lapHoaDonPanel.setName("LapHoaDon");
 		// Thêm màn hình
 		center.add(trangChuPanel, "TrangChu");
 		center.add(datPhongPanel, "DatPhong");

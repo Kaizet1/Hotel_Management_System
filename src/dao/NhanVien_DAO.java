@@ -1,13 +1,47 @@
 package dao;
 
+import connectDB.ConnectDB;
+import entity.KhachHang;
 import entity.NhanVien;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class NhanVien_DAO {
     private ArrayList<NhanVien> dsNV;
     public NhanVien_DAO (){
         dsNV = new ArrayList<NhanVien>();
+    }
+
+    public ArrayList<NhanVien> getDSNhanVien() {
+        try{
+            Connection con = ConnectDB.getInstance().getConnection();
+            String sql = "select * from NhanVien";
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            while (rs.next()){
+                String maNV = rs.getString("maNV");
+                String hoTen = rs.getString("hoTen");
+                String chucVu = rs.getString("chucVu");
+                Date ngaySinh = rs.getDate("ngaySinh");
+                Date ngayVaoLam = rs.getDate("ngayVaoLam");
+                String SDT = rs.getString("SDT");
+                String diaChi = rs.getString("diaChi");
+                String email = rs.getString("email");
+                double luongCoBan = rs.getDouble("luongCoBan");
+                double heSoLuong = rs.getDouble("heSoLuong");
+                NhanVien nv= new NhanVien(maNV, hoTen, chucVu, SDT, diaChi, email, ngaySinh, ngayVaoLam, luongCoBan, heSoLuong);
+                dsNV.add(nv);
+            }
+
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return dsNV;
     }
     //them mot nhan vien
     public boolean themNV(NhanVien nv) {
@@ -34,10 +68,14 @@ public class NhanVien_DAO {
         return dsNV.get(i);
     }
     //tim kiem NV
-    public NhanVien timKiem (String maNV) {
-        NhanVien nv = new NhanVien(maNV);
-        if (dsNV.contains(nv))
-            return dsNV.get(dsNV.indexOf(nv));
+    public NhanVien timKiem(String maKH) {
+        for (NhanVien nv : dsNV) {
+
+
+            if (nv.getMaNV().equalsIgnoreCase(maKH)) {
+                return nv;
+            }
+        }
         return null;
     }
     //cap nhat nhan vien

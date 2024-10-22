@@ -60,7 +60,7 @@ public class Phong_DAO {
     }
 
     public String getTenPhongBySoPhong(String soPhong) {
-        String query = "SELECT tenPhong FROM Phong WHERE maPhong = ?"; // Thay đổi theo cấu trúc database của bạn
+        String query = "SELECT tenPhong FROM Phong WHERE maPhong = ?";
         Connection con = ConnectDB.getInstance().getConnection();
         try (PreparedStatement stmt = con.prepareStatement(query)) {
             stmt.setString(1, soPhong);
@@ -81,14 +81,14 @@ public class Phong_DAO {
 
         // Kết nối cơ sở dữ liệu
         Connection con = ConnectDB.getInstance().getConnection();
-        String sql = "SELECT p.maPhong FROM Phong p join PhieuDatPhong pdp on p.maPhong = pdp.maPhong where p.tinhTrang <> 3";
+        String sql = "SELECT maPhong FROM PhieuDatPhong WHERE (ngayDen < ? AND ngayDi > ?) OR (ngayDen > ? AND ngayDi < ?) AND tinhTrangPDP <> 2";
 
         try {
             PreparedStatement stmt = con.prepareStatement(sql);
-//            stmt.setDate(1, new java.sql.Date(ngayDen.getTime()));
-//            stmt.setDate(2, new java.sql.Date(ngayDen.getTime()));
-//            stmt.setDate(3, new java.sql.Date(ngayDi.getTime()));
-//            stmt.setDate(4, new java.sql.Date(ngayDi.getTime()));
+            stmt.setDate(1, new java.sql.Date(ngayDen.getTime()));
+            stmt.setDate(2, new java.sql.Date(ngayDi.getTime()));
+            stmt.setDate(3, new java.sql.Date(ngayDen.getTime()));
+            stmt.setDate(4, new java.sql.Date(ngayDi.getTime()));
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {

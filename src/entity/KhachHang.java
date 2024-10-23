@@ -1,5 +1,7 @@
 package entity;
 
+import java.util.Date;
+
 public class KhachHang {
     private String maKH;
     private String hoTen;
@@ -7,6 +9,7 @@ public class KhachHang {
     private String sdt;
     private String email;
     private String cCCD;
+    private Date ngaySinh;
 
     public String getMaKH() {
         return maKH;
@@ -56,18 +59,26 @@ public class KhachHang {
         this.cCCD = cCCD;
     }
 
-    public KhachHang(String maKH, String hoTen, String diaChi, String sdt, String email, String cCCD) {
+    public Date getNgaySinh() {
+        return ngaySinh;
+    }
 
+    public void setNgaySinh(Date ngaySinh) {
+        this.ngaySinh = ngaySinh;
+    }
+
+    public KhachHang(String maKH, String hoTen, String diaChi, String sdt, String email, String cCCD, Date ngaySinh) {
         this.maKH = maKH;
         this.hoTen = hoTen;
         this.diaChi = diaChi;
         this.sdt = sdt;
         this.email = email;
         this.cCCD = cCCD;
+        this.ngaySinh = ngaySinh;
     }
 
     public KhachHang(String maKH) {
-        this(maKH, "hoTen", "diaChi", "sdt", "email", "cCCD");
+        this(maKH, "hoTen", "diaChi", "sdt", "email", "cCCD", new Date());
     }
 
 

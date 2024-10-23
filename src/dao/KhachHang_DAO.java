@@ -27,7 +27,8 @@ public class KhachHang_DAO {
                 String SDT = rs.getString("SDT");
                 String soCCCD = rs.getString("soCCCD");
                 String email = rs.getString("email");
-                KhachHang kh= new KhachHang(maKH, tenKH, diaChi, SDT, email, soCCCD);
+                Date ngaySinh = rs.getDate("ngaySinh");
+                KhachHang kh= new KhachHang(maKH, tenKH, diaChi, SDT, email, soCCCD, ngaySinh);
                 dsKH.add(kh);
             }
 
@@ -56,8 +57,9 @@ public class KhachHang_DAO {
 
     public KhachHang timKiem(String maKH) {
         for (KhachHang kh : dsKH) {
-
+            System.out.println(kh.getMaKH());
             if (kh.getMaKH().equalsIgnoreCase(maKH)) {
+
                 return kh;
             }
         }
@@ -79,7 +81,8 @@ public class KhachHang_DAO {
                 String diaChi = rs.getString("diaChi");
                 String email = rs.getString("email");
                 String soCCCD = rs.getString("soCCCD");
-                kh = new KhachHang(maKH, tenKH, diaChi, SDT, email, soCCCD);
+                Date ngaySinh = rs.getDate("ngaySinh");
+                kh = new KhachHang(maKH, tenKH, diaChi, SDT, email, soCCCD, ngaySinh);
             }
 
         } catch (SQLException e) {

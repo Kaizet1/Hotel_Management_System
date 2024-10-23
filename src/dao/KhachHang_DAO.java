@@ -57,7 +57,6 @@ public class KhachHang_DAO {
 
     public KhachHang timKiem(String maKH) {
         for (KhachHang kh : dsKH) {
-            System.out.println(kh.getMaKH());
             if (kh.getMaKH().equalsIgnoreCase(maKH)) {
 
                 return kh;
@@ -66,13 +65,13 @@ public class KhachHang_DAO {
         return null;
     }
 
-    public KhachHang searchKhachHangBangSDT(String SDT) {
+    public KhachHang searchKhachHangBangCCCD(String cccd) {
         KhachHang kh = null;
         try {
             Connection con = ConnectDB.getInstance().getConnection();
-            String sql = "SELECT * FROM KhachHang WHERE SDT = ?";
+            String sql = "SELECT * FROM KhachHang WHERE soCCCD = ?";
             PreparedStatement pst = con.prepareStatement(sql);
-            pst.setString(1, SDT);
+            pst.setString(1, cccd);
             ResultSet rs = pst.executeQuery();
 
             if (rs.next()) {
@@ -80,15 +79,33 @@ public class KhachHang_DAO {
                 String tenKH = rs.getString("hoTen");
                 String diaChi = rs.getString("diaChi");
                 String email = rs.getString("email");
-                String soCCCD = rs.getString("soCCCD");
+                String sdt = rs.getString("SDT");
                 Date ngaySinh = rs.getDate("ngaySinh");
-                kh = new KhachHang(maKH, tenKH, diaChi, SDT, email, soCCCD, ngaySinh);
+                kh = new KhachHang(maKH, tenKH, diaChi, sdt, email, cccd, ngaySinh);
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return kh;
+    }
+
+    public boolean isKhachHangTonTai(String cccd) {
+        try {
+            Connection con = ConnectDB.getInstance().getConnection();
+            String sql = "SELECT * FROM KhachHang WHERE soCCCD = ?";
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setString(1, cccd);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                return true;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+       return false;
     }
 
 

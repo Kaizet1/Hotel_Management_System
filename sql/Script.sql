@@ -11,7 +11,8 @@ create table KhachHang(
 	diaChi nvarchar(200) not null,
 	SDT varchar(15) not null,
 	soCCCD varchar(20) not null unique,
-	email varchar(30) 
+	email varchar(30) ,
+	ngaySinh Date not null,
 )
 
 --nhan vien
@@ -35,7 +36,7 @@ create table TaiKhoan (
 )
 --loai phong
 create table LoaiPhong(
-	loaiPhong nvarchar(50) primary key,
+	tenLoai nvarchar(50) primary key,
 	moTa nvarchar(200)
 )
 
@@ -133,7 +134,7 @@ FOREIGN KEY (maNV) REFERENCES NhanVien(maNV);
 
 ALTER TABLE Phong
 ADD CONSTRAINT FK_Phong_LoaiPhong
-FOREIGN KEY (loaiPhong) REFERENCES LoaiPhong(loaiPhong);
+FOREIGN KEY (loaiPhong) REFERENCES LoaiPhong(tenLoai);
 
 ALTER TABLE HoaDon
 ADD CONSTRAINT CK__HoaDon__ngayNhan__59FA5E80 CHECK (ngayNhanPhong <= ngayLapHD);
@@ -176,28 +177,28 @@ FOREIGN KEY (maDV) REFERENCES DichVu(maDV);
 
 --chen du lieu
 --khach hang
-INSERT INTO KhachHang (maKH, hoTen, diaChi, SDT, soCCCD, email)
+INSERT INTO KhachHang (maKH, hoTen, diaChi, SDT, soCCCD, email, ngaySinh)
 VALUES
-('24-AA01', N'Trần Quốc Khánh', N'123 Lý Thường Kiệt, Quận 1, TP.HCM', '0909123456', '123456789012', 'tranquockhanh@gmail.com'),
-('24-BB02', N'Nguyễn Thị Thanh Hương', N'456 Nguyễn Trãi, Quận 5, TP.HCM', '0908123456', '234567890123', 'nguyenthihuong@gmail.com'),
-('24-CC03', N'Lê Hoàng Nam', N'789 Võ Văn Tần, Quận 3, TP.HCM', '0307123456', '345678901234', 'lehoangnam@gmail.com'),
-('24-DD04', N'Phan Thị Bích Ngọc', N'12 Cách Mạng Tháng 8, Quận 10, TP.HCM', '0906123456', '456789012345', 'phanbichngoc@gmail.com'),
-('24-EE05', N'Huỳnh Ngọc Minh', N'321 Lê Lợi, Quận 1, TP.HCM', '0905123456', '567890123456', 'huynhngocminh@gmail.com'),
-('24-FF06', N'Vũ Văn Hùng', N'654 Trần Hưng Đạo, Quận 1, TP.HCM', '0904123456', '678901234567', 'vuvanhung@gmail.com'),
-('24-GG07', N'Đinh Thị Thu Trang', N'87 Hai Bà Trưng, Quận 3, TP.HCM', '0903123456', '789012345678', 'dinhthutrang@gmail.com'),
-('24-HH08', N'Nguyễn Phúc Thịnh', N'123 Pasteur, Quận 1, TP.HCM', '0902123456', '890123456789', 'nguyenphucthinh@gmail.com'),
-('24-II09', N'Trịnh Công Dũng', N'45 Nguyễn Huệ, Quận 1, TP.HCM', '0901123456', '901234567890', 'trinhcongdung@gmail.com'),
-('24-JJ10', N'Phạm Văn Thắng', N'98 Đường 3 Tháng 2, Quận 10, TP.HCM', '0711123456', '012345678901', 'phamvanthang@gmail.com'),
-('24-KK11', N'Lý Thị Minh Châu', N'123 Bạch Đằng, Quận Bình Thạnh, TP.HCM', '0312123456', '111234567890', 'lyminhchau@gmail.com'),
-('24-LL12', N'Bùi Quang Vinh', N'567 Điện Biên Phủ, Quận Bình Thạnh, TP.HCM', '0913123456', '222345678901', 'buiquangvinh@gmail.com'),
-('24-MM13', N'Ngô Văn Hải', N'432 Xô Viết Nghệ Tĩnh, Quận Bình Thạnh, TP.HCM', '0914123456', '333456789012', 'ngovanhai@gmail.com'),
-('23-NN14', N'Đoàn Thị Mỹ Linh', N'876 Nguyễn Văn Trỗi, Quận Phú Nhuận, TP.HCM', '0315123456', '444567890123', 'doanmylinh@gmail.com'),
-('23-OO15', N'Phan Thanh Hà', N'12 Hoàng Sa, Quận 3, TP.HCM', '0916123456', '555678901234', 'phanthanhha@gmail.com'),
-('23-PP16', N'Trương Quốc Bảo', N'34 Trường Sa, Quận Phú Nhuận, TP.HCM', '0717123456', '666789012345', 'truongquocbao@gmail.com'),
-('23-QQ17', N'Hoàng Thanh Tú', N'789 Lê Hồng Phong, Quận 10, TP.HCM', '0918123456', '777890123456', 'hoangthanhtu@gmail.com'),
-('23-RR18', N'Võ Minh Tuấn', N'23 Nguyễn Đình Chiểu, Quận 3, TP.HCM', '0919123456', '888901234567', 'vomintuan@gmail.com'),
-('23-SS19', N'Đỗ Thị Hồng Vân', N'654 Võ Thị Sáu, Quận 3, TP.HCM', '0720123456', '999012345678', 'dothihongvan@gmail.com'),
-('23-TT20', N'Lê Văn Tài', N'76 Nam Kỳ Khởi Nghĩa, Quận 1, TP.HCM', '0921123456', '000123456789', 'levantai@gmail.com');
+('24-AA01', N'Trần Quốc Khánh', N'123 Lý Thường Kiệt, Quận 1, TP.HCM', '0909123456', '123456789012', 'tranquockhanh@gmail.com', '1985-04-15'),
+('24-BB02', N'Nguyễn Thị Thanh Hương', N'456 Nguyễn Trãi, Quận 5, TP.HCM', '0908123456', '234567890123', 'nguyenthihuong@gmail.com', '1990-07-22'),
+('24-CC03', N'Lê Hoàng Nam', N'789 Võ Văn Tần, Quận 3, TP.HCM', '0307123456', '345678901234', 'lehoangnam@gmail.com', '1987-03-10'),
+('24-DD04', N'Phan Thị Bích Ngọc', N'12 Cách Mạng Tháng 8, Quận 10, TP.HCM', '0906123456', '456789012345', 'phanbichngoc@gmail.com', '1992-11-30'),
+('24-EE05', N'Huỳnh Ngọc Minh', N'321 Lê Lợi, Quận 1, TP.HCM', '0905123456', '567890123456', 'huynhngocminh@gmail.com', '1983-09-05'),
+('24-FF06', N'Vũ Văn Hùng', N'654 Trần Hưng Đạo, Quận 1, TP.HCM', '0904123456', '678901234567', 'vuvanhung@gmail.com', '1986-02-25'),
+('24-GG07', N'Đinh Thị Thu Trang', N'87 Hai Bà Trưng, Quận 3, TP.HCM', '0903123456', '789012345678', 'dinhthutrang@gmail.com', '1991-08-19'),
+('24-HH08', N'Nguyễn Phúc Thịnh', N'123 Pasteur, Quận 1, TP.HCM', '0902123456', '890123456789', 'nguyenphucthinh@gmail.com', '1984-12-05'),
+('24-II09', N'Trịnh Công Dũng', N'45 Nguyễn Huệ, Quận 1, TP.HCM', '0901123456', '901234567890', 'trinhcongdung@gmail.com', '1995-06-17'),
+('24-JJ10', N'Phạm Văn Thắng', N'98 Đường 3 Tháng 2, Quận 10, TP.HCM', '0711123456', '012345678901', 'phamvanthang@gmail.com', '1989-05-02'),
+('24-KK11', N'Lý Thị Minh Châu', N'123 Bạch Đằng, Quận Bình Thạnh, TP.HCM', '0312123456', '111234567890', 'lyminhchau@gmail.com', '1993-01-27'),
+('24-LL12', N'Bùi Quang Vinh', N'567 Điện Biên Phủ, Quận Bình Thạnh, TP.HCM', '0913123456', '222345678901', 'buiquangvinh@gmail.com', '1988-10-14'),
+('24-MM13', N'Ngô Văn Hải', N'432 Xô Viết Nghệ Tĩnh, Quận Bình Thạnh, TP.HCM', '0914123456', '333456789012', 'ngovanhai@gmail.com', '1994-04-21'),
+('23-NN14', N'Đoàn Thị Mỹ Linh', N'876 Nguyễn Văn Trỗi, Quận Phú Nhuận, TP.HCM', '0315123456', '444567890123', 'doanmylinh@gmail.com', '1985-11-09'),
+('23-OO15', N'Phan Thanh Hà', N'12 Hoàng Sa, Quận 3, TP.HCM', '0916123456', '555678901234', 'phanthanhha@gmail.com', '1990-03-30'),
+('23-PP16', N'Trương Quốc Bảo', N'34 Trường Sa, Quận Phú Nhuận, TP.HCM', '0717123456', '666789012345', 'truongquocbao@gmail.com', '1987-07-12'),
+('23-QQ17', N'Hoàng Thanh Tú', N'789 Lê Hồng Phong, Quận 10, TP.HCM', '0918123456', '777890123456', 'hoangthanhtu@gmail.com', '1992-02-18'),
+('23-RR18', N'Võ Minh Tuấn', N'23 Nguyễn Đình Chiểu, Quận 3, TP.HCM', '0919123456', '888901234567', 'vomintuan@gmail.com', '1986-09-03'),
+('23-SS19', N'Đỗ Thị Hồng Vân', N'654 Võ Thị Sáu, Quận 3, TP.HCM', '0720123456', '999012345678', 'dothihongvan@gmail.com', '1988-12-22'),
+('23-TT20', N'Lê Văn Tài', N'76 Nam Kỳ Khởi Nghĩa, Quận 1, TP.HCM', '0921123456', '000123456789', 'levantai@gmail.com', '1984-07-01');
 
 --nhan vien
 INSERT INTO NhanVien (maNV, hoTen, chucVu, ngaySinh, ngayVaoLam, SDT, diaChi, email, luongCoBan, heSoLuong)
@@ -250,46 +251,46 @@ VALUES
 ('phanthang', 'S@wer0', '17-MN90');
 
 --loai phong
-INSERT INTO LoaiPhong (loaiPhong, moTa)
+INSERT INTO LoaiPhong (tenLoai, moTa)
 VALUES
-('Standard', N'Phòng tiêu chuẩn với các tiện nghi cơ bản.'),
-('Superior', N'Phòng cao cấp hơn với tiện nghi tốt hơn.'),
-('Deluxe', N'Phòng sang trọng với dịch vụ hoàn hảo.'),
-('Suite', N'Phòng suite lớn với nhiều không gian và tiện nghi cao cấp.');
+(N'Phòng Đơn', N'Phòng đơn dành cho một người.'),
+(N'Phòng Đôi', N'Phòng dành cho hai người.'),
+(N'Phòng Gia Đình', N'Phòng dành cho gia đình từ ba người đến năm người.'),
+(N'Phòng VIP', N'Phòng VIP sang trọng với dịch vụ hoàn hảo.');
 
 --phong
 INSERT INTO Phong (maPhong, tenPhong, giaPhong, tinhTrang, soNguoi, moTa, loaiPhong)
 VALUES
-('A001', N'Phòng Đơn A1', 500000, 0, 1, N'Phòng đơn cho 1 người.', 'Standard'),
-('A002', N'Phòng Đơn A2', 550000, 1, 1, N'Phòng đơn với tầm nhìn đẹp.', 'Superior'),
-('A003', N'Phòng Đôi A3', 800000, 2, 2, N'Phòng đôi cho 2 người.', 'Deluxe'),
-('A004', N'Phòng Đôi A4', 850000, 0, 2, N'Phòng đôi tiện nghi.', 'Standard'),
-('A005', N'Phòng Gia Đình A5', 1200000, 3, 4, N'Phòng gia đình cho 4 người.', 'Suite'),
-('A006', N'Phòng VIP A6', 1500000, 0, 2, N'Phòng VIP với đầy đủ tiện nghi.', 'Deluxe'),
-('B001', N'Phòng Đơn B1', 520000, 0, 1, N'Phòng đơn yên tĩnh.', 'Standard'),
-('B002', N'Phòng Đơn B2', 570000, 1, 1, N'Phòng đơn gần hồ bơi.', 'Superior'),
-('B003', N'Phòng Đôi B3', 820000, 2, 2, N'Phòng đôi có ban công.', 'Deluxe'),
-('B004', N'Phòng Đôi B4', 870000, 0, 2, N'Phòng đôi thoáng mát.', 'Standard'),
-('B005', N'Phòng Gia Đình B5', 1250000, 3, 4, N'Phòng gia đình rộng rãi.', 'Suite'),
-('B006', N'Phòng VIP B6', 1550000, 0, 2, N'Phòng VIP sang trọng.', 'Deluxe'),
-('C001', N'Phòng Đơn C1', 540000, 0, 1, N'Phòng đơn với nội thất hiện đại.', 'Standard'),
-('C002', N'Phòng Đơn C2', 590000, 1, 1, N'Phòng đơn gần khu ăn uống.', 'Superior'),
-('C003', N'Phòng Đôi C3', 840000, 2, 2, N'Phòng đôi phong cách cổ điển.', 'Deluxe'),
-('C004', N'Phòng Đôi C4', 890000, 0, 2, N'Phòng đôi với dịch vụ cao cấp.', 'Standard'),
-('C005', N'Phòng Gia Đình C5', 1300000, 3, 4, N'Phòng gia đình tiện nghi.', 'Suite'),
-('C006', N'Phòng VIP C6', 1600000, 0, 2, N'Phòng VIP riêng biệt.', 'Deluxe'),
-('D001', N'Phòng Đơn D1', 530000, 0, 1, N'Phòng đơn thanh lịch.', 'Standard'),
-('D002', N'Phòng Đơn D2', 580000, 1, 1, N'Phòng đơn ấm cúng.', 'Superior'),
-('D003', N'Phòng Đôi D3', 830000, 2, 2, N'Phòng đôi có view đẹp.', 'Deluxe'),
-('D004', N'Phòng Đôi D4', 880000, 0, 2, N'Phòng đôi tiện lợi.', 'Standard'),
-('D005', N'Phòng Gia Đình D5', 1350000, 3, 4, N'Phòng gia đình thoải mái.', 'Suite'),
-('D006', N'Phòng VIP D6', 1650000, 0, 2, N'Phòng VIP với phong cách độc đáo.', 'Deluxe'),
-('E001', N'Phòng Đơn E1', 510000, 0, 1, N'Phòng đơn thanh tĩnh.', 'Standard'),
-('E002', N'Phòng Đơn E2', 560000, 1, 1, N'Phòng đơn với giường đôi.', 'Superior'),
-('E003', N'Phòng Đôi E3', 810000, 2, 2, N'Phòng đôi có bồn tắm.', 'Deluxe'),
-('E004', N'Phòng Đôi E4', 860000, 0, 2, N'Phòng đôi với minibar.', 'Standard'),
-('E005', N'Phòng Gia Đình E5', 1400000, 3, 4, N'Phòng gia đình tiện lợi.', 'Suite'),
-('E006', N'Phòng VIP E6', 1700000, 0, 2, N'Phòng VIP với dịch vụ đặc biệt.', 'Deluxe');
+('A001', N'Phòng Đơn A1', 500000, 0, 1, N'Phòng đơn cho 1 người.', N'Phòng Đơn'),
+('A002', N'Phòng Đơn A2', 550000, 1, 1, N'Phòng đơn với tầm nhìn đẹp.', N'Phòng Đơn'),
+('A003', N'Phòng Đôi A3', 800000, 2, 2, N'Phòng đôi cho 2 người.', N'Phòng Đôi'),
+('A004', N'Phòng Đôi A4', 850000, 0, 2, N'Phòng đôi tiện nghi.', N'Phòng Đôi'),
+('A005', N'Phòng Gia Đình A5', 1200000, 3, 4, N'Phòng gia đình cho 4 người.', N'Phòng Gia Đình'),
+('A006', N'Phòng VIP A6', 1500000, 0, 2, N'Phòng VIP với đầy đủ tiện nghi.', N'Phòng VIP'),
+('B001', N'Phòng Đơn B1', 520000, 0, 1, N'Phòng đơn yên tĩnh.', N'Phòng Đơn'),
+('B002', N'Phòng Đơn B2', 570000, 1, 1, N'Phòng đơn gần hồ bơi.', N'Phòng Đơn'),
+('B003', N'Phòng Đôi B3', 820000, 2, 2, N'Phòng đôi có ban công.', N'Phòng Đôi'),
+('B004', N'Phòng Đôi B4', 870000, 0, 2, N'Phòng đôi thoáng mát.', N'Phòng Đôi'),
+('B005', N'Phòng Gia Đình B5', 1250000, 3, 4, N'Phòng gia đình rộng rãi.', N'Phòng Gia Đình'),
+('B006', N'Phòng VIP B6', 1550000, 0, 2, N'Phòng VIP sang trọng.', N'Phòng VIP'),
+('C001', N'Phòng Đơn C1', 540000, 0, 1, N'Phòng đơn với nội thất hiện đại.', N'Phòng Đơn'),
+('C002', N'Phòng Đơn C2', 590000, 1, 1, N'Phòng đơn gần khu ăn uống.', N'Phòng Đơn'),
+('C003', N'Phòng Đôi C3', 840000, 2, 2, N'Phòng đôi phong cách cổ điển.', N'Phòng Đôi'),
+('C004', N'Phòng Đôi C4', 890000, 0, 2, N'Phòng đôi với dịch vụ cao cấp.', N'Phòng Đôi'),
+('C005', N'Phòng Gia Đình C5', 1300000, 3, 4, N'Phòng gia đình tiện nghi.', N'Phòng Gia Đình'),
+('C006', N'Phòng VIP C6', 1600000, 0, 2, N'Phòng VIP riêng biệt.', N'Phòng VIP'),
+('D001', N'Phòng Đơn D1', 530000, 0, 1, N'Phòng đơn thanh lịch.', N'Phòng Đơn'),
+('D002', N'Phòng Đơn D2', 580000, 1, 1, N'Phòng đơn ấm cúng.', N'Phòng Đơn'),
+('D003', N'Phòng Đôi D3', 830000, 2, 2, N'Phòng đôi có view đẹp.', N'Phòng Đôi'),
+('D004', N'Phòng Đôi D4', 880000, 0, 2, N'Phòng đôi tiện lợi.', N'Phòng Đôi'),
+('D005', N'Phòng Gia Đình D5', 1350000, 3, 4, N'Phòng gia đình thoải mái.', N'Phòng Gia Đình'),
+('D006', N'Phòng VIP D6', 1650000, 0, 2, N'Phòng VIP với phong cách độc đáo.', N'Phòng VIP'),
+('E001', N'Phòng Đơn E1', 510000, 0, 1, N'Phòng đơn thanh tĩnh.', N'Phòng Đơn'),
+('E002', N'Phòng Đơn E2', 560000, 1, 1, N'Phòng đơn với giường đôi.', N'Phòng Đơn'),
+('E003', N'Phòng Đôi E3', 810000, 2, 2, N'Phòng đôi có bồn tắm.', N'Phòng Đôi'),
+('E004', N'Phòng Đôi E4', 860000, 0, 2, N'Phòng đôi với minibar.', N'Phòng Đôi'),
+('E005', N'Phòng Gia Đình E5', 1400000, 3, 4, N'Phòng gia đình tiện lợi.', N'Phòng Gia Đình'),
+('E006', N'Phòng VIP E6', 1700000, 0, 2, N'Phòng VIP với dịch vụ đặc biệt.', N'Phòng VIP');
 
 --dich vu
 INSERT INTO DichVu (maDV, tenDV, moTa, giaDV) VALUES

@@ -38,7 +38,7 @@ public class PhieuDatPhong {
         String tinhTrangStr = "";
         switch (tinhTrangPDP) {
             case 0:
-                tinhTrangStr =  "Đặt trước";
+                tinhTrangStr =  "Chờ nhận phòng";
             break;
             case 1:
                 tinhTrangStr =  "Đã nhận phòng";

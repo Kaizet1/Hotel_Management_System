@@ -25,7 +25,7 @@ public class HuyDatPhong_FORM extends JPanel implements ActionListener, Openable
     private JTable table;
     private PhieuDatPhong_DAO phieuDatPhongDao;
     private JButton btnHuyDatPhong;
-
+    @Override
     public void open() {
        loadTableData();
     }

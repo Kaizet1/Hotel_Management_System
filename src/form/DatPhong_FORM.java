@@ -16,37 +16,26 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 
 import customElements.*;
-import dao.KhachHang_DAO;
-import dao.LoaiPhong_DAO;
-import dao.PhieuDatPhong_DAO;
-import dao.Phong_DAO;
+import dao.*;
 import entity.*;
 import org.jdesktop.swingx.JXDatePicker;
 
-public class DatPhong_FORM extends JPanel {
+public class DatPhong_FORM extends JPanel implements Openable {
     private JTextField txtNgayDat;
     private int currentPage = 1;
     private final int rowsPerPage = 5;
     DefaultTableModel tableModel;
-    Object[][] data = {{"DP001", "101", "Nguyen Van A", "2023-10-01", "2023-10-03", 2, 2000000},
-            {"DP002", "102", "Tran Thi B", "2023-10-02", "2023-10-04", 2, 2200000},
-            {"DP003", "103", "Le Van C", "2023-10-01", "2023-10-02", 1, 1100000},
-            {"DP004", "104", "Pham Thi D", "2023-10-03", "2023-10-06", 3, 3300000},
-            {"DP005", "105", "Doan Van E", "2023-10-05", "2023-10-07", 2, 2000000},
-            {"DP006", "106", "Hoang Thi F", "2023-10-01", "2023-10-05", 4, 4000000},
-            {"DP007", "107", "Nguyen Van G", "2023-10-06", "2023-10-08", 2, 2100000},
-            {"DP008", "108", "Le Thi H", "2023-10-04", "2023-10-06", 2, 2300000},
-            {"DP009", "109", "Pham Van I", "2023-10-07", "2023-10-09", 2, 2400000},
-            {"DP010", "110", "Tran Thi J", "2023-10-08", "2023-10-11", 3, 3500000},
-            {"DP008", "108", "Le Thi H", "2023-10-04", "2023-10-06", 2, 2300000},
-            {"DP009", "109", "Pham Van I", "2023-10-07", "2023-10-09", 2, 2400000},
-            {"DP010", "110", "Tran Thi J", "2023-10-08", "2023-10-11", 3, 3500000},};
-    private JLabel pageNumber;
     DateTimePicker dateTimeNgayDen, dateTimeNgayDi;
     JXDatePicker dateNgayDat, dateNgaySinh;
     JComboBox<String> cmbLoaiPhong, cmbSoPhong;
-    JTextField txtSDT, txtTenKhachHang, txtEmail, txtCCCD, txtTenPhong, txtSoKhach;
+    JTextField txtSDT, txtTenKhachHang, txtDiaChi, txtEmail, txtCCCD, txtSoKhach;
     PhieuDatPhong_DAO phieuDatPhongDao;
+    @Override
+    public void open() {
+        loadTableData();
+        loadLoaiPhong();
+    }
+
     public DatPhong_FORM() {
         phieuDatPhongDao = new PhieuDatPhong_DAO();
         setLayout(new BorderLayout());
@@ -54,7 +43,54 @@ public class DatPhong_FORM extends JPanel {
         // north
         JPanel northPanel = new JPanel();
         northPanel.setOpaque(false);
-        northPanel.setBorder(BorderFactory.createEmptyBorder(50, 0, 0, 0));
+        Box northPanelBox = Box.createVerticalBox();
+        // Tim kiem
+        JTextField txtSearch = new JTextField("Tìm kiếm");
+        Border emptyBorder = BorderFactory.createEmptyBorder(13, 52, 12, 0);
+        txtSearch.setBounds(0, 0, 280, 45);
+        txtSearch.setBorder(emptyBorder);
+        txtSearch.setBackground(new Color(40, 40, 44));
+        txtSearch.setForeground(new Color(255, 255, 255, 125));
+        txtSearch.setFont(FontManager.getManrope(Font.PLAIN, 15));
+        CompoundBorder combinedBorder = BorderFactory.createCompoundBorder(BorderFactory.createLineBorder(new Color(83, 152, 255)), emptyBorder);
+        txtSearch.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                txtSearch.setBorder(combinedBorder);
+                if (txtSearch.getText().equals("Tìm kiếm")) {
+                    txtSearch.setText("");
+                    txtSearch.setForeground(Color.WHITE);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                txtSearch.setBorder(emptyBorder);
+                if (txtSearch.getText().isEmpty()) {
+                    txtSearch.setForeground(new Color(255, 255, 255, 125));
+                    txtSearch.setText("Tìm kiếm");
+                }
+            }
+        });
+        txtSearch.addActionListener(e -> handleTimKiem());
+        JLabel searchIcon = new JLabel(new ImageIcon("imgs/TimKiemIcon.png"));
+        searchIcon.setBounds(12, 12, 24, 24);
+
+        JPanel searchPanel = new JPanel();
+        searchPanel.setOpaque(false);
+        searchPanel.setLayout(null);
+        Dimension searchPanelSize = new Dimension(280, 45);
+        searchPanel.setPreferredSize(searchPanelSize);
+        searchPanel.setMinimumSize(searchPanelSize);
+        searchPanel.setMaximumSize(searchPanelSize);
+
+        searchPanel.add(searchIcon);
+        searchPanel.add(txtSearch);
+        Box searchBox = Box.createHorizontalBox();
+        searchBox.add(Box.createHorizontalStrut(0));
+        searchBox.add(searchPanel);
+        searchBox.add(Box.createGlue());
+
         JPanel form = new JPanel();
         form.setPreferredSize(new Dimension(1400, 350));
         form.setOpaque(false);
@@ -65,11 +101,11 @@ public class DatPhong_FORM extends JPanel {
         Box boxForm4 = createFormBox("Số điện thoại", txtSDT = new JTextField());
         Box boxForm5 = createFormBox("Ngày sinh", dateNgaySinh = new JXDatePicker());
         Box boxForm6 = createFormBox("Tên khách hàng", txtTenKhachHang = new JTextField());
-        Box boxForm7 = createFormBox("Email", txtEmail = new JTextField());
-        Box boxForm8 = createFormBox("CCCD", txtCCCD = new JTextField());
-        Box boxForm9 = createFormBox("Loại phòng", cmbLoaiPhong = new JComboBox<>(new String[]{"Chọn"}));
-        Box boxForm10 = createFormBox("Số phòng", cmbSoPhong = new JComboBox<>());
-        Box boxForm11 = createFormBox("Tên phòng", txtTenPhong = new JTextField());
+        Box boxForm7 = createFormBox("Địa chỉ", txtDiaChi = new JTextField());
+        Box boxForm8 = createFormBox("Email", txtEmail = new JTextField());
+        Box boxForm9 = createFormBox("CCCD", txtCCCD = new JTextField());
+        Box boxForm10 = createFormBox("Loại phòng", cmbLoaiPhong = new JComboBox<>(new String[]{"Chọn"}));
+        Box boxForm11 = createFormBox("Số phòng", cmbSoPhong = new JComboBox<>());
         Box boxForm12 = createFormBox("Số khách", txtSoKhach = new JTextField());
         dateTimeNgayDen.addActionListener(e -> handleChonLoaiPhong());
         dateTimeNgayDi.addActionListener(e -> handleChonLoaiPhong());
@@ -84,7 +120,6 @@ public class DatPhong_FORM extends JPanel {
             }
         });
 
-        txtTenPhong.setEditable(false);
         form.add(boxForm1);
         form.add(boxForm2);
         form.add(boxForm3);
@@ -97,7 +132,11 @@ public class DatPhong_FORM extends JPanel {
         form.add(boxForm10);
         form.add(boxForm11);
         form.add(boxForm12);
-        northPanel.add(form);
+        northPanelBox.add(searchBox);
+        northPanelBox.add(Box.createVerticalStrut(10));
+        northPanelBox.add(form);
+        northPanelBox.setPreferredSize(new Dimension(1642, 350));
+        northPanel.add(northPanelBox);
         // center
         JLabel titleLabel = new JLabel("Lịch sử đặt phòng");
         titleLabel.setFont(FontManager.getManrope(Font.BOLD, 16));
@@ -114,8 +153,8 @@ public class DatPhong_FORM extends JPanel {
         titlePanel.add(Box.createHorizontalGlue());
 
 
-        String[] tableHeaders = "Mã đặt phòng;Phòng;Tên khách;Ngày đến;Ngày đi;Số đêm;Doanh thu".split(";");
-        tableModel = new DefaultTableModel(tableHeaders, 0) {
+        String[] headers = {"Mã phiếu đặt phòng", "Số phòng", "Tên khách hàng", "Ngày đặt", "Ngày đến", "Ngày đi", "Nhân viên tạo phiếu", "Tình trạng"};
+        tableModel = new DefaultTableModel(headers, 0) {
             private static final long serialVersionUID = 1L;
 
             @Override
@@ -124,14 +163,14 @@ public class DatPhong_FORM extends JPanel {
             }
         };
 
-        // Thiết lập màu nền cho JTable
+
         JTable table = new JTable(tableModel);
         table.setBackground(new Color(24, 24, 28));
         table.setForeground(Color.WHITE);
         table.setFont(FontManager.getManrope(Font.PLAIN, 14));
         table.setRowHeight(55);
 
-        // Thiết lập header của bảng
+
         JTableHeader header = table.getTableHeader();
         header.setDefaultRenderer(new CustomHeaderRenderer(new Color(38, 38, 42), Color.white));
         header.setPreferredSize(new Dimension(header.getPreferredSize().width, 55));
@@ -142,7 +181,7 @@ public class DatPhong_FORM extends JPanel {
             TableColumn column = table.getColumnModel().getColumn(i);
             column.setCellRenderer(cellRenderer);
         }
-        // Thiết lập JScrollPane
+
         JScrollPane scroll = new JScrollPane(table);
         scroll.setBorder(null);
         scroll.setPreferredSize(new Dimension(1642, 330));
@@ -162,22 +201,44 @@ public class DatPhong_FORM extends JPanel {
         southPanel.add(submitButton);
         southPanel.add(refreshButton);
         add(northPanel, BorderLayout.NORTH);
-//		add(centerPanel, BorderLayout.CENTER);
+		add(centerPanel, BorderLayout.CENTER);
         add(southPanel, BorderLayout.SOUTH);
 
         submitButton.addActionListener(e -> handleSubmit());
         refreshButton.addActionListener(e -> handleRefresh());
-
-        loadLoaiPhong();
     }
 
+    private void loadTableData(){
+        tableModel.setRowCount(0);
+        phieuDatPhongDao = new PhieuDatPhong_DAO();
+        ArrayList<PhieuDatPhong> dsPhieuDatPhong = phieuDatPhongDao.getDSPhieuDatPhong();
+        KhachHang_DAO khachHang_DAO = new KhachHang_DAO();
+        khachHang_DAO.getDSKhachHang();
+        NhanVien_DAO nhanVien_DAO = new NhanVien_DAO();
+        nhanVien_DAO.getDSNhanVien();
+        for (PhieuDatPhong pdp : dsPhieuDatPhong) {
+            tableModel.addRow(new Object[]{
+                    pdp.getMaPDP(),
+                    pdp.getPhong().getMaPhong(),
+                    khachHang_DAO.timKiem(pdp.getKhachHang().getMaKH()).getHoTen(),
+                    pdp.getNgayDat(),
+                    pdp.getNgayDen(),
+                    pdp.getNgayDi(),
+                    nhanVien_DAO.timKiem(pdp.getNhanVien().getMaNV()).getHoTen(),
+                    pdp.getTinhTrangPDP()
+            });
+        }
+    }
+
+    private void handleTimKiem(){
+
+    }
     private void handleChonLoaiPhong() {
         String selectedLoaiPhong = (String) cmbLoaiPhong.getSelectedItem();
         if (!selectedLoaiPhong.equals("Chọn")) {
             updateSoPhongList(selectedLoaiPhong);
             cmbSoPhong.setEnabled(true);
         } else {
-            txtTenPhong.setText("");
             cmbSoPhong.removeAllItems();
             cmbSoPhong.setEnabled(false);
         }
@@ -205,7 +266,6 @@ public class DatPhong_FORM extends JPanel {
     private void updateTenPhong(String soPhong) {
         Phong_DAO phongDAO = new Phong_DAO();
         String tenPhong = phongDAO.getTenPhongBySoPhong(soPhong);
-        txtTenPhong.setText(tenPhong);
     }
 
     private void handleSearchCustomer() {
@@ -217,7 +277,8 @@ public class DatPhong_FORM extends JPanel {
 
             if (khachHang != null) {
                 txtTenKhachHang.setText(khachHang.getHoTen());
-
+                dateNgaySinh.setDate(khachHang.getNgaySinh());
+                txtDiaChi.setText(khachHang.getDiaChi());
                 txtEmail.setText(khachHang.getEmail());
                 txtCCCD.setText(khachHang.getcCCD());
             }
@@ -394,7 +455,6 @@ public class DatPhong_FORM extends JPanel {
         String cccd = txtCCCD.getText().trim();
         String loaiPhong = (String) cmbLoaiPhong.getSelectedItem();
         String soPhong = (String) cmbSoPhong.getSelectedItem();
-        String tenPhong = txtTenPhong.getText().trim();
         String soKhach = txtSoKhach.getText().trim();
 
         if (ngayDat == null || ngayDen == null || ngayDi == null || ngaySinh == null || sdt.isEmpty() ||
@@ -427,7 +487,6 @@ public class DatPhong_FORM extends JPanel {
         txtCCCD.setText("");
         cmbLoaiPhong.setSelectedIndex(0);
         cmbSoPhong.setSelectedIndex(0);
-        txtTenPhong.setText("");
         txtSoKhach.setText("");
     }
 }

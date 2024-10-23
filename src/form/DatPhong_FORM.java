@@ -184,42 +184,23 @@ public class DatPhong_FORM extends JPanel {
     }
 
     private void updateSoPhongList(String loaiPhong) {
-        // Lấy thời gian đến và đi
         Date ngayDen = dateTimeNgayDen.getDate();
         Date ngayDi = dateTimeNgayDi.getDate();
 
-        // Làm sạch danh sách số phòng trước
         cmbSoPhong.removeAllItems();
         cmbSoPhong.addItem("Chọn");
 
-        // Lấy danh sách số phòng tương ứng với loại phòng
         Phong_DAO phongDAO = new Phong_DAO();
         ArrayList<String> dsSoPhong = phongDAO.getSoPhongByLoaiPhong(loaiPhong);
 
-        // Lấy danh sách các số phòng đã được đặt trong khoảng thời gian này
         ArrayList<String> dsSoPhongDaDat = phongDAO.getSoPhongDaDat(ngayDen, ngayDi);
 
-        // Chỉ thêm những số phòng chưa được đặt
         for (String soPhong : dsSoPhong) {
             if (!dsSoPhongDaDat.contains(soPhong)) {
                 cmbSoPhong.addItem(soPhong);
             }
         }
     }
-
-//    private void updateSoPhongList(String loaiPhong) {
-//        // Làm sạch danh sách số phòng trước
-//        cmbSoPhong.removeAllItems();
-//        cmbSoPhong.addItem("Chọn");
-//        // Thêm các số phòng tương ứng với loại phòng
-//        // Giả sử bạn có một phương thức để lấy số phòng theo loại phòng
-//        Phong_DAO phongDAO = new Phong_DAO();
-//        ArrayList<String> dsSoPhong = phongDAO.getSoPhongByLoaiPhong(loaiPhong);
-//
-//        for (String soPhong : dsSoPhong) {
-//            cmbSoPhong.addItem(soPhong);
-//        }
-//    }
 
     private void updateTenPhong(String soPhong) {
         Phong_DAO phongDAO = new Phong_DAO();
@@ -230,15 +211,12 @@ public class DatPhong_FORM extends JPanel {
     private void handleSearchCustomer() {
         String sdt = txtSDT.getText().trim();
 
-        // Kiểm tra nếu số điện thoại không trống
         if (!sdt.isEmpty()) {
             KhachHang_DAO khachHangDAO = new KhachHang_DAO();
             KhachHang khachHang = khachHangDAO.searchKhachHangBangSDT(sdt);
 
-            // Nếu tìm thấy khách hàng, cập nhật thông tin
             if (khachHang != null) {
                 txtTenKhachHang.setText(khachHang.getHoTen());
-//				txtNgaySinh.setText(khachHang.getNgaySinh()); // Đảm bảo rằng định dạng ngày là đúng
 
                 txtEmail.setText(khachHang.getEmail());
                 txtCCCD.setText(khachHang.getcCCD());
@@ -392,14 +370,14 @@ public class DatPhong_FORM extends JPanel {
     }
 
     public String taoMaPDP() {
-        // Lấy năm hiện tại
+
         int namHienTai = Calendar.getInstance().get(Calendar.YEAR);
 
-        // Tạo số ngẫu nhiên từ 0 đến 999
+
         Random random = new Random();
         int soNgauNhien = random.nextInt(1000);
 
-        // Định dạng chuỗi YYY để luôn có 3 chữ số
+
         String maPDP = String.format("PDP%d-%03d", namHienTai, soNgauNhien);
 
         return maPDP;

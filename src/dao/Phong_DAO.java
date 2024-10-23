@@ -43,7 +43,7 @@ public class Phong_DAO {
 
     public ArrayList<String> getSoPhongByLoaiPhong(String loaiPhong) {
         ArrayList<String> dsSoPhong = new ArrayList<>();
-        String query = "SELECT maPhong FROM Phong WHERE loaiPhong = ?"; // Thay đổi theo cấu trúc database của bạn
+        String query = "SELECT maPhong FROM Phong WHERE loaiPhong = ?";
         Connection con = ConnectDB.getInstance().getConnection();
         try (PreparedStatement stmt = con.prepareStatement(query)) {
             stmt.setString(1, loaiPhong);
@@ -79,7 +79,7 @@ public class Phong_DAO {
     public ArrayList<String> getSoPhongDaDat(Date ngayDen, Date ngayDi) {
         ArrayList<String> dsSoPhong = new ArrayList<>();
 
-        // Kết nối cơ sở dữ liệu
+
         Connection con = ConnectDB.getInstance().getConnection();
         String sql = "SELECT maPhong FROM PhieuDatPhong WHERE (ngayDen < ? AND ngayDi > ?) OR (ngayDen > ? AND ngayDi < ?) AND tinhTrangPDP <> 2";
 

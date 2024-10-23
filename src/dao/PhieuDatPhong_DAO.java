@@ -29,8 +29,8 @@ public class PhieuDatPhong_DAO {
                 NhanVien nv = new NhanVien(maNV);
                 String maKH = rs.getString("maKH");
                 KhachHang kh = new KhachHang(maKH);
-                Date ngayDen = rs.getDate("ngayDen");
-                Date ngayDi = rs.getDate("ngayDi");
+                Date ngayDen = rs.getTimestamp("ngayDen");
+                Date ngayDi = rs.getTimestamp("ngayDi");
                 Date ngayDat = rs.getDate("ngayDat");
                 int tinhTrangPDP = rs.getInt("tinhTrangPDP");
                 PhieuDatPhong phieuDatPhong= new PhieuDatPhong(maPDP, p, nv, kh, ngayDi, ngayDen, ngayDat, tinhTrangPDP);
@@ -61,14 +61,14 @@ public class PhieuDatPhong_DAO {
         try {
             Connection con = ConnectDB.getInstance().getConnection();
 
-            // Kiểm tra mã khách hàng có tồn tại hay không
+
             String checkSql = "SELECT COUNT(*) FROM KhachHang WHERE maKH = ?";
             PreparedStatement checkStatement = con.prepareStatement(checkSql);
             checkStatement.setString(1, phieuDatPhong.getKhachHang().getMaKH());
 
             ResultSet rs = checkStatement.executeQuery();
             if (rs.next() && rs.getInt(1) == 0) {
-                // Nếu không tồn tại, chèn khách hàng mới
+
                 String insertKhachHangSql = "INSERT INTO KhachHang (maKH, hoTen, diaChi, SDT, email, soCCCD) VALUES (?, ?, ?, ?, ?, ?)";
                 PreparedStatement insertStatement = con.prepareStatement(insertKhachHangSql);
                 insertStatement.setString(1, phieuDatPhong.getKhachHang().getMaKH());
@@ -90,9 +90,10 @@ public class PhieuDatPhong_DAO {
             preparedStatement.setString(2, phieuDatPhong.getPhong().getMaPhong());
             preparedStatement.setString(3, phieuDatPhong.getNhanVien().getMaNV());
             preparedStatement.setString(4, phieuDatPhong.getKhachHang().getMaKH());
+            System.out.println(phieuDatPhong.getNgayDen() + " "+phieuDatPhong.getNgayDen().getTime());
             preparedStatement.setDate(5, new java.sql.Date(phieuDatPhong.getNgayDat().getTime()));
-            preparedStatement.setDate(6, new java.sql.Date(phieuDatPhong.getNgayDen().getTime()));
-            preparedStatement.setDate(7, new java.sql.Date(phieuDatPhong.getNgayDi().getTime()));
+            preparedStatement.setTimestamp(6, new java.sql.Timestamp(phieuDatPhong.getNgayDen().getTime()));
+            preparedStatement.setTimestamp(7, new java.sql.Timestamp(phieuDatPhong.getNgayDi().getTime()));
             preparedStatement.setInt(8, 0);
 
             return preparedStatement.executeUpdate() > 0;

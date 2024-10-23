@@ -197,8 +197,6 @@ public class DangNhap_GUI extends JFrame {
             }
         });
 
-
-
         exitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

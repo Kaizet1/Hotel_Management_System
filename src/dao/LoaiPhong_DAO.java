@@ -23,7 +23,7 @@ public class LoaiPhong_DAO {
             Statement st = con.createStatement();
             ResultSet rs = st.executeQuery(sql);
             while (rs.next()){
-                String tenLoaiPhong = rs.getString("tenLoai");
+                String tenLoaiPhong = rs.getString("loaiPhong");
                 String moTa = rs.getString("moTa");
                 LoaiPhong loaiPhong = new LoaiPhong(tenLoaiPhong, moTa);
                 dsLoaiPhong.add(loaiPhong);

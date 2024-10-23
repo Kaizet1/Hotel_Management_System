@@ -14,7 +14,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-public class TimKiemPhong_FORM extends JPanel  implements ActionListener {
+public class TimKiemPhong_FORM extends JPanel  implements ActionListener, MouseListener {
     private JTextField txtMaPhong, txtTenPhong, txtSoNguoi;
     private JComboBox<String> cmbLoaiPhong, cmbTrangThai;
     private DefaultTableModel tableModel;
@@ -115,6 +115,7 @@ public class TimKiemPhong_FORM extends JPanel  implements ActionListener {
         add(centerBox, BorderLayout.CENTER);
 
         loadTableData();
+        table.addMouseListener( this);
     }
 
     private Box createFormBox(String label, JTextField txt) {
@@ -247,6 +248,36 @@ public class TimKiemPhong_FORM extends JPanel  implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         RoundedButton btn = (RoundedButton) e.getSource();
+
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        int row = table.getSelectedRow();
+        txtMaPhong.setText(table.getValueAt(row, 0).toString());
+        txtTenPhong.setText(table.getValueAt(row, 1).toString());
+        cmbLoaiPhong.setSelectedItem(table.getValueAt(row, 2).toString());
+        txtSoNguoi.setText(table.getValueAt(row, 4).toString());
+        cmbTrangThai.setSelectedItem(table.getValueAt(row, 5).toString());
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
 
     }
 }

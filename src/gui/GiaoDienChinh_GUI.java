@@ -81,6 +81,7 @@ public class GiaoDienChinh_GUI extends JFrame {
 		String[][] menuItems = {
 				{ "Trang chủ", "TrangChu", "TrangChu" }, // Không có submenu
 				{ "Phòng", null, "Phong" },
+				{ "Nhân viên", null, "NhanVien"},
 				{ "Khách hàng", null, "KhachHang" },
 				{ "Dịch vụ", null, "DichVu" },
 				{ "Hóa đơn", null, "HoaDon" },
@@ -98,6 +99,13 @@ public class GiaoDienChinh_GUI extends JFrame {
 						{ "Cập nhật phòng", "CapNhatPhong" },
 
 				}, // Phòng
+
+				{
+						{ "Tìm kiếm nhân viên", "TimKiemNhanVien" },
+						{ "Cập nhật nhân viên", "CapNhatNhanVien" },
+				},
+				//Nhân viên
+
 				{
 						{ "Tìm kiếm khách hàng", "TimKiemKhachHang" },
 						{ "Cập nhật khách hàng", "CapNhatKhachHang" }
@@ -118,7 +126,9 @@ public class GiaoDienChinh_GUI extends JFrame {
 						{ "Thống kê chung", "ThongKeChung" },
 						{ "Thống kê doanh thu", "ThongKeDoanhThu" },
 						{ "Thống kê abcxyz", "" }
-				}
+				},
+					// Thống kê
+
 		};
 
 		for (int i = 0; i < menuItems.length; i++) {
@@ -277,6 +287,8 @@ public class GiaoDienChinh_GUI extends JFrame {
 
 		JPanel timKiemKhachHangPanel = new TimKiemKhachHang_FORM();
 		JPanel capNhatKhachHangPanel = new CapNhatKhachHang_FORM();
+		JPanel timKiemNhanVienPanel = new TimKiemNhanVien_FORM();
+		JPanel capNhatNhanVienPanel = new CapNhatNhanVien_FORM();
 		JPanel lapHoaDonPanel = new LapHoaDon_FORM();
 		JPanel datDichVuPanel = new DatDichVu_FORM();
 
@@ -285,6 +297,8 @@ public class GiaoDienChinh_GUI extends JFrame {
 		huyDatPhongPanel.setName("HuyDatPhong");
 		timKiemPhongPanel.setName("TimKiemPhong");
 		capNhatPhongPanel.setName("CapNhatPhong");
+		timKiemNhanVienPanel.setName("Tìm kiếm nhân viên");
+		capNhatNhanVienPanel.setName("Cập nhật nhân viên");
 		timKiemKhachHangPanel.setName("TimKiemKhachHang");
 		capNhatKhachHangPanel.setName("CapNhatKhach");
 		lapHoaDonPanel.setName("LapHoaDon");
@@ -296,6 +310,8 @@ public class GiaoDienChinh_GUI extends JFrame {
 		center.add(loaiPhongPanel, "LoaiPhong");
 		center.add(timKiemPhongPanel, "TimKiemPhong");
 		center.add(capNhatPhongPanel, "CapNhatPhong");
+		center.add(timKiemNhanVienPanel, "TimKiemNhanVien");
+		center.add(capNhatNhanVienPanel, "CapNhatNhanVien");
 		center.add(timKiemKhachHangPanel, "TimKiemKhachHang");
 		center.add(capNhatKhachHangPanel, "CapNhatKhachHang");
 		center.add(lapHoaDonPanel, "LapHoaDon");

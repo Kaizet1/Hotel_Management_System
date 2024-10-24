@@ -3,11 +3,13 @@ package form;
 import java.awt.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Random;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.CompoundBorder;
@@ -15,6 +17,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 
+import connectDB.ConnectDB;
 import customElements.*;
 import dao.*;
 import entity.*;
@@ -24,28 +27,32 @@ public class DatPhong_FORM extends JPanel implements Openable {
     private JTextField txtNgayDat;
     private int currentPage = 1;
     private final int rowsPerPage = 5;
-    DefaultTableModel tableModel;
-    DateTimePicker dateTimeNgayDen, dateTimeNgayDi;
-    JXDatePicker dateNgayDat, dateNgaySinh;
-    JComboBox<String> cmbLoaiPhong, cmbSoPhong;
-    JTextField txtSDT, txtTenKhachHang, txtDiaChi, txtEmail, txtCCCD, txtSoKhach;
-    PhieuDatPhong_DAO phieuDatPhongDao;
+    private DefaultTableModel tableModel;
+    private DateTimePicker dateTimeNgayDen, dateTimeNgayDi;
+    private JXDatePicker dateNgayDat, dateNgaySinh;
+    private JComboBox<String> cmbLoaiPhong, cmbSoPhong;
+    private JTextField txtSDT, txtTenKhachHang, txtDiaChi, txtEmail, txtCCCD, txtSoKhach;
+    private PhieuDatPhong_DAO phieuDatPhongDAO;
+    private KhachHang_DAO khachHangDAO;
+    private JTextField txtSearch;
     @Override
     public void open() {
-        loadTableData();
+        phieuDatPhongDAO = new PhieuDatPhong_DAO();
+        ArrayList<PhieuDatPhong> dsPhieuDatPhong = phieuDatPhongDAO.getDSPhieuDatPhong();
+        loadTableData(dsPhieuDatPhong);
         loadLoaiPhong();
     }
 
     public DatPhong_FORM() {
-        phieuDatPhongDao = new PhieuDatPhong_DAO();
         setLayout(new BorderLayout());
         setBackground(new Color(16, 16, 20));
         // north
         JPanel northPanel = new JPanel();
         northPanel.setOpaque(false);
+        northPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 30, 0));
         Box northPanelBox = Box.createVerticalBox();
         // Tim kiem
-        JTextField txtSearch = new JTextField("Tìm kiếm");
+        txtSearch = new JTextField("Tìm kiếm");
         Border emptyBorder = BorderFactory.createEmptyBorder(13, 52, 12, 0);
         txtSearch.setBounds(0, 0, 280, 45);
         txtSearch.setBorder(emptyBorder);
@@ -98,12 +105,12 @@ public class DatPhong_FORM extends JPanel implements Openable {
         Box boxForm1 = createFormBox("Ngày đặt", dateNgayDat = new JXDatePicker());
         Box boxForm2 = createFormBox("Ngày đến", dateTimeNgayDen = new DateTimePicker());
         Box boxForm3 = createFormBox("Ngày đi", dateTimeNgayDi = new DateTimePicker());
-        Box boxForm4 = createFormBox("Số điện thoại", txtSDT = new JTextField());
+        Box boxForm4 = createFormBox("CCCD", txtCCCD = new JTextField());
         Box boxForm5 = createFormBox("Ngày sinh", dateNgaySinh = new JXDatePicker());
         Box boxForm6 = createFormBox("Tên khách hàng", txtTenKhachHang = new JTextField());
         Box boxForm7 = createFormBox("Địa chỉ", txtDiaChi = new JTextField());
         Box boxForm8 = createFormBox("Email", txtEmail = new JTextField());
-        Box boxForm9 = createFormBox("CCCD", txtCCCD = new JTextField());
+        Box boxForm9 = createFormBox("Số điện thoại", txtSDT = new JTextField());
         Box boxForm10 = createFormBox("Loại phòng", cmbLoaiPhong = new JComboBox<>(new String[]{"Chọn"}));
         Box boxForm11 = createFormBox("Số phòng", cmbSoPhong = new JComboBox<>());
         Box boxForm12 = createFormBox("Số khách", txtSoKhach = new JTextField());
@@ -112,8 +119,8 @@ public class DatPhong_FORM extends JPanel implements Openable {
         cmbSoPhong.setEnabled(false);
         cmbLoaiPhong.addActionListener(e -> handleChonLoaiPhong());
         cmbSoPhong.addActionListener(e -> updateTenPhong((String) cmbSoPhong.getSelectedItem()));
-        txtSDT.addActionListener(e -> handleSearchCustomer());
-        txtSDT.addFocusListener(new FocusAdapter() {
+        txtCCCD.addActionListener(e -> handleSearchCustomer());
+        txtCCCD.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
                 handleSearchCustomer();
@@ -135,7 +142,7 @@ public class DatPhong_FORM extends JPanel implements Openable {
         northPanelBox.add(searchBox);
         northPanelBox.add(Box.createVerticalStrut(10));
         northPanelBox.add(form);
-        northPanelBox.setPreferredSize(new Dimension(1642, 350));
+        northPanelBox.setPreferredSize(new Dimension(1642, 380));
         northPanel.add(northPanelBox);
         // center
         JLabel titleLabel = new JLabel("Lịch sử đặt phòng");
@@ -208,19 +215,17 @@ public class DatPhong_FORM extends JPanel implements Openable {
         refreshButton.addActionListener(e -> handleRefresh());
     }
 
-    private void loadTableData(){
+    private void loadTableData(ArrayList<PhieuDatPhong> danhSach){
         tableModel.setRowCount(0);
-        phieuDatPhongDao = new PhieuDatPhong_DAO();
-        ArrayList<PhieuDatPhong> dsPhieuDatPhong = phieuDatPhongDao.getDSPhieuDatPhong();
-        KhachHang_DAO khachHang_DAO = new KhachHang_DAO();
-        khachHang_DAO.getDSKhachHang();
+        khachHangDAO = new KhachHang_DAO();
+        khachHangDAO.getDSKhachHang();
         NhanVien_DAO nhanVien_DAO = new NhanVien_DAO();
         nhanVien_DAO.getDSNhanVien();
-        for (PhieuDatPhong pdp : dsPhieuDatPhong) {
+        for (PhieuDatPhong pdp : danhSach) {
             tableModel.addRow(new Object[]{
                     pdp.getMaPDP(),
                     pdp.getPhong().getMaPhong(),
-                    khachHang_DAO.timKiem(pdp.getKhachHang().getMaKH()).getHoTen(),
+                    khachHangDAO.timKiem(pdp.getKhachHang().getMaKH()).getHoTen(),
                     pdp.getNgayDat(),
                     pdp.getNgayDen(),
                     pdp.getNgayDi(),
@@ -230,9 +235,31 @@ public class DatPhong_FORM extends JPanel implements Openable {
         }
     }
 
-    private void handleTimKiem(){
+    private void handleTimKiem() {
+        String tuKhoa = txtSearch.getText().trim().toLowerCase();
+        phieuDatPhongDAO = new PhieuDatPhong_DAO();
+        ArrayList<PhieuDatPhong> dsPhieuDatPhong = phieuDatPhongDAO.getDSPhieuDatPhong();
+        if (tuKhoa.equals("tìm kiếm") || tuKhoa.isEmpty()) {
+            loadTableData(dsPhieuDatPhong);
+            return;
+        }
+        ArrayList<PhieuDatPhong> ketQuaTimKiem = new ArrayList<>();
+        KhachHang_DAO khachHang_DAO = new KhachHang_DAO();
+        khachHang_DAO.getDSKhachHang();
 
+        for (PhieuDatPhong pdp : dsPhieuDatPhong) {
+            String maPDP = pdp.getMaPDP().toLowerCase();
+            String tenKhachHang = khachHang_DAO.timKiem(pdp.getKhachHang().getMaKH()).getHoTen().toLowerCase();
+            String soPhong = pdp.getPhong().getMaPhong().toLowerCase();
+
+            if (maPDP.contains(tuKhoa) || tenKhachHang.contains(tuKhoa) || soPhong.contains(tuKhoa)) {
+                ketQuaTimKiem.add(pdp);
+            }
+        }
+
+        loadTableData(ketQuaTimKiem);
     }
+
     private void handleChonLoaiPhong() {
         String selectedLoaiPhong = (String) cmbLoaiPhong.getSelectedItem();
         if (!selectedLoaiPhong.equals("Chọn")) {
@@ -254,7 +281,7 @@ public class DatPhong_FORM extends JPanel implements Openable {
         Phong_DAO phongDAO = new Phong_DAO();
         ArrayList<String> dsSoPhong = phongDAO.getSoPhongByLoaiPhong(loaiPhong);
 
-        ArrayList<String> dsSoPhongDaDat = phongDAO.getSoPhongDaDat(ngayDen, ngayDi);
+        ArrayList<String> dsSoPhongDaDat = phieuDatPhongDAO.getSoPhongDaDat(ngayDen, ngayDi);
 
         for (String soPhong : dsSoPhong) {
             if (!dsSoPhongDaDat.contains(soPhong)) {
@@ -269,18 +296,17 @@ public class DatPhong_FORM extends JPanel implements Openable {
     }
 
     private void handleSearchCustomer() {
-        String sdt = txtSDT.getText().trim();
-
-        if (!sdt.isEmpty()) {
+        String cccd = txtCCCD.getText().trim();
+        if (!cccd.isEmpty()) {
             KhachHang_DAO khachHangDAO = new KhachHang_DAO();
-            KhachHang khachHang = khachHangDAO.searchKhachHangBangSDT(sdt);
+            KhachHang khachHang = khachHangDAO.searchKhachHangBangCCCD(cccd);
 
             if (khachHang != null) {
                 txtTenKhachHang.setText(khachHang.getHoTen());
                 dateNgaySinh.setDate(khachHang.getNgaySinh());
                 txtDiaChi.setText(khachHang.getDiaChi());
                 txtEmail.setText(khachHang.getEmail());
-                txtCCCD.setText(khachHang.getcCCD());
+                txtSDT.setText(khachHang.getSdt());
             }
         }
     }
@@ -431,18 +457,54 @@ public class DatPhong_FORM extends JPanel implements Openable {
     }
 
     public String taoMaPDP() {
-
-        int namHienTai = Calendar.getInstance().get(Calendar.YEAR);
-
-
-        Random random = new Random();
-        int soNgauNhien = random.nextInt(1000);
-
-
-        String maPDP = String.format("PDP%d-%03d", namHienTai, soNgauNhien);
-
+        int soThuTu = laySoThuTuPDPTiepTheo();
+        String maPDP = String.format("PDP-%03d", soThuTu);
         return maPDP;
     }
+
+    public String taoMaKH() {
+        int soThuTu = laySoThuTuKHTiepTheo();
+        String maKH = String.format("KH-%03d", soThuTu);
+        System.out.println(maKH);
+        return maKH;
+    }
+
+    private int laySoThuTuPDPTiepTheo() {
+        int soThuTu = 1;
+        try {
+            Connection con = ConnectDB.getInstance().getConnection();
+            String sql = "SELECT COUNT(*) AS soLuong FROM PhieuDatPhong";
+            Statement st = con.createStatement();
+
+            ResultSet rs = st.executeQuery(sql);
+            if (rs.next()) {
+                int soLuong = rs.getInt("soLuong");
+                soThuTu = soLuong + 1;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return soThuTu;
+    }
+
+    private int laySoThuTuKHTiepTheo() {
+        int soThuTu = 1;
+        try {
+            Connection con = ConnectDB.getInstance().getConnection();
+            String sql = "SELECT COUNT(*) AS soLuong FROM KhachHang";
+            Statement st = con.createStatement();
+
+            ResultSet rs = st.executeQuery(sql);
+            if (rs.next()) {
+                int soLuong = rs.getInt("soLuong");
+                soThuTu = soLuong + 1;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return soThuTu;
+    }
+
 
     private void handleSubmit() {
         Date ngayDat = dateNgayDat.getDate();
@@ -452,6 +514,7 @@ public class DatPhong_FORM extends JPanel implements Openable {
         Date ngaySinh = dateNgaySinh.getDate();
         String tenKhachHang = txtTenKhachHang.getText().trim();
         String email = txtEmail.getText().trim();
+        String diaChi = txtDiaChi.getText().trim();
         String cccd = txtCCCD.getText().trim();
         String loaiPhong = (String) cmbLoaiPhong.getSelectedItem();
         String soPhong = (String) cmbSoPhong.getSelectedItem();
@@ -463,14 +526,29 @@ public class DatPhong_FORM extends JPanel implements Openable {
             JOptionPane.showMessageDialog(this, "Vui lòng điền đủ thông tin.", "Thông báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
+
+        if (!ngayDi.after(ngayDen)) {
+            JOptionPane.showMessageDialog(this, "Ngày đi phải sau ngày đến.", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
         Phong p = new Phong(soPhong);
         NhanVien nv = new NhanVien("ADMIN");
-        nv.setHoTen("ADMIN");
-        KhachHang kh = new KhachHang("maKH");
-        kh.setHoTen(tenKhachHang);
+        KhachHang kh = null;
+        if (khachHangDAO.isKhachHangTonTai(cccd)){
+           kh = khachHangDAO.searchKhachHangBangCCCD(cccd);
+           kh.setSdt(sdt);
+           kh.setEmail(email);
+           kh.setDiaChi(diaChi);
+        } else {
+            kh = new KhachHang(taoMaKH(), tenKhachHang, diaChi, sdt, email, cccd, ngaySinh);
+        }
         PhieuDatPhong phieuDatPhong = new PhieuDatPhong(taoMaPDP(), p, nv, kh, ngayDi, ngayDen, ngayDat, 0);
-        if (phieuDatPhongDao.datPhong(phieuDatPhong)){
+        if (phieuDatPhongDAO.datPhong(phieuDatPhong)){
             JOptionPane.showMessageDialog(this, "Đã đặt phòng thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            phieuDatPhongDAO = new PhieuDatPhong_DAO();
+            ArrayList<PhieuDatPhong> dsPhieuDatPhong = phieuDatPhongDAO.getDSPhieuDatPhong();
+            loadTableData(dsPhieuDatPhong);
         }else {
             JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi đặt phòng!", "Thông báo", JOptionPane.ERROR_MESSAGE);
         }
@@ -484,9 +562,9 @@ public class DatPhong_FORM extends JPanel implements Openable {
         txtSDT.setText("");
         txtTenKhachHang.setText("");
         txtEmail.setText("");
+        txtDiaChi.setText("");
         txtCCCD.setText("");
         cmbLoaiPhong.setSelectedIndex(0);
-        cmbSoPhong.setSelectedIndex(0);
         txtSoKhach.setText("");
     }
 }

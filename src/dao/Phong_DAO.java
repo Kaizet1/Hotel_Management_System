@@ -76,31 +76,6 @@ public class Phong_DAO {
         return "";
     }
 
-    public ArrayList<String> getSoPhongDaDat(Date ngayDen, Date ngayDi) {
-        ArrayList<String> dsSoPhong = new ArrayList<>();
-
-
-        Connection con = ConnectDB.getInstance().getConnection();
-        String sql = "SELECT maPhong FROM PhieuDatPhong WHERE (ngayDen < ? AND ngayDi > ?) OR (ngayDen > ? AND ngayDi < ?) AND tinhTrangPDP <> 2";
-
-        try {
-            PreparedStatement stmt = con.prepareStatement(sql);
-            stmt.setDate(1, new java.sql.Date(ngayDen.getTime()));
-            stmt.setDate(2, new java.sql.Date(ngayDi.getTime()));
-            stmt.setDate(3, new java.sql.Date(ngayDen.getTime()));
-            stmt.setDate(4, new java.sql.Date(ngayDi.getTime()));
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                dsSoPhong.add(rs.getString("maPhong"));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return dsSoPhong;
-    }
-
 
     public boolean createPhong(Phong p){
         ConnectDB.getInstance();

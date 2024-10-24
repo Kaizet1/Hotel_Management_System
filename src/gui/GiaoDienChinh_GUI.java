@@ -93,7 +93,7 @@ public class GiaoDienChinh_GUI extends JFrame {
 						{ "Đặt phòng", "DatPhong" },
 						{ "Hủy đặt phòng", "HuyDatPhong" },
 						{ "Đổi phòng", "DoiPhong" },
-						{ "Sơ đồ phòng", "SoDoPhong" },
+						{ "Loại phòng", "LoaiPhong" },
 						{ "Tìm kiếm phòng", "TimKiemPhong" },
 						{ "Cập nhật phòng", "CapNhatPhong" },
 
@@ -270,8 +270,10 @@ public class GiaoDienChinh_GUI extends JFrame {
 		JPanel trangChuPanel = new TrangChu_FORM();
 		JPanel datPhongPanel = new DatPhong_FORM();
 		JPanel huyDatPhongPanel = new HuyDatPhong_FORM();
+		JPanel loaiPhongPanel = new LoaiPhong_FORM();
 		JPanel timKiemPhongPanel = new TimKiemPhong_FORM();
 		JPanel capNhatPhongPanel = new CapNhatPhong_FORM();
+
 
 		JPanel timKiemKhachHangPanel = new TimKiemKhachHang_FORM();
 		JPanel capNhatKhachHangPanel = new CapNhatKhachHang_FORM();
@@ -291,6 +293,7 @@ public class GiaoDienChinh_GUI extends JFrame {
 		center.add(trangChuPanel, "TrangChu");
 		center.add(datPhongPanel, "DatPhong");
 		center.add(huyDatPhongPanel, "HuyDatPhong");
+		center.add(loaiPhongPanel, "LoaiPhong");
 		center.add(timKiemPhongPanel, "TimKiemPhong");
 		center.add(capNhatPhongPanel, "CapNhatPhong");
 		center.add(timKiemKhachHangPanel, "TimKiemKhachHang");

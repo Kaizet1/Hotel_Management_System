@@ -73,6 +73,36 @@ public class PhieuDatPhong_DAO {
         return dsPhieuDatPhong;
     }
 
+    public ArrayList<String> getSoPhongDaDat(Date ngayDen, Date ngayDi) {
+        ArrayList<String> dsSoPhong = new ArrayList<>();
+
+        Connection con = ConnectDB.getInstance().getConnection();
+        String sql = "SELECT maPhong FROM PhieuDatPhong WHERE ((ngayDen <= ? AND ngayDi >= ?) OR (ngayDen <= ? AND ngayDi >= ?) OR (ngayDen >= ? AND ngayDi <= ?) OR (ngayDen <= ? AND ngayDi >= ?)) AND tinhTrangPDP <> 2";
+
+        try {
+            PreparedStatement stmt = con.prepareStatement(sql);
+            stmt.setTimestamp(1, new java.sql.Timestamp(ngayDi.getTime()));
+            stmt.setTimestamp(2, new java.sql.Timestamp(ngayDen.getTime()));
+            stmt.setTimestamp(3, new java.sql.Timestamp(ngayDi.getTime()));
+            stmt.setTimestamp(4, new java.sql.Timestamp(ngayDen.getTime()));
+            stmt.setTimestamp(5, new java.sql.Timestamp(ngayDen.getTime()));
+            stmt.setTimestamp(6, new java.sql.Timestamp(ngayDi.getTime()));
+            stmt.setTimestamp(7, new java.sql.Timestamp(ngayDen.getTime()));
+            stmt.setTimestamp(8, new java.sql.Timestamp(ngayDi.getTime()));
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                dsSoPhong.add(rs.getString("maPhong"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return dsSoPhong;
+    }
+
+
     public boolean huyDatPhong(String maPDP) {
             try {
                 Connection con = ConnectDB.getInstance().getConnection();
@@ -92,27 +122,45 @@ public class PhieuDatPhong_DAO {
         try {
             Connection con = ConnectDB.getInstance().getConnection();
 
+            String checkSql = "SELECT diaChi, SDT, email FROM KhachHang WHERE maKH = ?";
+            PreparedStatement checkStatement = con.prepareStatement(checkSql);
+            checkStatement.setString(1, phieuDatPhong.getKhachHang().getMaKH());
+            ResultSet rs = checkStatement.executeQuery();
 
-//            String checkSql = "SELECT COUNT(*) FROM KhachHang WHERE maKH = ?";
-//            PreparedStatement checkStatement = con.prepareStatement(checkSql);
-//            checkStatement.setString(1, phieuDatPhong.getKhachHang().getMaKH());
-//
-//            ResultSet rs = checkStatement.executeQuery();
-//            if (rs.next() && rs.getInt(1) == 0) {
+            if (rs.next()) {
+                boolean update = false;
+                if (!rs.getString("diaChi").equals(phieuDatPhong.getKhachHang().getDiaChi())) {
+                    update = true;
+                }
+                if (!rs.getString("SDT").equals(phieuDatPhong.getKhachHang().getSdt())) {
+                    update = true;
+                }
+                if (!rs.getString("email").equals(phieuDatPhong.getKhachHang().getEmail())) {
+                    update = true;
+                }
 
-//                String insertKhachHangSql = "INSERT INTO KhachHang (maKH, hoTen, diaChi, SDT, email, soCCCD, ngaySinh) VALUES (?, ?, ?, ?, ?, ?)";
-//                PreparedStatement insertStatement = con.prepareStatement(insertKhachHangSql);
-//                insertStatement.setString(1, phieuDatPhong.getKhachHang().getMaKH());
-//                insertStatement.setString(2, phieuDatPhong.getKhachHang().getHoTen());
-//                insertStatement.setString(3, "");
-//                insertStatement.setString(4, phieuDatPhong.getKhachHang().getSdt());
-//                insertStatement.setString(5, phieuDatPhong.getKhachHang().getEmail());
-//                insertStatement.setString(6, phieuDatPhong.getKhachHang().getcCCD());
-//                insertStatement.setDate(6, new java.sql.Date(new Date().getTime()));
-
-//                insertStatement.executeUpdate();
-//            }
-
+                if (update) {
+                    String updateSql = "UPDATE KhachHang SET diaChi = ?, SDT = ?, email = ? WHERE maKH = ?";
+                    PreparedStatement updateStatement = con.prepareStatement(updateSql);
+                    updateStatement.setString(1, phieuDatPhong.getKhachHang().getDiaChi());
+                    updateStatement.setString(2, phieuDatPhong.getKhachHang().getSdt());
+                    updateStatement.setString(3, phieuDatPhong.getKhachHang().getEmail());
+                    updateStatement.setString(4, phieuDatPhong.getKhachHang().getMaKH());
+                    updateStatement.executeUpdate();
+                }
+            } else {
+                // Tao moi
+                String insertKhachHangSql = "INSERT INTO KhachHang (maKH, hoTen, diaChi, SDT, soCCCD, email, ngaySinh) VALUES (?, ?, ?, ?, ?, ?, ?)";
+                PreparedStatement insertStatement = con.prepareStatement(insertKhachHangSql);
+                insertStatement.setString(1, phieuDatPhong.getKhachHang().getMaKH());
+                insertStatement.setString(2, phieuDatPhong.getKhachHang().getHoTen());
+                insertStatement.setString(3, phieuDatPhong.getKhachHang().getDiaChi());
+                insertStatement.setString(4, phieuDatPhong.getKhachHang().getSdt());
+                insertStatement.setString(5, phieuDatPhong.getKhachHang().getcCCD());
+                insertStatement.setString(6, phieuDatPhong.getKhachHang().getEmail());
+                insertStatement.setDate(7, new java.sql.Date(phieuDatPhong.getKhachHang().getNgaySinh().getTime()));
+                insertStatement.executeUpdate();
+            }
             String sql = "INSERT INTO PhieuDatPhong (maPDP, maPhong, maNV, maKH, ngayDat, ngayDen, ngayDi, tinhTrangPDP) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             PreparedStatement preparedStatement = con.prepareStatement(sql);
 

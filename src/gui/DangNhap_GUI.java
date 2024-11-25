@@ -48,9 +48,9 @@ public class DangNhap_GUI extends JFrame {
         setSize(1920, 1080);
         setResizable(false);
 
-        JPanel leftPanel = createLeftPanel();
-        leftPanel.setFocusable(true);
-        leftPanel.requestFocusInWindow();
+            JPanel leftPanel = createLeftPanel();
+            leftPanel.setFocusable(true);
+            leftPanel.requestFocusInWindow();
         JPanel rightPanel = createRightPanel();
 
         add(leftPanel, BorderLayout.WEST);

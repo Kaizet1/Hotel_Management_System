@@ -94,7 +94,7 @@ public class GiaoDienChinh_GUI extends JFrame {
 						{ "Đặt phòng", "DatPhong" },
 						{ "Hủy đặt phòng", "HuyDatPhong" },
 						{ "Đổi phòng", "DoiPhong" },
-						{ "Loại phòng", "LoaiPhong" },
+						{ "Trả phòng", "TraPhong" },
 						{ "Tìm kiếm phòng", "TimKiemPhong" },
 						{ "Cập nhật phòng", "CapNhatPhong" },
 
@@ -283,7 +283,8 @@ public class GiaoDienChinh_GUI extends JFrame {
 		JPanel loaiPhongPanel = new LoaiPhong_FORM();
 		JPanel timKiemPhongPanel = new TimKiemPhong_FORM();
 		JPanel capNhatPhongPanel = new CapNhatPhong_FORM();
-
+		JPanel doiPhongPanel = new DoiPhong_FORM();
+		JPanel traPhongPanel = new TraPhong_FORM();
 
 		JPanel timKiemKhachHangPanel = new TimKiemKhachHang_FORM();
 		JPanel capNhatKhachHangPanel = new CapNhatKhachHang_FORM();
@@ -297,8 +298,10 @@ public class GiaoDienChinh_GUI extends JFrame {
 		huyDatPhongPanel.setName("HuyDatPhong");
 		timKiemPhongPanel.setName("TimKiemPhong");
 		capNhatPhongPanel.setName("CapNhatPhong");
-		timKiemNhanVienPanel.setName("Tìm kiếm nhân viên");
-		capNhatNhanVienPanel.setName("Cập nhật nhân viên");
+		doiPhongPanel.setName("DoiPhong");
+		traPhongPanel.setName("TraPhong");
+		timKiemNhanVienPanel.setName("TimKiemNhanVien");
+		capNhatNhanVienPanel.setName("CapNhatNhanVien");
 		timKiemKhachHangPanel.setName("TimKiemKhachHang");
 		capNhatKhachHangPanel.setName("CapNhatKhach");
 		lapHoaDonPanel.setName("LapHoaDon");

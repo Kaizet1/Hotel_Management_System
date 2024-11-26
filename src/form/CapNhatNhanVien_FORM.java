@@ -1,10 +1,8 @@
 package form;
 
 import customElements.*;
-import dao.KhachHang_DAO;
 import dao.NhanVien_DAO;
 import entity.NhanVien;
-import entity.PhieuDatPhong;
 import org.jdesktop.swingx.JXDatePicker;
 import java.util.Random;
 
@@ -21,7 +19,6 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Random;
 
 public class CapNhatNhanVien_FORM extends JPanel implements Openable, ActionListener {
     private final JTextField txtHoTen;

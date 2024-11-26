@@ -6,6 +6,7 @@ import dao.NhanVien_DAO;
 import entity.NhanVien;
 import entity.PhieuDatPhong;
 import org.jdesktop.swingx.JXDatePicker;
+import java.util.Random;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -20,6 +21,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Random;
 
 public class CapNhatNhanVien_FORM extends JPanel implements Openable, ActionListener {
     private final JTextField txtHoTen;
@@ -97,7 +99,7 @@ public class CapNhatNhanVien_FORM extends JPanel implements Openable, ActionList
         form.setOpaque(false);
         // BoxForm
         Box boxForm1 = createFormBox("Họ tên", txtHoTen = new JTextField());
-        Box boxForm2 = createFormBox("Chức vụ", cmbChucVu = new JComboBox<>(new String[]{"Chọn", "Lễ tân", "Quản lý"}));
+        Box boxForm2 = createFormBox("Chức vụ", cmbChucVu = new JComboBox<>(new String[]{"Chọn", "Lễ tân", "Quản lý", "Admin"}));
         Box boxForm3 = createFormBox("Ngày sinh",dateNgaySinh = new JXDatePicker());
         Box boxForm4 = createFormBox("Ngày vào làm",dateNgayVaoLam = new JXDatePicker());
         Box boxForm5 = createFormBox("Số điện thoại", txtSoDT = new JTextField());
@@ -107,18 +109,6 @@ public class CapNhatNhanVien_FORM extends JPanel implements Openable, ActionList
         Box boxForm9 = createFormBox("Hệ số lương", txtHSL = new JTextField());
         txtHSL.setEditable(false);
 
-//        dateTimeNgayDen.addActionListener(e -> handleChonLoaiPhong());
-//        dateTimeNgayDi.addActionListener(e -> handleChonLoaiPhong());
-//        cmbSoPhong.setEnabled(false);
-//        cmbLoaiPhong.addActionListener(e -> handleChonLoaiPhong());
-//        cmbSoPhong.addActionListener(e -> updateTenPhong((String) cmbSoPhong.getSelectedItem()));
-//        txtCCCD.addActionListener(e -> handleSearchCustomer());
-//        txtCCCD.addFocusListener(new FocusAdapter() {
-//            @Override
-//            public void focusLost(FocusEvent e) {
-//                handleSearchCustomer();
-//            }
-//        });
 
         form.add(boxForm1);
         form.add(boxForm2);
@@ -411,11 +401,35 @@ public class CapNhatNhanVien_FORM extends JPanel implements Openable, ActionList
         String luongCoBanStr = txtLuong.getText().trim();
         String heSoLuongStr = txtHSL.getText().trim();
 
-        if (ngaySinh == null || !is18YearsOld(ngaySinh)) {
+        if (hoTen.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Họ tên không được để trống.", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (soDT.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Số điện thoại không được để trống.", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (diaChi.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Địa chỉ không được để trống.", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (email.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Email không được để trống.", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (ngaySinh == null) {
+            JOptionPane.showMessageDialog(this, "Ngày sinh không được để trống.", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (ngayVaoLam == null) {
+            JOptionPane.showMessageDialog(this, "Ngày vào làm không được để trống.", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (!is18YearsOld(ngaySinh)) {
             JOptionPane.showMessageDialog(this, "Nhân viên phải đủ 18 tuổi.", "Thông báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        if (ngayVaoLam == null || !ngayVaoLam.after(ngaySinh)) {
+        if (!ngayVaoLam.after(ngaySinh)) {
             JOptionPane.showMessageDialog(this, "Ngày vào làm phải lớn hơn ngày sinh.", "Thông báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
@@ -461,10 +475,13 @@ public class CapNhatNhanVien_FORM extends JPanel implements Openable, ActionList
         java.util.Calendar cal = java.util.Calendar.getInstance();
         cal.setTime(ngayVaoLam);
         int year = cal.get(java.util.Calendar.YEAR);
-
-        String randomChars = String.format("%04d", (int) (Math.random() * 10000));
-
-        return String.valueOf(year).substring(2) + randomChars;
+        String yearSuffix = String.valueOf(year).substring(2);
+        Random random = new Random();
+        char letter1 = (char) ('A' + random.nextInt(26));
+        char letter2 = (char) ('A' + random.nextInt(26));
+        int number1 = random.nextInt(10);
+        int number2 = random.nextInt(10);
+        return yearSuffix + "-" + letter1 + letter2 + String.valueOf(number1) + number2;
     }
     //Xóa nhân vien
     private void deleteNV() {
@@ -503,11 +520,35 @@ public class CapNhatNhanVien_FORM extends JPanel implements Openable, ActionList
         String heSoLuongStr = txtHSL.getText().trim();
 
         // Kiểm tra thông tin hợp lệ
-        if (ngaySinh == null || !is18YearsOld(ngaySinh)) {
+        if (hoTen.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Họ tên không được để trống.", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (soDT.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Số điện thoại không được để trống.", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (diaChi.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Địa chỉ không được để trống.", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (email.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Email không được để trống.", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (ngaySinh == null) {
+            JOptionPane.showMessageDialog(this, "Ngày sinh không được để trống.", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (ngayVaoLam == null) {
+            JOptionPane.showMessageDialog(this, "Ngày vào làm không được để trống.", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (!is18YearsOld(ngaySinh)) {
             JOptionPane.showMessageDialog(this, "Nhân viên phải đủ 18 tuổi.", "Thông báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        if (ngayVaoLam == null || !ngayVaoLam.after(ngaySinh)) {
+        if (!ngayVaoLam.after(ngaySinh)) {
             JOptionPane.showMessageDialog(this, "Ngày vào làm phải lớn hơn ngày sinh.", "Thông báo", JOptionPane.WARNING_MESSAGE);
             return;
         }

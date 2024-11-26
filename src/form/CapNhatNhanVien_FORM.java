@@ -25,6 +25,7 @@ public class CapNhatNhanVien_FORM extends JPanel implements Openable, ActionList
     private final JTextField txtHoTen;
     private final JComboBox<String> cmbChucVu;
     private final JTextField txtHSL, txtSoDT, txtDiaChi, txtLuong, txtEmail;
+    private final JTable table;
     private DefaultTableModel tableModel;
     private final JXDatePicker dateNgaySinh, dateNgayVaoLam;
     private JTextField txtSearch;
@@ -163,7 +164,7 @@ public class CapNhatNhanVien_FORM extends JPanel implements Openable, ActionList
         };
 
 
-        JTable table = new JTable(tableModel);
+        table = new JTable(tableModel);
         table.setBackground(new Color(24, 24, 28));
         table.setForeground(Color.WHITE);
         table.setFont(FontManager.getManrope(Font.PLAIN, 14));
@@ -201,8 +202,13 @@ public class CapNhatNhanVien_FORM extends JPanel implements Openable, ActionList
             public void actionPerformed(ActionEvent e) {
                 String chucVu = (String) cmbChucVu.getSelectedItem();
                 if (chucVu.equals("Lễ tân")) {
-                    txtLuong.setText("5000000");
-                    txtHSL.setText("2.5");
+                    txtLuong.setText("8000000");
+                    txtHSL.setText("2.34");
+                    txtLuong.setEditable(false);
+                    txtHSL.setEditable(false);
+                } else if (chucVu.equals("Quản lý")){
+                    txtLuong.setText("20000000");
+                    txtHSL.setText("4.0");
                     txtLuong.setEditable(false);
                     txtHSL.setEditable(false);
                 } else {
@@ -245,7 +251,8 @@ public class CapNhatNhanVien_FORM extends JPanel implements Openable, ActionList
         JButton refreshButton = createButton("Làm mới", new Color(89, 38, 136, 242));
         addButton.addActionListener(e -> addNV());
         refreshButton.addActionListener(e -> clearInputFields());
-
+        deleteButton.addActionListener(e -> deleteNV());
+        updateButton.addActionListener(e -> updateNV());
         southPanel.add(addButton);
         southPanel.add(deleteButton);
         southPanel.add(updateButton);
@@ -260,24 +267,17 @@ public class CapNhatNhanVien_FORM extends JPanel implements Openable, ActionList
         String tuKhoa = txtSearch.getText().trim().toLowerCase();
         NhanVien_DAO = new NhanVien_DAO();
         ArrayList<NhanVien> dsNV = NhanVien_DAO.getDSNhanVien();
-        if (tuKhoa.equals("tìm kiếm") || tuKhoa.isEmpty()) {
+        if (tuKhoa.isEmpty() || tuKhoa.equals("tìm kiếm")) {
             loadTableData(dsNV);
             return;
         }
         ArrayList<NhanVien> ketQuaTimKiem = new ArrayList<>();
-        KhachHang_DAO khachHang_DAO = new KhachHang_DAO();
-        khachHang_DAO.getDSKhachHang();
 
         for (NhanVien nv : dsNV) {
-            String maNV = nv.getMaNV().toLowerCase();
-            String tenNhanVien = String.valueOf(khachHang_DAO.timKiem(nv.getHoTen()));
-            String soDT = nv.getSoDT().toLowerCase();
-
-            if (maNV.contains(tuKhoa) || tenNhanVien.contains(tuKhoa) || soDT.contains(tuKhoa)) {
+            if (nv.getHoTen().toLowerCase().contains(tuKhoa)) {
                 ketQuaTimKiem.add(nv);
             }
         }
-
         loadTableData(ketQuaTimKiem);
     }
     private void loadTableData(ArrayList<NhanVien> danhSach){
@@ -423,8 +423,13 @@ public class CapNhatNhanVien_FORM extends JPanel implements Openable, ActionList
         String maNV = generateMaNV(ngayVaoLam);
 
         if (chucVu.equals("Lễ tân")) {
-            txtLuong.setText("5000000");
-            txtHSL.setText("2.5");
+            txtLuong.setText("8000000");
+            txtHSL.setText("2.34");
+            txtLuong.setEditable(false);
+            txtHSL.setEditable(false);
+        } else if (chucVu.equals("Quản lý")){
+            txtLuong.setText("20000000");
+            txtHSL.setText("4.0");
             txtLuong.setEditable(false);
             txtHSL.setEditable(false);
         } else {
@@ -461,7 +466,78 @@ public class CapNhatNhanVien_FORM extends JPanel implements Openable, ActionList
 
         return String.valueOf(year).substring(2) + randomChars;
     }
+    //Xóa nhân vien
+    private void deleteNV() {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một nhân viên để xóa.", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        String maNV = (String) tableModel.getValueAt(selectedRow, 0);
+        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa nhân viên " + maNV + "?", "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            // Thực hiện xóa nhân viên
+            NhanVien_DAO.xoaNV(maNV);
+            loadTableData(NhanVien_DAO.getDSNhanVien());
+            JOptionPane.showMessageDialog(this, "Xóa nhân viên thành công.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+    // Sửa thông tin nhân viên
+    private void updateNV() {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một nhân viên để sửa.", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
 
+        String maNV = (String) tableModel.getValueAt(selectedRow, 0);
+        String currentChucVu = (String) tableModel.getValueAt(selectedRow, 2);
+        String hoTen = txtHoTen.getText().trim();
+        String newChucVu = (String) cmbChucVu.getSelectedItem();
+        Date ngaySinh = dateNgaySinh.getDate();
+        Date ngayVaoLam = dateNgayVaoLam.getDate();
+        String soDT = txtSoDT.getText().trim();
+        String diaChi = txtDiaChi.getText().trim();
+        String email = txtEmail.getText().trim();
+        String luongCoBanStr = txtLuong.getText().trim();
+        String heSoLuongStr = txtHSL.getText().trim();
+
+        // Kiểm tra thông tin hợp lệ
+        if (ngaySinh == null || !is18YearsOld(ngaySinh)) {
+            JOptionPane.showMessageDialog(this, "Nhân viên phải đủ 18 tuổi.", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (ngayVaoLam == null || !ngayVaoLam.after(ngaySinh)) {
+            JOptionPane.showMessageDialog(this, "Ngày vào làm phải lớn hơn ngày sinh.", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        double luongCoBan;
+        double heSoLuong;
+
+        if (currentChucVu.equals(newChucVu)) {
+            // Nếu chức vụ không thay đổi, giữ nguyên lương cơ bản và hệ số lương cũ
+            luongCoBan = Double.parseDouble((String) tableModel.getValueAt(selectedRow, 8)); // Lương cơ bản cũ
+            heSoLuong = Double.parseDouble((String) tableModel.getValueAt(selectedRow, 9)); // Hệ số lương cũ
+        } else {
+            // Nếu chức vụ thay đổi, lấy giá trị mới từ JTextField
+            if (luongCoBanStr.isEmpty() || heSoLuongStr.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng nhập lương cơ bản và hệ số lương.", "Thông báo", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+            luongCoBan = Double.parseDouble(luongCoBanStr);
+            heSoLuong = Double.parseDouble(heSoLuongStr);
+        }
+
+        NhanVien nhanVien = new NhanVien(maNV, hoTen, newChucVu, soDT, diaChi, email, ngaySinh, ngayVaoLam, luongCoBan, heSoLuong);
+
+        if (NhanVien_DAO.capNhatNhanVien(maNV, nhanVien)) {
+            JOptionPane.showMessageDialog(this, "Cập nhật nhân viên thành công.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            loadTableData(NhanVien_DAO.getDSNhanVien()); // Tải lại dữ liệu bảng
+            clearInputFields(); // Xóa các trường nhập
+        } else {
+            JOptionPane.showMessageDialog(this, "Cập nhật nhân viên không thành công.", "Thông báo", JOptionPane.ERROR_MESSAGE);
+        }
+    }
     private void addToTableModel(NhanVien nhanVien) {
         tableModel.addRow(new Object[]{
                 nhanVien.getMaNV(),

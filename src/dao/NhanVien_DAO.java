@@ -45,16 +45,50 @@ public class NhanVien_DAO {
     }
     //them mot nhan vien
     public boolean themNV(NhanVien nv) {
-        if (dsNV.contains(nv)) {
-            return false;
+        Connection con = null;
+        Statement st = null;
+
+        try {
+            con = ConnectDB.getInstance().getConnection();
+            String sql = String.format("INSERT INTO NhanVien (maNV, hoTen, chucVu, SDT, diaChi, email, ngaySinh, ngayVaoLam, luongCoBan, heSoLuong) " +
+                            "VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %f, %f)",
+                    nv.getMaNV(), nv.getHoTen(), nv.getChucVu(), nv.getSoDT(), nv.getDiaChi(), nv.getEmail(),
+                    new java.sql.Date(nv.getNgaySinh().getTime()), new java.sql.Date(nv.getNgayVaoLam().getTime()),
+                    nv.getLuongCoBan(), nv.getHeSoLuong());
+
+            st = con.createStatement();
+            int rowsAffected = st.executeUpdate(sql);
+
+            if (rowsAffected > 0) {
+                dsNV.add(nv);
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-        return dsNV.add(nv);
+        return false;
     }
     //xoa mot nhan vien
-    public boolean xoaNV(int i) {
-        if (i >= 0 && i < dsNV.size()) {
-            dsNV.remove(i);
-            return true;
+    public boolean xoaNV(String maNV) {
+        Connection con = null;
+        Statement st = null;
+
+        try {
+            con = ConnectDB.getInstance().getConnection();
+            NhanVien nvToRemove = timKiem(maNV);
+            if (nvToRemove == null) {
+                return false;
+            }
+            String sql = "DELETE FROM NhanVien WHERE maNV = '" + maNV + "'";
+            st = con.createStatement();
+            int rowsAffected = st.executeUpdate(sql);
+
+            if (rowsAffected > 0) {
+                dsNV.remove(nvToRemove);
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return false;
     }
@@ -80,9 +114,19 @@ public class NhanVien_DAO {
     }
     //cap nhat nhan vien
     public boolean capNhatNhanVien(String maNVOld, NhanVien nvNew) {
-        NhanVien nvOld = new NhanVien(maNVOld);
-        if (dsNV.contains(nvOld)) {
-            nvOld = dsNV.get(dsNV.indexOf(nvOld));
+        Connection con = null;
+        Statement st = null;
+
+        try {
+            con = ConnectDB.getInstance().getConnection();
+
+            // Tìm nhân viên cũ trong danh sách
+            NhanVien nvOld = timKiem(maNVOld);
+            if (nvOld == null) {
+                return false; // Nhân viên không tồn tại
+            }
+
+            // Cập nhật thông tin trong danh sách
             nvOld.setMaNV(nvNew.getMaNV());
             nvOld.setHoTen(nvNew.getHoTen());
             nvOld.setChucVu(nvNew.getChucVu());
@@ -93,7 +137,22 @@ public class NhanVien_DAO {
             nvOld.setNgayVaoLam(nvNew.getNgayVaoLam());
             nvOld.setLuongCoBan(nvNew.getLuongCoBan());
             nvOld.setHeSoLuong(nvNew.getHeSoLuong());
-            return true;
+
+            String sql = String.format("UPDATE NhanVien SET maNV = '%s', hoTen = '%s', chucVu = '%s', SDT = '%s', diaChi = '%s', email = '%s', ngaySinh = '%s', ngayVaoLam = '%s', luongCoBan = %f, heSoLuong = %f WHERE maNV = '%s'",
+                    nvNew.getMaNV(), nvNew.getHoTen(), nvNew.getChucVu(), nvNew.getSoDT(), nvNew.getDiaChi(), nvNew.getEmail(),
+                    new java.sql.Date(nvNew.getNgaySinh().getTime()), new java.sql.Date(nvNew.getNgayVaoLam().getTime()),
+                    nvNew.getLuongCoBan(), nvNew.getHeSoLuong(), maNVOld);
+
+            st = con.createStatement();
+            int rowsAffected = st.executeUpdate(sql);
+
+            if (rowsAffected > 0) {
+                dsNV.remove(nvOld);
+                dsNV.add(nvNew);
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
         return false;
     }

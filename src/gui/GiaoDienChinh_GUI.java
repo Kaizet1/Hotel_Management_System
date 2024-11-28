@@ -206,7 +206,6 @@ public class GiaoDienChinh_GUI extends JFrame {
 			} else {
 				sidebarMenu.add(menuButton);
 			}
-
 			sidebarMenu.add(Box.createVerticalStrut(20));
 		}
 
@@ -223,6 +222,37 @@ public class GiaoDienChinh_GUI extends JFrame {
 		scrollSideBar.getVerticalScrollBar().setPreferredSize(new Dimension(5, Integer.MAX_VALUE));
 		scrollSideBar.getVerticalScrollBar().setUnitIncrement(10);
 		sidebar.add(scrollSideBar);
+
+		sidebarMenu.add(Box.createVerticalGlue());
+
+		RoundedButton logoutButton = new RoundedButton("Đăng xuất", new ImageIcon("imgs/LogoutIcon.png"), 5);
+		logoutButton.setHorizontalAlignment(SwingConstants.LEFT);
+		logoutButton.setIconTextGap(19);
+		logoutButton.setFont(FontManager.getManrope(Font.PLAIN, 16));
+		logoutButton.setPreferredSize(new Dimension(230, 50));
+		logoutButton.setMaximumSize(new Dimension(230, 50));
+		logoutButton.setMinimumSize(new Dimension(230, 50));
+		logoutButton.setBackground(new Color(24, 24, 28));
+		logoutButton.setForeground(Color.WHITE);
+		logoutButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		logoutButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				logoutButton.setBackground(new Color(34, 43, 83));
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				logoutButton.setBackground(new Color(24, 24, 28));
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				dispose();
+				new DangNhap_GUI();
+			}
+		});
+		sidebarMenu.add(logoutButton);
 		return sidebar;
 	}
 

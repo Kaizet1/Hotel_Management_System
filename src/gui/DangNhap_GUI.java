@@ -175,28 +175,50 @@ public class DangNhap_GUI extends JFrame {
         submitButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
         exitButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
+//        submitButton.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                String tenDN = userField.getText();
+//                String matKhau = new String(passField.getPassword());
+//
+//                TaiKhoan taiKhoan = taiKhoanDAO.checkDangNhap(tenDN, matKhau);
+//
+//                if (taiKhoan != null) {
+//                    try {
+//                        UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+//                    } catch (Exception ex) {
+//                        ex.printStackTrace();
+//                    }
+//                    new GiaoDienChinh_GUI();
+//                    dispose();
+//                } else {
+//                    JOptionPane.showMessageDialog(DangNhap_GUI.this, "Tên đăng nhập hoặc mật khẩu không đúng!", "Lỗi đăng nhập", JOptionPane.ERROR_MESSAGE);
+//                }
+//            }
+//        });
+
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String tenDN = userField.getText();
                 String matKhau = new String(passField.getPassword());
 
-                TaiKhoan taiKhoan = taiKhoanDAO.checkDangNhap(tenDN, matKhau);
+                String role = taiKhoanDAO.checkDangNhap(tenDN, matKhau);
 
-                if (taiKhoan != null) {
-                    try {
-                        UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
+                if (role != null) {
+                    if ("ADMIN".equals(role)) {
+                        // Hiển thị giao diện cho admin
+                        new GiaoDienChinh_GUI();
+                    } else {
+                        // Hiển thị giao diện cho nhân viên
+                        new GiaoDienNhanVien_GUI();
                     }
-                    new GiaoDienChinh_GUI();
                     dispose();
                 } else {
                     JOptionPane.showMessageDialog(DangNhap_GUI.this, "Tên đăng nhập hoặc mật khẩu không đúng!", "Lỗi đăng nhập", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
-
         exitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

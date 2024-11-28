@@ -1,7 +1,7 @@
 ﻿--tao moi database
-create database myDatabase2
+create database myDatabase
 go
-use myDatabase2
+use myDatabase
 go
 --tao cac table
 --khach hang
@@ -225,7 +225,8 @@ VALUES
 ('19-GH34', N'Vũ Văn Sơn', N'Lao công', '1995-05-18', '2019-10-05', '0907890124', N'135 Đường 17, Quận 5, TP.HCM', 'vuson@gmail.com', 5800000, 2.6),
 ('18-IJ56', N'Nguyễn Thị Hoa', N'Quản lý', '1984-06-25', '2018-11-15', '0908901235', N'246 Đường 18, Quận 6, TP.HCM', 'nguyenhoa@gmail.com', 6500000, 3.5),
 ('21-KL78', N'Lê Hoàng Dương', N'Lễ tân', '1991-07-22', '2021-10-15', '0909012346', N'357 Đường 19, Quận 7, TP.HCM', 'leduong@gmail.com', 6000000, 3.0),
-('17-MN90', N'Phan Văn Thắng', N'Lễ tân', '1985-12-30', '2017-12-01', '0900123456', N'246 Đường 20, Quận 8, TP.HCM', 'phanthang@gmail.com', 6700000, 3.8);
+('17-MN90', N'Phan Văn Thắng', N'Lễ tân', '1985-12-30', '2017-12-01', '0900123456', N'246 Đường 20, Quận 8, TP.HCM', 'phanthang@gmail.com', 6700000, 3.8),
+('18-MN90', N'Cao Thành Đông', N'Lễ tân', '1985-12-30', '2018-12-01', '0906123456', N'266 Đường 20, Quận 8, TP.HCM', 'dongcao@gmail.com', 6900000, 3.8);
 
 --tai khoan
 INSERT INTO TaiKhoan (tenDN, matKhau, maNV)
@@ -250,7 +251,8 @@ VALUES
 ('vuson', 'T@il7', '19-GH34'),
 ('nguyenhoa', 'H@rd8', '18-IJ56'),
 ('leduong', 'B@ss9', '21-KL78'),
-('phanthang', 'S@wer0', '17-MN90');
+('phanthang', 'S@wer0', '17-MN90'),
+('nv', '2', '18-MN90');
 
 --loai phong
 INSERT INTO LoaiPhong (tenLoai, moTa)

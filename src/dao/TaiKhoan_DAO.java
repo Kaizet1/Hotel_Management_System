@@ -13,7 +13,36 @@ public class TaiKhoan_DAO {
         dsTK = new ArrayList<TaiKhoan>();
     }
 
-    public TaiKhoan checkDangNhap(String tenDn, String matKhau) {
+//    public TaiKhoan checkDangNhap(String tenDn, String matKhau) {
+//        Connection con = ConnectDB.getInstance().getConnection();
+//        String sql = "SELECT * FROM TaiKhoan tk JOIN NhanVien nv ON tk.maNV = nv.maNV WHERE tenDn = ? AND matKhau = ?";
+//        try (PreparedStatement pstmt = con.prepareStatement(sql)) {
+//            pstmt.setString(1, tenDn);
+//            pstmt.setString(2, matKhau);
+//            ResultSet rs = pstmt.executeQuery();
+//            if (rs.next()) {
+//                // Lấy thông tin NhanVien từ kết quả truy vấn
+//                String maNV = rs.getString("maNV");
+//                String hoTen = rs.getString("hoTen");
+//                String chucVu = rs.getString("chucVu");
+//                Date ngaySinh = rs.getDate("ngaySinh");
+//                Date ngayVaoLam = rs.getDate("ngayVaoLam");
+//                String SDT = rs.getString("SDT");
+//                String diaChi = rs.getString("diaChi");
+//                String email = rs.getString("email");
+//                double luongCoBan = rs.getDouble("luongCoBan");
+//                double heSoLuong = rs.getDouble("heSoLuong");
+//
+//                NhanVien nhanVien = new NhanVien(maNV, hoTen, chucVu, SDT, diaChi, email, ngaySinh, ngayVaoLam, luongCoBan, heSoLuong);
+//                return new TaiKhoan(tenDn, matKhau, nhanVien);
+//
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
+    public String checkDangNhap(String tenDn, String matKhau) {
         Connection con = ConnectDB.getInstance().getConnection();
         String sql = "SELECT * FROM TaiKhoan tk JOIN NhanVien nv ON tk.maNV = nv.maNV WHERE tenDn = ? AND matKhau = ?";
         try (PreparedStatement pstmt = con.prepareStatement(sql)) {
@@ -34,12 +63,18 @@ public class TaiKhoan_DAO {
                 double heSoLuong = rs.getDouble("heSoLuong");
 
                 NhanVien nhanVien = new NhanVien(maNV, hoTen, chucVu, SDT, diaChi, email, ngaySinh, ngayVaoLam, luongCoBan, heSoLuong);
-                return new TaiKhoan(tenDn, matKhau, nhanVien);
+
+                // Kiểm tra nếu tài khoản là admin
+                if ("admin".equals(tenDn) && "1".equals(matKhau)) {
+                    return "ADMIN"; // Trả về vai trò admin
+                } else {
+                    return "EMPLOYEE"; // Trả về vai trò nhân viên
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return null; // Nếu không tìm thấy tài khoản
     }
     public ArrayList<TaiKhoan> getDsTK() throws SQLException {
         Connection con = ConnectDB.getInstance().getConnection();

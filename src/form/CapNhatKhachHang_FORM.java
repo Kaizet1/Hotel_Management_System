@@ -16,10 +16,11 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class CapNhatKhachHang_FORM extends JPanel  implements ActionListener, MouseListener {
+    private JTextField txtSDT;
     private DefaultTableModel tableModel;
     private JTable table;
     private KhachHang_DAO khachHangDAO;
-    private JTextField txtTenKhachHang, txtDiaChi, txtSDT, txtCCCD, txtEmail;
+    private JTextField txtTenKhachHang, txtDiaChi,  txtCCCD, txtEmail;
     private JComboBox<String> cmbLoaiPhong, cmbTrangThai;
     public CapNhatKhachHang_FORM() {
         khachHangDAO = new KhachHang_DAO();
@@ -231,6 +232,7 @@ public class CapNhatKhachHang_FORM extends JPanel  implements ActionListener, Mo
                 txt.setBorder(emptyBorder);
             }
         });
+        
 
         b.add(lblBox);
         b.add(Box.createVerticalStrut(6));
@@ -447,18 +449,49 @@ public class CapNhatKhachHang_FORM extends JPanel  implements ActionListener, Mo
         tableModel.removeRow(rowIndex); // Xóa dòng cũ
         tableModel.insertRow(0, rowData); // Chèn dòng vào đầu bảng
     }
+    private boolean isValidInput(String input, String regex) {
+        return input.matches(regex);
+    }
+    private void showError(String message, JTextField field) {
+        JOptionPane.showMessageDialog(this, message, "Thông báo lỗi", JOptionPane.ERROR_MESSAGE);
+        field.requestFocus();
+    }
+
+
     @Override
     public void actionPerformed(ActionEvent e) {
         RoundedButton btn = (RoundedButton) e.getSource();
 
         if (btn.getText().equals("Sửa")) {
-           suaKhachHang();
+            // Kiểm tra dữ liệu trước khi sửa
+            if (validateAllInputs()) {
+                suaKhachHang(); // Thực hiện sửa nếu dữ liệu hợp lệ
+            }
         } else if (btn.getText().equals("Xóa")) {
             xoaKhachHang();
         } else if (btn.getText().equals("Làm mới")) {
             lamMoi();
         }
+    }
 
+    private boolean validateAllInputs() {
+        if (!isValidInput(txtTenKhachHang.getText().trim(), "^[\\p{L} ]+$")) {
+            showError("Tên khách hàng không hợp lệ.", txtTenKhachHang);
+            return false;
+        }
+        if (!isValidInput(txtSDT.getText().trim(), "^\\d{10,11}$")) {
+            showError("Số điện thoại không hợp lệ.", txtSDT);
+            return false;
+        }
+        if (!isValidInput(txtEmail.getText().trim(), "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$")) {
+            showError("Email không hợp lệ.", txtEmail);
+            return false;
+        }
+        if (!isValidInput(txtCCCD.getText().trim(), "^\\d{12}$")) {
+            showError("CCCD không hợp lệ.", txtCCCD);
+            return false;
+        }
+        return true;
     }
 
     @Override

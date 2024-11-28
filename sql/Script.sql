@@ -1,7 +1,7 @@
 ﻿--tao moi database
-create database myDatabase
+create database myDatabase2
 go
-use myDatabase
+use myDatabase2
 go
 --tao cac table
 --khach hang
@@ -12,7 +12,7 @@ create table KhachHang(
 	SDT varchar(15) not null,
 	soCCCD varchar(20) not null unique,
 	email varchar(30) ,
-	ngaySinh Date not null,
+	trangThai int 
 )
 
 --nhan vien
@@ -27,6 +27,7 @@ create table NhanVien (
 	email varchar(40) not null unique,
 	luongCoBan float, 
 	heSoLuong float
+	
 )
 --tai khoan
 create table TaiKhoan (
@@ -146,7 +147,7 @@ ADD CONSTRAINT FK_HoaDon_Thue
 FOREIGN KEY (maSoThue) REFERENCES ThueVAT(maSoThue);
 
 Alter table PhieuDatPhong
-ADD CONSTRAINT FK_PDP_KhachHang
+ADD CONSTRAINT FK_PDP_KhachHang 
 FOREIGN KEY (maKH) REFERENCES KhachHang(maKH);
 
 alter table PhieuDatPhong
@@ -177,28 +178,28 @@ FOREIGN KEY (maDV) REFERENCES DichVu(maDV);
 
 --chen du lieu
 --khach hang
-INSERT INTO KhachHang (maKH, hoTen, diaChi, SDT, soCCCD, email, ngaySinh)
+insert into KhachHang(maKH, hoTen, diaChi, SDT, soCCCD,email, trangThai)
 VALUES
-('KH-001', N'Trần Quốc Khánh', N'123 Lý Thường Kiệt, Quận 1, TP.HCM', '0909123456', '123456789012', 'tranquockhanh@gmail.com', '1985-04-15'),
-('KH-002', N'Nguyễn Thị Thanh Hương', N'456 Nguyễn Trãi, Quận 5, TP.HCM', '0908123456', '234567890123', 'nguyenthihuong@gmail.com', '1990-07-22'),
-('KH-003', N'Lê Hoàng Nam', N'789 Võ Văn Tần, Quận 3, TP.HCM', '0307123456', '345678901234', 'lehoangnam@gmail.com', '1987-03-10'),
-('KH-004', N'Phan Thị Bích Ngọc', N'12 Cách Mạng Tháng 8, Quận 10, TP.HCM', '0906123456', '456789012345', 'phanbichngoc@gmail.com', '1992-11-30'),
-('KH-005', N'Huỳnh Ngọc Minh', N'321 Lê Lợi, Quận 1, TP.HCM', '0905123456', '567890123456', 'huynhngocminh@gmail.com', '1983-09-05'),
-('KH-006', N'Vũ Văn Hùng', N'654 Trần Hưng Đạo, Quận 1, TP.HCM', '0904123456', '678901234567', 'vuvanhung@gmail.com', '1986-02-25'),
-('KH-007', N'Đinh Thị Thu Trang', N'87 Hai Bà Trưng, Quận 3, TP.HCM', '0903123456', '789012345678', 'dinhthutrang@gmail.com', '1991-08-19'),
-('KH-008', N'Nguyễn Phúc Thịnh', N'123 Pasteur, Quận 1, TP.HCM', '0902123456', '890123456789', 'nguyenphucthinh@gmail.com', '1984-12-05'),
-('KH-009', N'Trịnh Công Dũng', N'45 Nguyễn Huệ, Quận 1, TP.HCM', '0901123456', '901234567890', 'trinhcongdung@gmail.com', '1995-06-17'),
-('KH-010', N'Phạm Văn Thắng', N'98 Đường 3 Tháng 2, Quận 10, TP.HCM', '0711123456', '012345678901', 'phamvanthang@gmail.com', '1989-05-02'),
-('KH-011', N'Lý Thị Minh Châu', N'123 Bạch Đằng, Quận Bình Thạnh, TP.HCM', '0312123456', '111234567890', 'lyminhchau@gmail.com', '1993-01-27'),
-('KH-012', N'Bùi Quang Vinh', N'567 Điện Biên Phủ, Quận Bình Thạnh, TP.HCM', '0913123456', '222345678901', 'buiquangvinh@gmail.com', '1988-10-14'),
-('KH-013', N'Ngô Văn Hải', N'432 Xô Viết Nghệ Tĩnh, Quận Bình Thạnh, TP.HCM', '0914123456', '333456789012', 'ngovanhai@gmail.com', '1994-04-21'),
-('KH-014', N'Đoàn Thị Mỹ Linh', N'876 Nguyễn Văn Trỗi, Quận Phú Nhuận, TP.HCM', '0315123456', '444567890123', 'doanmylinh@gmail.com', '1985-11-09'),
-('KH-015', N'Phan Thanh Hà', N'12 Hoàng Sa, Quận 3, TP.HCM', '0916123456', '555678901234', 'phanthanhha@gmail.com', '1990-03-30'),
-('KH-016', N'Trương Quốc Bảo', N'34 Trường Sa, Quận Phú Nhuận, TP.HCM', '0717123456', '666789012345', 'truongquocbao@gmail.com', '1987-07-12'),
-('KH-017', N'Hoàng Thanh Tú', N'789 Lê Hồng Phong, Quận 10, TP.HCM', '0918123456', '777890123456', 'hoangthanhtu@gmail.com', '1992-02-18'),
-('KH-018', N'Võ Minh Tuấn', N'23 Nguyễn Đình Chiểu, Quận 3, TP.HCM', '0919123456', '888901234567', 'vomintuan@gmail.com', '1986-09-03'),
-('KH-019', N'Đỗ Thị Hồng Vân', N'654 Võ Thị Sáu, Quận 3, TP.HCM', '0720123456', '999012345678', 'dothihongvan@gmail.com', '1988-12-22'),
-('KH-020', N'Lê Văn Tài', N'76 Nam Kỳ Khởi Nghĩa, Quận 1, TP.HCM', '0921123456', '000123456789', 'levantai@gmail.com', '1984-07-01');
+('KH-001', N'Trần Quốc Khánh', N'123 Lý Thường Kiệt, Quận 1, TP.HCM', '0909123456', '123456789012', 'tranquockhanh@gmail.com',  1),
+('KH-002', N'Nguyễn Thị Thanh Hương', N'456 Nguyễn Trãi, Quận 5, TP.HCM', '0908123456', '234567890123', 'nguyenthihuong@gmail.com',  1),
+('KH-003', N'Lê Hoàng Nam', N'789 Võ Văn Tần, Quận 3, TP.HCM', '0307123456', '345678901234', 'lehoangnam@gmail.com',  1),
+('KH-004', N'Phan Thị Bích Ngọc', N'12 Cách Mạng Tháng 8, Quận 10, TP.HCM', '0906123456', '456789012345', 'phanbichngoc@gmail.com',  1),
+('KH-005', N'Huỳnh Ngọc Minh', N'321 Lê Lợi, Quận 1, TP.HCM', '0905123456', '567890123456', 'huynhngocminh@gmail.com',  1),
+('KH-006', N'Vũ Văn Hùng', N'654 Trần Hưng Đạo, Quận 1, TP.HCM', '0904123456', '678901234567', 'vuvanhung@gmail.com',  1),
+('KH-007', N'Đinh Thị Thu Trang', N'87 Hai Bà Trưng, Quận 3, TP.HCM', '0903123456', '789012345678', 'dinhthutrang@gmail.com',  1),
+('KH-008', N'Nguyễn Phúc Thịnh', N'123 Pasteur, Quận 1, TP.HCM', '0902123456', '890123456789', 'nguyenphucthinh@gmail.com',  1),
+('KH-009', N'Trịnh Công Dũng', N'45 Nguyễn Huệ, Quận 1, TP.HCM', '0901123456', '901234567890', 'trinhcongdung@gmail.com',  1),
+('KH-010', N'Phạm Văn Thắng', N'98 Đường 3 Tháng 2, Quận 10, TP.HCM', '0711123456', '012345678901', 'phamvanthang@gmail.com',  1),
+('KH-011', N'Lý Thị Minh Châu', N'123 Bạch Đằng, Quận Bình Thạnh, TP.HCM', '0312123456', '111234567890', 'lyminhchau@gmail.com',  1),
+('KH-012', N'Bùi Quang Vinh', N'567 Điện Biên Phủ, Quận Bình Thạnh, TP.HCM', '0913123456', '222345678901', 'buiquangvinh@gmail.com',  1),
+('KH-013', N'Ngô Văn Hải', N'432 Xô Viết Nghệ Tĩnh, Quận Bình Thạnh, TP.HCM', '0914123456', '333456789012', 'ngovanhai@gmail.com',  1),
+('KH-014', N'Đoàn Thị Mỹ Linh', N'876 Nguyễn Văn Trỗi, Quận Phú Nhuận, TP.HCM', '0315123456', '444567890123', 'doanmylinh@gmail.com',  1),
+('KH-015', N'Phan Thanh Hà', N'12 Hoàng Sa, Quận 3, TP.HCM', '0916123456', '555678901234', 'phanthanhha@gmail.com', 1),
+('KH-016', N'Trương Quốc Bảo', N'34 Trường Sa, Quận Phú Nhuận, TP.HCM', '0717123456', '666789012345', 'truongquocbao@gmail.com',  1),
+('KH-017', N'Hoàng Thanh Tú', N'789 Lê Hồng Phong, Quận 10, TP.HCM', '0918123456', '777890123456', 'hoangthanhtu@gmail.com',  1),
+('KH-018', N'Võ Minh Tuấn', N'23 Nguyễn Đình Chiểu, Quận 3, TP.HCM', '0919123456', '888901234567', 'vomintuan@gmail.com',  1),
+('KH-019', N'Đỗ Thị Hồng Vân', N'654 Võ Thị Sáu, Quận 3, TP.HCM', '0720123456', '999012345678', 'dothihongvan@gmail.com',  1),
+('KH-020', N'Lê Văn Tài', N'76 Nam Kỳ Khởi Nghĩa, Quận 1, TP.HCM', '0921123456', '000123456789', 'levantai@gmail.com',  1);
 
 
 --nhan vien
@@ -214,7 +215,7 @@ VALUES
 ('19-MN34', N'Vũ Văn Khải', N'Lễ tân', '1991-07-20', '2019-08-30', '0907890123', N'135 Đường 7, Quận 7, TP.HCM', 'vukhai@gmail.com', 6000000, 3.0),
 ('17-OP56', N'Nguyễn Thị Mai', N'Lễ tân', '1984-08-12', '2017-09-01', '0908901234', N'246 Đường 8, Quận 8, TP.HCM', 'nguyenmai@gmail.com', 6500000, 3.1),
 ('21-QR78', N'Lê Hoàng Minh', N'Lễ tân', '1990-09-22', '2021-10-15', '0909012345', N'357 Đường 9, Quận 9, TP.HCM', 'leminh@gmail.com', 5100000, 2.6),
-('18-ST90', N'Phan Thị Ngọc', N'Lễ tân', '1989-10-05', '2018-11-20', '0900123456', N'468 Đường 10, Quận 10, TP.HCM', 'phangoc@gmail.com', 5700000, 3.4),
+('18-ST90', N'Phan Thị Ngọc', N'Lễ tân', '1989-10-05', '2018-11-20', '0900123456', N'468 Đường 10, Quận 10, TP.HCM', 'phangoc@gmail.com', 5700000, 3.4 ),
 ('20-UV12', N'Nguyễn Văn Đạt', N'Lễ tân', '1993-11-18', '2020-01-30', '0901234568', N'579 Đường 11, Quận 11, TP.HCM', 'nguyendat@gmail.com', 5000000, 2.7),
 ('17-WX34', N'Trần Thị Hạnh', N'Lễ tân', '1986-12-25', '2017-12-22', '0902345679', N'680 Đường 12, Quận 12, TP.HCM', 'tranhanh@gmail.com', 6200000, 3.3),
 ('21-YZ56', N'Lê Văn Nam', N'Lễ tân', '1994-01-10', '2021-04-04', '0903456780', N'791 Đường 13, Quận 1, TP.HCM', 'levannam@gmail.com', 5900000, 2.8),

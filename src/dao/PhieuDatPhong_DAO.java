@@ -158,7 +158,7 @@ public class PhieuDatPhong_DAO {
                 insertStatement.setString(4, phieuDatPhong.getKhachHang().getSdt());
                 insertStatement.setString(5, phieuDatPhong.getKhachHang().getcCCD());
                 insertStatement.setString(6, phieuDatPhong.getKhachHang().getEmail());
-                insertStatement.setDate(7, new java.sql.Date(phieuDatPhong.getKhachHang().getNgaySinh().getTime()));
+
                 insertStatement.executeUpdate();
             }
             String sql = "INSERT INTO PhieuDatPhong (maPDP, maPhong, maNV, maKH, ngayDat, ngayDen, ngayDi, tinhTrangPDP) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";

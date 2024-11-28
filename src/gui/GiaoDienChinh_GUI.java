@@ -284,7 +284,7 @@ public class GiaoDienChinh_GUI extends JFrame {
 		JPanel timKiemPhongPanel = new TimKiemPhong_FORM();
 		JPanel capNhatPhongPanel = new CapNhatPhong_FORM();
 		JPanel doiPhongPanel = new DoiPhong_FORM();
-		JPanel traPhongPanel = new TraPhong_FORM();
+		//JPanel traPhongPanel = new TraPhong_FORM();
 
 		JPanel timKiemKhachHangPanel = new TimKiemKhachHang_FORM();
 		JPanel capNhatKhachHangPanel = new CapNhatKhachHang_FORM();
@@ -299,7 +299,7 @@ public class GiaoDienChinh_GUI extends JFrame {
 		timKiemPhongPanel.setName("TimKiemPhong");
 		capNhatPhongPanel.setName("CapNhatPhong");
 		doiPhongPanel.setName("DoiPhong");
-		traPhongPanel.setName("TraPhong");
+		//traPhongPanel.setName("TraPhong");
 		timKiemNhanVienPanel.setName("TimKiemNhanVien");
 		capNhatNhanVienPanel.setName("CapNhatNhanVien");
 		timKiemKhachHangPanel.setName("TimKiemKhachHang");

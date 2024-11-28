@@ -303,7 +303,6 @@ public class DatPhong_FORM extends JPanel implements Openable {
 
             if (khachHang != null) {
                 txtTenKhachHang.setText(khachHang.getHoTen());
-                dateNgaySinh.setDate(khachHang.getNgaySinh());
                 txtDiaChi.setText(khachHang.getDiaChi());
                 txtEmail.setText(khachHang.getEmail());
                 txtSDT.setText(khachHang.getSdt());
@@ -541,7 +540,7 @@ public class DatPhong_FORM extends JPanel implements Openable {
            kh.setEmail(email);
            kh.setDiaChi(diaChi);
         } else {
-            kh = new KhachHang(taoMaKH(), tenKhachHang, diaChi, sdt, email, cccd, ngaySinh);
+            kh = new KhachHang(taoMaKH(), tenKhachHang, diaChi, sdt, email, cccd,  kh.getTrangThai());
         }
         PhieuDatPhong phieuDatPhong = new PhieuDatPhong(taoMaPDP(), p, nv, kh, ngayDi, ngayDen, ngayDat, 0);
         if (phieuDatPhongDAO.datPhong(phieuDatPhong)){

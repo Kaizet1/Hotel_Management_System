@@ -12,10 +12,7 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
+import java.awt.event.*;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -58,6 +55,7 @@ public class DangNhap_GUI extends JFrame {
     }
 
     private JPanel createLeftPanel() {
+
         BackgroundPanel leftPanel = null;
 		try {
 			leftPanel = new BackgroundPanel("imgs/LeftBackGround.png");
@@ -105,6 +103,7 @@ public class DangNhap_GUI extends JFrame {
         rightPanel.setBackground(BACKGROUND_COLOR);
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 
+
         JLabel welcomeLabel = createLabel("Welcome Back!", new Font("merriweather", Font.PLAIN, 36), new Color(219, 228, 255));
 
         // Tên đăng nhập
@@ -137,6 +136,14 @@ public class DangNhap_GUI extends JFrame {
                 }
             }
         });
+        userField.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke('/'), "focusUserField");
+        userField.getActionMap().put("focusUserField", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                userField.requestFocusInWindow();
+            }
+        });
+
 
         // Mật khẩu
         JLabel passLabel = createLabel("Mật khẩu", new Font("Manrope Regular", Font.PLAIN, 14), Color.white);
@@ -169,6 +176,47 @@ public class DangNhap_GUI extends JFrame {
                 }
             }
         });
+
+        passField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    String tenDN = userField.getText();
+                    String matKhau = new String(passField.getPassword());
+
+                    String role = taiKhoanDAO.checkDangNhap(tenDN, matKhau);
+
+                    if (role != null) {
+                        if ("ADMIN".equals(role)) {
+                            // Hiển thị giao diện cho admin
+                            new GiaoDienChinh_GUI();
+                        } else {
+                            // Hiển thị giao diện cho nhân viên
+                            new GiaoDienNhanVien_GUI();
+                        }
+                        dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(DangNhap_GUI.this, "Tên đăng nhập hoặc mật khẩu không đúng!", "Lỗi đăng nhập", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        });
+        rightPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                rightPanel.requestFocusInWindow();
+            }
+        });
+
+        userField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                    passField.requestFocusInWindow();
+                }
+            }
+        });
+
         JButton submitButton = createButton("Xác nhận", BUTTON_COLOR_SUBMIT);
         JButton exitButton = createButton("Thoát", BUTTON_COLOR_EXIT);
         

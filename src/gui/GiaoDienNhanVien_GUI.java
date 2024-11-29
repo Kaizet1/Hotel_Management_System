@@ -81,7 +81,6 @@ public class GiaoDienNhanVien_GUI extends JFrame {
         String[][] menuItems = {
                 { "Trang chủ", "TrangChu", "TrangChu" }, // Không có submenu
                 { "Phòng", null, "Phong" },
-//                { "Nhân viên", null, "NhanVien"},
                 { "Khách hàng", null, "KhachHang" },
                 { "Dịch vụ", null, "DichVu" },
                 { "Hóa đơn", null, "HoaDon" },
@@ -100,10 +99,6 @@ public class GiaoDienNhanVien_GUI extends JFrame {
 
                 }, // Phòng
 
-//                {
-//                        { "Tìm kiếm nhân viên", "TimKiemNhanVien" },
-//                        { "Cập nhật nhân viên", "CapNhatNhanVien" },
-//                },
                 //Nhân viên
 
                 {

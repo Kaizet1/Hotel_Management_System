@@ -61,8 +61,9 @@ public class TaiKhoan_DAO {
                 String email = rs.getString("email");
                 double luongCoBan = rs.getDouble("luongCoBan");
                 double heSoLuong = rs.getDouble("heSoLuong");
+                int trangThai = rs.getInt("trangThai");
 
-                NhanVien nhanVien = new NhanVien(maNV, hoTen, chucVu, SDT, diaChi, email, ngaySinh, ngayVaoLam, luongCoBan, heSoLuong);
+                NhanVien nhanVien = new NhanVien(maNV, hoTen, chucVu, SDT, diaChi, email, ngaySinh, ngayVaoLam, luongCoBan, heSoLuong, trangThai);
 
                 // Kiểm tra nếu tài khoản là admin
                 if ("admin".equals(tenDn) && "1".equals(matKhau)) {

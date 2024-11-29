@@ -4,106 +4,108 @@ import connectDB.ConnectDB;
 import entity.KhachHang;
 import entity.NhanVien;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class NhanVien_DAO {
-    private ArrayList<NhanVien> dsNV;
+    private  Connection conn;
+    private ArrayList<NhanVien> dsnv;
     public NhanVien_DAO (){
-        dsNV = new ArrayList<NhanVien>();
+
+        dsnv = new ArrayList<NhanVien>();
+        this.conn = ConnectDB.getInstance().getConnection();
+        dsnv = new ArrayList<>();
     }
 
     public ArrayList<NhanVien> getDSNhanVien() {
-        try{
+        ArrayList<NhanVien> dsnv = new ArrayList<>();
+        try {
+            // Lấy kết nối đến cơ sở dữ liệu
             Connection con = ConnectDB.getInstance().getConnection();
-            String sql = "select * from NhanVien";
-            Statement st = con.createStatement();
-            ResultSet rs = st.executeQuery(sql);
-            while (rs.next()){
+            // Câu truy vấn chỉ lấy khách hàng có trạng thái khác 0
+            String sql = "SELECT * FROM NhanVien WHERE TrangThai = 1";
+            // Sử dụng PreparedStatement để tăng tính an toàn và hiệu suất
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                // Lấy thông tin từ ResultSet
                 String maNV = rs.getString("maNV");
                 String hoTen = rs.getString("hoTen");
                 String chucVu = rs.getString("chucVu");
-                Date ngaySinh = rs.getDate("ngaySinh");
-                Date ngayVaoLam = rs.getDate("ngayVaoLam");
                 String SDT = rs.getString("SDT");
                 String diaChi = rs.getString("diaChi");
                 String email = rs.getString("email");
+                Date ngaySinh = rs.getDate("ngaySinh");
+                Date ngayVaoLam = rs.getDate("ngayVaoLam");
                 double luongCoBan = rs.getDouble("luongCoBan");
                 double heSoLuong = rs.getDouble("heSoLuong");
-                NhanVien nv= new NhanVien(maNV, hoTen, chucVu, SDT, diaChi, email, ngaySinh, ngayVaoLam, luongCoBan, heSoLuong);
-                dsNV.add(nv);
+                int trangThai = rs.getInt("trangThai");
+                // Khởi tạo đối tượng KhachHang và thêm vào danh sách
+                NhanVien nv= new NhanVien(maNV, hoTen, chucVu,SDT, diaChi, email,ngaySinh, ngayVaoLam, luongCoBan, heSoLuong, trangThai);
+                dsnv.add(nv);
             }
-
-        }catch (SQLException e){
-            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace(); // In lỗi nếu có
         }
-        return dsNV;
+        return dsnv; // Trả về danh sách khách hàng
     }
-    //them mot nhan vien
-    public boolean themNV(NhanVien nv) {
-        Connection con = null;
-        Statement st = null;
 
+    public boolean themNhanVien(NhanVien nv) throws SQLException {
+        int kq = 0;
         try {
-            con = ConnectDB.getInstance().getConnection();
-            String sql = String.format("INSERT INTO NhanVien (maNV, hoTen, chucVu, SDT, diaChi, email, ngaySinh, ngayVaoLam, luongCoBan, heSoLuong) " +
-                            "VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', %f, %f)",
-                    nv.getMaNV(), nv.getHoTen(), nv.getChucVu(), nv.getSoDT(), nv.getDiaChi(), nv.getEmail(),
-                    new java.sql.Date(nv.getNgaySinh().getTime()), new java.sql.Date(nv.getNgayVaoLam().getTime()),
-                    nv.getLuongCoBan(), nv.getHeSoLuong());
-
-            st = con.createStatement();
-            int rowsAffected = st.executeUpdate(sql);
-
-            if (rowsAffected > 0) {
-                dsNV.add(nv);
-                return true;
-            }
+            String query = "INSERT INTO NhanVien (maNV, hoTen, chucVu, ngaySinh, ngayVaoLam, SDT, diaChi, email, luongCoBan, heSoLuong, trangThai) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, nv.getMaNV());
+            stmt.setString(2, nv.getHoTen());
+            stmt.setString(3, nv.getChucVu());
+            stmt.setDate(4, new java.sql.Date(nv.getNgaySinh().getTime()));
+            stmt.setDate(5, new java.sql.Date(nv.getNgayVaoLam().getTime()));
+            stmt.setString(6, nv.getSoDT());
+            stmt.setString(7, nv.getDiaChi());
+            stmt.setString(8, nv.getEmail());
+            stmt.setDouble(9, nv.getLuongCoBan());
+            stmt.setDouble(10, nv.getHeSoLuong());
+            stmt.setInt(11, 1); // Đặt giá trị mặc định cho trangThai là 1
+            kq = stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
+        return kq > 0;
     }
-    //xoa mot nhan vien
-    public boolean xoaNV(String maNV) {
-        Connection con = null;
-        Statement st = null;
-
+    public boolean xoaNV(String maNV) throws SQLException {
+        String query = "UPDATE NhanVien SET trangThai = 0 WHERE maNV = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, maNV);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    public boolean suaNhanVien(NhanVien nv) throws SQLException {
+        int kq = 0;
         try {
-            con = ConnectDB.getInstance().getConnection();
-            NhanVien nvToRemove = timKiem(maNV);
-            if (nvToRemove == null) {
-                return false;
-            }
-            String sql = "DELETE FROM NhanVien WHERE maNV = '" + maNV + "'";
-            st = con.createStatement();
-            int rowsAffected = st.executeUpdate(sql);
-
-            if (rowsAffected > 0) {
-                dsNV.remove(nvToRemove);
-                return true;
-            }
+            String query = "UPDATE NhanVien SET hoTen=?, chucVu=?, ngaySinh=?, ngayVaoLam=?, SDT=?, diaChi=?, email=?, luongCoBan=?, heSoLuong=? WHERE maNV=?";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, nv.getHoTen());
+            stmt.setString(2, nv.getChucVu());
+            stmt.setDate(3, new java.sql.Date(nv.getNgaySinh().getTime()));
+            stmt.setDate(4, new java.sql.Date(nv.getNgayVaoLam().getTime()));
+            stmt.setString(5, nv.getSoDT());
+            stmt.setString(6, nv.getDiaChi());
+            stmt.setString(7, nv.getEmail());
+            stmt.setDouble(8, nv.getLuongCoBan());
+            stmt.setDouble(9, nv.getHeSoLuong());
+            stmt.setString(10, nv.getMaNV());
+            kq = stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
+        return kq > 0;
     }
-    public ArrayList<NhanVien> getDsNV() {
-        return dsNV;
-    }
-    public NhanVien GetNV(int i) {
-        if (i < 0 || i > dsNV.size()) {
-            return null;
-        }
-        return dsNV.get(i);
-    }
-    //tim kiem NV
     public NhanVien timKiem(String maKH) {
-        for (NhanVien nv : dsNV) {
+        for (NhanVien nv : dsnv) {
 
 
             if (nv.getMaNV().equalsIgnoreCase(maKH)) {
@@ -112,48 +114,11 @@ public class NhanVien_DAO {
         }
         return null;
     }
-    //cap nhat nhan vien
-    public boolean capNhatNhanVien(String maNVOld, NhanVien nvNew) {
-        Connection con = null;
-        Statement st = null;
 
-        try {
-            con = ConnectDB.getInstance().getConnection();
-
-            // Tìm nhân viên cũ trong danh sách
-            NhanVien nvOld = timKiem(maNVOld);
-            if (nvOld == null) {
-                return false; // Nhân viên không tồn tại
-            }
-
-            // Cập nhật thông tin trong danh sách
-            nvOld.setMaNV(nvNew.getMaNV());
-            nvOld.setHoTen(nvNew.getHoTen());
-            nvOld.setChucVu(nvNew.getChucVu());
-            nvOld.setSoDT(nvNew.getSoDT());
-            nvOld.setDiaChi(nvNew.getDiaChi());
-            nvOld.setEmail(nvNew.getEmail());
-            nvOld.setNgaySinh(nvNew.getNgaySinh());
-            nvOld.setNgayVaoLam(nvNew.getNgayVaoLam());
-            nvOld.setLuongCoBan(nvNew.getLuongCoBan());
-            nvOld.setHeSoLuong(nvNew.getHeSoLuong());
-
-            String sql = String.format("UPDATE NhanVien SET maNV = '%s', hoTen = '%s', chucVu = '%s', SDT = '%s', diaChi = '%s', email = '%s', ngaySinh = '%s', ngayVaoLam = '%s', luongCoBan = %f, heSoLuong = %f WHERE maNV = '%s'",
-                    nvNew.getMaNV(), nvNew.getHoTen(), nvNew.getChucVu(), nvNew.getSoDT(), nvNew.getDiaChi(), nvNew.getEmail(),
-                    new java.sql.Date(nvNew.getNgaySinh().getTime()), new java.sql.Date(nvNew.getNgayVaoLam().getTime()),
-                    nvNew.getLuongCoBan(), nvNew.getHeSoLuong(), maNVOld);
-
-            st = con.createStatement();
-            int rowsAffected = st.executeUpdate(sql);
-
-            if (rowsAffected > 0) {
-                dsNV.remove(nvOld);
-                dsNV.add(nvNew);
-                return true;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+    public NhanVien GetNV(int i) {
+        if (i >= 0 && i < dsnv.size()) {
+            return dsnv.get(i);
         }
-        return false;
+        return null;
     }
 }

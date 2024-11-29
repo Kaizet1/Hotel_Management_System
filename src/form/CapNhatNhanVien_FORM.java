@@ -2,9 +2,14 @@ package form;
 
 import customElements.*;
 import dao.NhanVien_DAO;
+import entity.KhachHang;
 import entity.NhanVien;
 import org.jdesktop.swingx.JXDatePicker;
-import java.util.Random;
+
+import java.awt.event.*;
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -13,12 +18,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.regex.Pattern;
 
 public class CapNhatNhanVien_FORM extends JPanel implements Openable, ActionListener {
     private final JTextField txtHoTen;
@@ -29,13 +29,15 @@ public class CapNhatNhanVien_FORM extends JPanel implements Openable, ActionList
     private final JXDatePicker dateNgaySinh, dateNgayVaoLam;
     private JTextField txtSearch;
     private NhanVien_DAO NhanVien_DAO;
+    private static Set<String> danhSachMaNhanVien = new HashSet<>();
     public void open() {
         NhanVien_DAO = new NhanVien_DAO();
         ArrayList<NhanVien> dsNV = NhanVien_DAO.getDSNhanVien();
-        loadTableData(dsNV);
+        loadTableData();
 //        loadLoaiPhong();
     }
     public CapNhatNhanVien_FORM() {
+
         setLayout(new BorderLayout());
         setBackground(new Color(16, 16, 20));
         // north
@@ -71,7 +73,18 @@ public class CapNhatNhanVien_FORM extends JPanel implements Openable, ActionList
                 }
             }
         });
-        txtSearch.addActionListener(e -> handleTimKiem());
+        txtSearch.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ENTER) { // Nếu nhấn Enter
+                    String keyword = txtSearch.getText().trim();
+                    if (!keyword.equals("") && !keyword.equals("Tìm kiếm tên khách hàng")) {
+                        timKiem(keyword);
+                    }
+                }
+            }
+        });
+
         JLabel searchIcon = new JLabel(new ImageIcon("imgs/TimKiemIcon.png"));
         searchIcon.setBounds(12, 12, 24, 24);
 
@@ -236,10 +249,10 @@ public class CapNhatNhanVien_FORM extends JPanel implements Openable, ActionList
         JButton deleteButton = createButton("Xóa", new Color(255, 117, 142));
         JButton updateButton = createButton("Sửa", new Color(151, 114, 35));
         JButton refreshButton = createButton("Làm mới", new Color(89, 38, 136, 242));
-        addButton.addActionListener(e -> addNV());
-        refreshButton.addActionListener(e -> clearInputFields());
-        deleteButton.addActionListener(e -> deleteNV());
-        updateButton.addActionListener(e -> updateNV());
+        addButton.addActionListener(e -> themNhanVien());
+        updateButton.addActionListener(e -> suaNhanVien());
+        deleteButton.addActionListener(e -> xoaNhanVien());
+        refreshButton.addActionListener(e -> lamMoi());
         southPanel.add(addButton);
         southPanel.add(deleteButton);
         southPanel.add(updateButton);
@@ -250,40 +263,28 @@ public class CapNhatNhanVien_FORM extends JPanel implements Openable, ActionList
         add(southPanel, BorderLayout.SOUTH);
 
     }
-    private void handleTimKiem() {
-        String tuKhoa = txtSearch.getText().trim().toLowerCase();
-        NhanVien_DAO = new NhanVien_DAO();
-        ArrayList<NhanVien> dsNV = NhanVien_DAO.getDSNhanVien();
-        if (tuKhoa.isEmpty() || tuKhoa.equals("tìm kiếm")) {
-            loadTableData(dsNV);
-            return;
-        }
-        ArrayList<NhanVien> ketQuaTimKiem = new ArrayList<>();
 
-        for (NhanVien nv : dsNV) {
-            if (nv.getHoTen().toLowerCase().contains(tuKhoa)) {
-                ketQuaTimKiem.add(nv);
-            }
-        }
-        loadTableData(ketQuaTimKiem);
-    }
-    private void loadTableData(ArrayList<NhanVien> danhSach){
+
+    private void loadTableData() {
+        // Xóa tất cả các dòng trong bảng trước khi tải dữ liệu mới
         tableModel.setRowCount(0);
-        NhanVien_DAO = new NhanVien_DAO();
-        NhanVien_DAO.getDSNhanVien();
-        for (NhanVien nv : danhSach) {
-            tableModel.addRow(new Object[]{
-                    nv.getMaNV(),
-                    nv.getHoTen(),
-                    nv.getChucVu(),
-                    nv.getNgaySinh(),
-                    nv.getNgayVaoLam(),
-                    nv.getSoDT(),
-                    nv.getDiaChi(),
-                    nv.getEmail(),
-                    nv.getLuongCoBan(),
-                    nv.getHeSoLuong()
-            });
+
+        ArrayList<NhanVien> dsNhanVien = NhanVien_DAO.getDSNhanVien();
+        for (NhanVien nv : dsNhanVien) {
+            if (nv.getTrangThai() == 1) { // Chỉ thêm khách hàng có trạng thái khác 0
+                tableModel.addRow(new Object[]{
+                        nv.getMaNV(),
+                        nv.getHoTen(),
+                        nv.getChucVu(),
+                        nv.getNgaySinh(),
+                        nv.getNgayVaoLam(),
+                        nv.getSoDT(),
+                        nv.getDiaChi(),
+                        nv.getEmail(),
+                        nv.getLuongCoBan(),
+                        nv.getHeSoLuong()
+                });
+            }
         }
     }
     private Box createFormBox(String label, JTextField txt) {
@@ -363,7 +364,7 @@ public class CapNhatNhanVien_FORM extends JPanel implements Openable, ActionList
         datePicker.setFont(FontManager.getManrope(Font.PLAIN, 14));
         Border emptyBorder = BorderFactory.createEmptyBorder(0, 10, 0, 0);
         datePicker.setBorder(emptyBorder);
-        datePicker.setFormats("MM/dd/yyyy");
+        datePicker.setFormats("dd/MM/yyyy");
         datePicker.setDate(date);
         JFormattedTextField dateTextField = datePicker.getEditor();
         dateTextField.setBackground(new Color(40, 40, 44));
@@ -386,223 +387,279 @@ public class CapNhatNhanVien_FORM extends JPanel implements Openable, ActionList
         button.setFont(FontManager.getManrope(Font.PLAIN, 16));
         return button;
     }
-    private void addNV() {
-        // Lấy thông tin từ các JTextField và JComboBox
-        String hoTen = txtHoTen.getText().trim();
-        String chucVu = (String) cmbChucVu.getSelectedItem();
-        Date ngaySinh = dateNgaySinh.getDate();
-        Date ngayVaoLam = dateNgayVaoLam.getDate();
-        String soDT = txtSoDT.getText().trim();
-        String diaChi = txtDiaChi.getText().trim();
-        String email = txtEmail.getText().trim();
-        String luongCoBanStr = txtLuong.getText().trim();
-        String heSoLuongStr = txtHSL.getText().trim();
 
-        if (hoTen.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Họ tên không được để trống.", "Thông báo", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        if (soDT.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Số điện thoại không được để trống.", "Thông báo", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        if (diaChi.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Địa chỉ không được để trống.", "Thông báo", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        if (email.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Email không được để trống.", "Thông báo", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        if (ngaySinh == null) {
-            JOptionPane.showMessageDialog(this, "Ngày sinh không được để trống.", "Thông báo", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        if (ngayVaoLam == null) {
-            JOptionPane.showMessageDialog(this, "Ngày vào làm không được để trống.", "Thông báo", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        if (!is18YearsOld(ngaySinh)) {
-            JOptionPane.showMessageDialog(this, "Nhân viên phải đủ 18 tuổi.", "Thông báo", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        if (!ngayVaoLam.after(ngaySinh)) {
-            JOptionPane.showMessageDialog(this, "Ngày vào làm phải lớn hơn ngày sinh.", "Thông báo", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
+    private void timKiem(String keyword) {
+        table.clearSelection(); // Xóa lựa chọn cũ trên bảng
 
-        String maNV = generateMaNV(ngayVaoLam);
+        int foundRow = -1;
 
-        if (chucVu.equals("Lễ tân")) {
-            txtLuong.setText("8000000");
-            txtHSL.setText("2.34");
-            txtLuong.setEditable(false);
-            txtHSL.setEditable(false);
-        } else if (chucVu.equals("Quản lý")){
-            txtLuong.setText("20000000");
-            txtHSL.setText("4.0");
-            txtLuong.setEditable(false);
-            txtHSL.setEditable(false);
-        } else {
-            if (luongCoBanStr.isEmpty() || heSoLuongStr.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập lương cơ bản và hệ số lương.", "Thông báo", JOptionPane.WARNING_MESSAGE);
-                return;
+        // Tìm dòng chứa từ khóa đầu tiên
+        for (int i = 0; i < tableModel.getRowCount(); i++) {
+            boolean match = false;
+
+            // Kiểm tra từ khóa trong các cột
+            for (int j = 0; j < tableModel.getColumnCount(); j++) {
+                if (tableModel.getValueAt(i, j).toString().toLowerCase().contains(keyword.toLowerCase())) {
+                    match = true;
+                    break;
+                }
+            }
+
+            if (match) {
+                foundRow = i;
+                break; // Chỉ lấy dòng đầu tiên tìm thấy
             }
         }
 
-        NhanVien nhanVien = new NhanVien(maNV, hoTen, chucVu, soDT, diaChi, email, ngaySinh, ngayVaoLam, Double.parseDouble(luongCoBanStr), Double.parseDouble(heSoLuongStr));
-        NhanVien_DAO.themNV(nhanVien);
-        addToTableModel(nhanVien);
-        JOptionPane.showMessageDialog(this, "Thêm thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-        loadTableData(NhanVien_DAO.getDSNhanVien());
-        clearInputFields();
-        ArrayList<NhanVien> dsNV = NhanVien_DAO.getDSNhanVien();
-        loadTableData(dsNV);
-    }
+        if (foundRow != -1) {
+            // Di chuyển dòng tìm thấy lên đầu bảng
+            moveRowToTop(foundRow);
 
-    private boolean is18YearsOld(Date birthDate) {
-        Date today = new Date();
-        long ageInMillis = today.getTime() - birthDate.getTime();
-        long ageInYears = ageInMillis / (1000L * 60 * 60 * 24 * 365);
-        return ageInYears >= 18;
-    }
+            // Điền thông tin từ dòng được tìm thấy vào các ô nhập liệu
+            txtHoTen.setText(tableModel.getValueAt(0, 1).toString());
+            cmbChucVu.setSelectedItem(tableModel.getValueAt(0, 2).toString());
+            dateNgaySinh.setDate((Date) tableModel.getValueAt(0, 3));
+            dateNgayVaoLam.setDate((Date) tableModel.getValueAt(0, 4));
+            txtSoDT.setText(tableModel.getValueAt(0, 5).toString());
+            txtDiaChi.setText(tableModel.getValueAt(0, 6).toString());
+            txtEmail.setText(tableModel.getValueAt(0, 7).toString());
+            txtLuong.setText(tableModel.getValueAt(0, 8).toString());
+            txtHSL.setText(tableModel.getValueAt(0, 9).toString());
 
-    // Tạo mã nhân viên
-    private String generateMaNV(Date ngayVaoLam) {
-        java.util.Calendar cal = java.util.Calendar.getInstance();
-        cal.setTime(ngayVaoLam);
-        int year = cal.get(java.util.Calendar.YEAR);
-        String yearSuffix = String.valueOf(year).substring(2);
-        Random random = new Random();
-        char letter1 = (char) ('A' + random.nextInt(26));
-        char letter2 = (char) ('A' + random.nextInt(26));
-        int number1 = random.nextInt(10);
-        int number2 = random.nextInt(10);
-        return yearSuffix + "-" + letter1 + letter2 + String.valueOf(number1) + number2;
-    }
-    //Xóa nhân vien
-    private void deleteNV() {
-        int selectedRow = table.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn một nhân viên để xóa.", "Thông báo", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        String maNV = (String) tableModel.getValueAt(selectedRow, 0);
-        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa nhân viên " + maNV + "?", "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
-        if (confirm == JOptionPane.YES_OPTION) {
-            // Thực hiện xóa nhân viên
-            NhanVien_DAO.xoaNV(maNV);
-            loadTableData(NhanVien_DAO.getDSNhanVien());
-            JOptionPane.showMessageDialog(this, "Xóa nhân viên thành công.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-        }
-    }
-    // Sửa thông tin nhân viên
-    private void updateNV() {
-        int selectedRow = table.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn một nhân viên để sửa.", "Thông báo", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
+            // Tạo hiệu ứng hover cho dòng đầu tiên
+            table.addRowSelectionInterval(0, 0);
 
-        String maNV = (String) tableModel.getValueAt(selectedRow, 0);
-        String currentChucVu = (String) tableModel.getValueAt(selectedRow, 2);
-        String hoTen = txtHoTen.getText().trim();
-        String newChucVu = (String) cmbChucVu.getSelectedItem();
-        Date ngaySinh = dateNgaySinh.getDate();
-        Date ngayVaoLam = dateNgayVaoLam.getDate();
-        String soDT = txtSoDT.getText().trim();
-        String diaChi = txtDiaChi.getText().trim();
-        String email = txtEmail.getText().trim();
-        String luongCoBanStr = txtLuong.getText().trim();
-        String heSoLuongStr = txtHSL.getText().trim();
-
-        // Kiểm tra thông tin hợp lệ
-        if (hoTen.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Họ tên không được để trống.", "Thông báo", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        if (soDT.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Số điện thoại không được để trống.", "Thông báo", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        if (diaChi.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Địa chỉ không được để trống.", "Thông báo", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        if (email.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Email không được để trống.", "Thông báo", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        if (ngaySinh == null) {
-            JOptionPane.showMessageDialog(this, "Ngày sinh không được để trống.", "Thông báo", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        if (ngayVaoLam == null) {
-            JOptionPane.showMessageDialog(this, "Ngày vào làm không được để trống.", "Thông báo", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        if (!is18YearsOld(ngaySinh)) {
-            JOptionPane.showMessageDialog(this, "Nhân viên phải đủ 18 tuổi.", "Thông báo", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        if (!ngayVaoLam.after(ngaySinh)) {
-            JOptionPane.showMessageDialog(this, "Ngày vào làm phải lớn hơn ngày sinh.", "Thông báo", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        double luongCoBan;
-        double heSoLuong;
-
-        if (currentChucVu.equals(newChucVu)) {
-            // Nếu chức vụ không thay đổi, giữ nguyên lương cơ bản và hệ số lương cũ
-            luongCoBan = Double.parseDouble((String) tableModel.getValueAt(selectedRow, 8)); // Lương cơ bản cũ
-            heSoLuong = Double.parseDouble((String) tableModel.getValueAt(selectedRow, 9)); // Hệ số lương cũ
         } else {
-            // Nếu chức vụ thay đổi, lấy giá trị mới từ JTextField
-            if (luongCoBanStr.isEmpty() || heSoLuongStr.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập lương cơ bản và hệ số lương.", "Thông báo", JOptionPane.WARNING_MESSAGE);
-                return;
-            }
-            luongCoBan = Double.parseDouble(luongCoBanStr);
-            heSoLuong = Double.parseDouble(heSoLuongStr);
-        }
-
-        NhanVien nhanVien = new NhanVien(maNV, hoTen, newChucVu, soDT, diaChi, email, ngaySinh, ngayVaoLam, luongCoBan, heSoLuong);
-
-        if (NhanVien_DAO.capNhatNhanVien(maNV, nhanVien)) {
-            JOptionPane.showMessageDialog(this, "Cập nhật nhân viên thành công.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-            loadTableData(NhanVien_DAO.getDSNhanVien()); // Tải lại dữ liệu bảng
-            clearInputFields(); // Xóa các trường nhập
-        } else {
-            JOptionPane.showMessageDialog(this, "Cập nhật nhân viên không thành công.", "Thông báo", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Không tìm thấy kết quả nào!");
         }
     }
-    private void addToTableModel(NhanVien nhanVien) {
-        tableModel.addRow(new Object[]{
-                nhanVien.getMaNV(),
-                nhanVien.getHoTen(),
-                nhanVien.getChucVu(),
-                nhanVien.getSoDT(),
-                nhanVien.getDiaChi(),
-                nhanVien.getEmail(),
-                nhanVien.getNgaySinh(),
-                nhanVien.getNgayVaoLam(),
-                nhanVien.getLuongCoBan(),
-                nhanVien.getHeSoLuong()
-        });
+    private void moveRowToTop(int rowIndex) {
+        Object[] rowData = new Object[tableModel.getColumnCount()];
+        for (int i = 0; i < tableModel.getColumnCount(); i++) {
+            rowData[i] = tableModel.getValueAt(rowIndex, i);
+        }
+        tableModel.removeRow(rowIndex); // Xóa dòng cũ
+        tableModel.insertRow(0, rowData); // Chèn dòng vào đầu bảng
     }
-    private void clearInputFields() {
+
+    private void lamMoi() {
+        // Xóa nội dung các trường nhập liệu
         txtHoTen.setText("");
-        cmbChucVu.setSelectedIndex(0); // Chọn lại mục "Chọn"
-        dateNgaySinh.setDate(null);
-        dateNgayVaoLam.setDate(null);
+        cmbChucVu.setSelectedIndex(0);
         txtSoDT.setText("");
         txtDiaChi.setText("");
         txtEmail.setText("");
         txtLuong.setText("");
         txtHSL.setText("");
-        txtLuong.setEditable(true);
-        txtHSL.setEditable(true);
+        txtHoTen.requestFocus();
+        loadTableData();
+
+        // Đặt ngày sinh và ngày vào làm về ngày hiện tại
+        Date today = new Date(); // Lấy ngày hiện tại
+        dateNgaySinh.setDate(today);
+        dateNgayVaoLam.setDate(today);
     }
+    private void xoaNhanVien() {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow != -1) {
+            String maNV = (String) tableModel.getValueAt(selectedRow, 0);
+            try {
+                if (NhanVien_DAO.xoaNV(maNV)) {
+                    tableModel.removeRow(selectedRow); // Xóa dòng khỏi bảng
+                    lamMoi();
+                    JOptionPane.showMessageDialog(this, "Xóa nhân viên thành công!");
+
+                    // Đặt lại trạng thái lựa chọn của bảng
+                    table.clearSelection();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Xóa nhân viên thất bại!");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi khi xóa nhân viên!");
+            }
+        }else {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một dòng để xóa!");
+        }
+    }
+    private void suaNhanVien() {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow != -1) {
+            String maNV = (String) tableModel.getValueAt(selectedRow, 0);
+            String hoTen = txtHoTen.getText();
+            String chucVu = cmbChucVu.getSelectedItem().toString();
+            String soDT = txtSoDT.getText();
+            String diaChi = txtDiaChi.getText();
+            String email = txtEmail.getText();
+            double hsl = Double.parseDouble(txtHSL.getText());
+            double luong = Double.parseDouble(txtLuong.getText());
+            Date ngaySinh = dateNgaySinh.getDate();
+            Date ngayVaoLam = dateNgayVaoLam.getDate();
+
+// Định dạng lại ngày sinh và ngày vào làm
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            String formattedNgaySinh = ngaySinh != null ? dateFormat.format(ngaySinh) : "";
+            String formattedNgayVaoLam = ngayVaoLam != null ? dateFormat.format(ngayVaoLam) : "";
+            if (!hoTen.isEmpty() || !chucVu.isEmpty() || !soDT.isEmpty() || !diaChi.isEmpty() || !email.isEmpty() || hsl >0  || luong>0 || ngaySinh != null || ngayVaoLam != null) {
+                try {
+                    NhanVien nv = new NhanVien(maNV, hoTen, chucVu, soDT, diaChi, email, ngaySinh,  ngayVaoLam, luong, hsl,1);
+                    if (NhanVien_DAO.suaNhanVien(nv)) {
+                        // Update table values after successful update
+                        tableModel.setValueAt(hoTen, selectedRow, 1);
+                        tableModel.setValueAt(chucVu, selectedRow, 2);
+                        tableModel.setValueAt(soDT, selectedRow, 5);
+                        tableModel.setValueAt(diaChi, selectedRow, 6);
+                        tableModel.setValueAt(email, selectedRow, 7);
+                        tableModel.setValueAt(hsl, selectedRow, 9);
+                        tableModel.setValueAt(luong, selectedRow, 8);
+                        tableModel.setValueAt(ngaySinh, selectedRow, 3);
+                        tableModel.setValueAt(ngayVaoLam, selectedRow, 4);
+
+                        lamMoi();
+
+
+                        JOptionPane.showMessageDialog(this, "Cập nhật khách hàng thành công!");
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Cập nhật khách hàng thất bại!");
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi khi cập nhật khách hàng!");
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin!");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một dòng để sửa!");
+        }
+    }
+    private boolean kiemTraDuLieu() {
+        // Kiểm tra ngày sinh đủ 18 tuổi khi vào làm
+        java.util.Date ngaySinh = dateNgaySinh.getDate();
+        java.util.Date ngayVaoLam = dateNgayVaoLam.getDate();
+
+        // Kiểm tra nếu ngày vào làm trước ngày hiện tại
+        java.util.Date ngayHienTai = new java.util.Date();
+        if (ngayVaoLam.after(ngayHienTai)) {
+            JOptionPane.showMessageDialog(this, "Ngày vào làm phải trước ngày hiện tại!");
+            return false;
+        }
+
+        // Kiểm tra ngày sinh đủ 18 tuổi
+        long tuoi = (ngayVaoLam.getTime() - ngaySinh.getTime()) / (1000L * 60 * 60 * 24 * 365);
+        if (tuoi < 18) {
+            JOptionPane.showMessageDialog(this, "Ngày sinh phải đủ 18 tuổi khi vào làm!");
+            return false;
+        }
+
+        // Kiểm tra các ô còn lại bằng regex
+
+        // Kiểm tra số điện thoại
+        String soDT = txtSoDT.getText().trim();
+        String regexSoDT = "^(0)[0-9]{9}$"; // Số điện thoại bắt đầu bằng 0 và có 10 chữ số
+        if (!Pattern.matches(regexSoDT, soDT)) {
+            JOptionPane.showMessageDialog(this, "Số điện thoại không hợp lệ!");
+            return false;
+        }
+
+        // Kiểm tra email
+        String email = txtEmail.getText().trim();
+        String regexEmail = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$"; // Kiểm tra email hợp lệ
+        if (!Pattern.matches(regexEmail, email)) {
+            JOptionPane.showMessageDialog(this, "Email không hợp lệ!");
+            return false;
+        }
+
+        // Kiểm tra tên đầy đủ (hoặc thêm các quy định khác)
+        String hoTen = txtHoTen.getText().trim();
+        if (hoTen.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Họ tên không được để trống!");
+            return false;
+        }
+
+        return true; // Nếu tất cả các kiểm tra đều hợp lệ
+    }
+
+    private void themNhanVien() {
+        try {
+            if (!kiemTraDuLieu()) {
+                return; // Nếu dữ liệu không hợp lệ, không thực hiện thêm nhân viên
+            }
+
+            // Lấy dữ liệu từ giao diện
+            String hoTen = txtHoTen.getText().trim();
+            String chucVu = cmbChucVu.getSelectedItem().toString().trim();
+
+            // Lấy ngày sinh và ngày vào làm từ giao diện
+            java.util.Date ngaySinh = dateNgaySinh.getDate(); // Lấy trực tiếp từ JDateChooser
+            java.util.Date ngayVaoLam = dateNgayVaoLam.getDate(); // Lấy trực tiếp từ JDateChooser
+
+            String soDT = txtSoDT.getText().trim();
+            String diaChi = txtDiaChi.getText().trim();
+            String email = txtEmail.getText().trim();
+            double luongCoBan = Double.parseDouble(txtLuong.getText().trim());
+            double heSoLuong = Double.parseDouble(txtHSL.getText().trim());
+
+            // Tạo mã nhân viên tự động
+            String maNV = taoMaNhanVien(ngayVaoLam);
+
+            // Tạo đối tượng NhanVien
+            NhanVien nv = new NhanVien(maNV, hoTen, chucVu, soDT, diaChi, email, ngaySinh, ngayVaoLam, luongCoBan, heSoLuong, 1);
+
+            // Gọi phương thức thêm nhân viên
+            NhanVien_DAO nhanVienDAO = new NhanVien_DAO();
+            boolean kq = nhanVienDAO.themNhanVien(nv);
+
+            // Hiển thị thông báo
+            if (kq) {
+                JOptionPane.showMessageDialog(this, "Thêm nhân viên thành công! Mã nhân viên: " + maNV);
+                lamMoi();
+            } else {
+                JOptionPane.showMessageDialog(this, "Thêm nhân viên thất bại!");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private String taoMaNhanVien(java.util.Date ngayVaoLam) {
+        String maNV;
+        do {
+            // Lấy hai chữ số cuối của năm vào làm
+            SimpleDateFormat sdf = new SimpleDateFormat("yy");
+            String nam = sdf.format(ngayVaoLam);
+
+            // Tạo số ngẫu nhiên từ 10 đến 99
+            int soNgauNhien = 10 + (int) (Math.random() * 90); // Random số trong khoảng [10, 99]
+
+            // Tạo 2 ký tự ngẫu nhiên in hoa
+            String kyTuNgauNhien = "";
+            for (int i = 0; i < 2; i++) {
+                char kyTu = (char) ('A' + (int) (Math.random() * 26)); // Random ký tự từ 'A' đến 'Z'
+                kyTuNgauNhien += kyTu;
+            }
+
+            // Ghép thành mã nhân viên
+            maNV = nam + "-" + soNgauNhien + kyTuNgauNhien;
+        } while (danhSachMaNhanVien.contains(maNV)); // Kiểm tra trùng lặp
+
+        // Thêm mã vào danh sách để tránh trùng lặp
+        danhSachMaNhanVien.add(maNV);
+
+        return maNV;
+    }
+
+
+
+    private boolean isValidInput(String input, String regex) {
+        return input.matches(regex);
+    }
+    private void showError(String message, JTextField field) {
+        JOptionPane.showMessageDialog(this, message, "Thông báo lỗi", JOptionPane.ERROR_MESSAGE);
+        field.requestFocus();
+    }
+
 
     @Override
     public void actionPerformed(ActionEvent e) {

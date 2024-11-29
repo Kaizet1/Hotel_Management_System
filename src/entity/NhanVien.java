@@ -14,7 +14,8 @@ public class NhanVien {
     private Date ngayVaoLam;
     private double luongCoBan;
     private double heSoLuong;
-    public NhanVien(String maNV, String hoTen, String chucVu, String soDT, String diaChi, String email, Date ngaySinh, Date ngayVaoLam, double luongCoBan, double heSoLuong) {
+    private int trangThai;
+    public NhanVien(String maNV, String hoTen, String chucVu, String soDT, String diaChi, String email, Date ngaySinh, Date ngayVaoLam, double luongCoBan, double heSoLuong, int trangThai) {
         this.maNV = maNV;
         this.hoTen = hoTen;
         this.chucVu = chucVu;
@@ -25,11 +26,13 @@ public class NhanVien {
         this.ngayVaoLam = ngayVaoLam;
         this.luongCoBan = luongCoBan;
         this.heSoLuong = heSoLuong;
+        this.trangThai = trangThai;
     }
 
     public NhanVien(String maNV) {
-        this(maNV, "", "", "", "", "", new Date(), new Date(), 0.0, 0.0);
+        this(maNV, "", "", "", "", "", new Date(), new Date(), 0.0, 0.0, 1);
     }
+
     public String getMaNV() {
         return maNV;
     }
@@ -108,17 +111,34 @@ public class NhanVien {
     public void setHeSoLuong(double heSoLuong) {
         this.heSoLuong = heSoLuong;
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        NhanVien nhanVien = (NhanVien) o;
-        return Objects.equals(maNV, nhanVien.maNV);
+    public int getTrangThai() { return trangThai; }
+    public void setTrangThai(int trangThai) {
+        this.trangThai = trangThai;
     }
-
     @Override
     public int hashCode() {
-        return Objects.hash(maNV);
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((maNV == null) ? 0 :maNV.hashCode());
+        return result;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+       NhanVien other = (NhanVien) obj;
+        if (maNV == null) {
+            if (other.maNV != null)
+                return false;
+        } else if (!maNV.equals(other.maNV))
+            return false;
+        return true;
+    }
+
 }
+

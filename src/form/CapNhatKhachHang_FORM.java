@@ -335,6 +335,7 @@ public class CapNhatKhachHang_FORM extends JPanel  implements ActionListener, Mo
     txtEmail.setText("");
     txtCCCD.setText("");
     txtTenKhachHang.requestFocus();
+    loadTableData();
 }
     private void xoaKhachHang() {
         int selectedRow = table.getSelectedRow();
@@ -343,6 +344,7 @@ public class CapNhatKhachHang_FORM extends JPanel  implements ActionListener, Mo
             try {
                 if (khachHangDAO.xoaKH(maKH)) {
                     tableModel.removeRow(selectedRow); // Xóa dòng khỏi bảng
+                    lamMoi();
                     JOptionPane.showMessageDialog(this, "Xóa khách hàng thành công!");
 
                     // Đặt lại trạng thái lựa chọn của bảng
@@ -382,6 +384,8 @@ public class CapNhatKhachHang_FORM extends JPanel  implements ActionListener, Mo
                         tableModel.setValueAt(sdt, selectedRow, 3);
                         tableModel.setValueAt(email, selectedRow, 4);
                         tableModel.setValueAt(cccd, selectedRow, 5);
+                        lamMoi();
+                        
 
                         JOptionPane.showMessageDialog(this, "Cập nhật khách hàng thành công!");
                     } else {

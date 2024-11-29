@@ -100,10 +100,10 @@ public class GiaoDienNhanVien_GUI extends JFrame {
 
                 }, // Phòng
 
-                {
-                        { "Tìm kiếm nhân viên", "TimKiemNhanVien" },
-                        { "Cập nhật nhân viên", "CapNhatNhanVien" },
-                },
+//                {
+//                        { "Tìm kiếm nhân viên", "TimKiemNhanVien" },
+//                        { "Cập nhật nhân viên", "CapNhatNhanVien" },
+//                },
                 //Nhân viên
 
                 {

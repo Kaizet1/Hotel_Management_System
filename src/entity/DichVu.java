@@ -3,22 +3,31 @@ package entity;
 import java.util.Objects;
 
 public class DichVu {
-private String maDV;
-private String tenDV;
-private double giaDV;
-private String moTa;
+    private String maDV;
+    private String tenDV;
+    private double giaDV;
+    private String moTa;
+    private int trangThai;
 
-    public DichVu(String maDV, String tenDV, double giaDV, String moTa) {
+    public DichVu(String maDV, String tenDV, double giaDV, String moTa, int trangThai) {
         this.maDV = maDV;
         this.tenDV = tenDV;
         this.giaDV = giaDV;
         this.moTa = moTa;
+        this.trangThai = trangThai;
     }
 
     public DichVu() {
     }
     public DichVu(String maDV) {
-        this(maDV, "", 0.0, "");
+        this(maDV, "", 0.0, "", 1);
+    }
+
+    public int getTrangThai() {
+        return trangThai;
+    }
+    public void setTrangThai(int trangThai) {
+        this.trangThai = trangThai;
     }
 
     public String getMaDV() {
@@ -69,7 +78,7 @@ private String moTa;
             return false;
         if (getClass() != obj.getClass())
             return false;
-       DichVu other = (DichVu) obj;
+        DichVu other = (DichVu) obj;
         if (maDV == null) {
             if (other.maDV != null)
                 return false;

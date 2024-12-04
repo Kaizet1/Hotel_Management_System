@@ -114,6 +114,20 @@ public class NhanVien_DAO {
         }
         return null;
     }
+    public boolean kiemTraTrungEmail(String email) {
+        try {
+            String sql = "SELECT COUNT(*) FROM NhanVien WHERE email = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0; // Nếu số lượng > 0 thì email đã tồn tại
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false; // Trả về false nếu không tìm thấy hoặc có lỗi
+    }
 
     public NhanVien GetNV(int i) {
         if (i >= 0 && i < dsnv.size()) {

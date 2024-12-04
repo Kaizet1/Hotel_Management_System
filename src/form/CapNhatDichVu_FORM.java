@@ -1,7 +1,9 @@
 package form;
 
 import customElements.*;
+import dao.DichVu_DAO;
 import dao.KhachHang_DAO;
+import entity.DichVu;
 import entity.KhachHang;
 
 import javax.swing.*;
@@ -15,20 +17,24 @@ import java.awt.event.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class CapNhatKhachHang_FORM extends JPanel  implements ActionListener, MouseListener {
-    private JTextField txtSDT;
-    private DefaultTableModel tableModel;
-    private JTable table;
-    private KhachHang_DAO khachHangDAO;
-    private JTextField txtTenKhachHang, txtDiaChi,  txtCCCD, txtEmail;
-    private JComboBox<String> cmbLoaiPhong, cmbTrangThai;
-    public CapNhatKhachHang_FORM() {
-        khachHangDAO = new KhachHang_DAO();
+public class CapNhatDichVu_FORM extends JPanel implements ActionListener, MouseListener {
+
+
+    private final JTextField txtMaDV;
+    private final JTextField txtTenDV;
+    private final JTextField txtMoTa;
+    private final JTextField txtGiaDV;
+    private final JTable table;
+    private  DefaultTableModel tableModel;
+    private DichVu_DAO dichVuDao;
+
+    public CapNhatDichVu_FORM() {
+        dichVuDao = new DichVu_DAO();
         setBackground(new Color(16, 16, 20));
         Box mainBox = Box.createVerticalBox();
         mainBox.add(Box.createVerticalStrut(10));
         // Tim kiem
-        JTextField txtSearch = new JTextField("Tìm kiếm tên khách hàng");
+        JTextField txtSearch = new JTextField("Tìm kiếm tên dịch vụ");
         Border emptyBorder = BorderFactory.createEmptyBorder(13, 52, 12, 0);
         txtSearch.setBounds(0, 0, 280, 45);
         txtSearch.setBorder(emptyBorder);
@@ -40,7 +46,7 @@ public class CapNhatKhachHang_FORM extends JPanel  implements ActionListener, Mo
             @Override
             public void focusGained(FocusEvent e) {
                 txtSearch.setBorder(combinedBorder);
-                if (txtSearch.getText().equals("Tìm kiếm tên khách hàng")) {
+                if (txtSearch.getText().equals("Tìm kiếm tên dịch vụ")) {
                     txtSearch.setText("");
                     txtSearch.setForeground(Color.WHITE);
                 }
@@ -51,7 +57,7 @@ public class CapNhatKhachHang_FORM extends JPanel  implements ActionListener, Mo
                 txtSearch.setBorder(emptyBorder);
                 if (txtSearch.getText().isEmpty()) {
                     txtSearch.setForeground(new Color(255, 255, 255, 125));
-                    txtSearch.setText("Tìm kiếm tên khách hàng");
+                    txtSearch.setText("Tìm kiếm tên dịch vụ");
                 }
             }
         });
@@ -60,7 +66,7 @@ public class CapNhatKhachHang_FORM extends JPanel  implements ActionListener, Mo
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) { // Nếu nhấn Enter
                     String keyword = txtSearch.getText().trim();
-                    if (!keyword.equals("") && !keyword.equals("Tìm kiếm tên khách hàng")) {
+                    if (!keyword.equals("") && !keyword.equals("Tìm kiếm tên dịch vụ")) {
                         timKiem(keyword);
                     }
                 }
@@ -90,11 +96,10 @@ public class CapNhatKhachHang_FORM extends JPanel  implements ActionListener, Mo
         // Form
         Box b1 = Box.createVerticalBox();
         Box b2 = Box.createHorizontalBox();
-        b2.add(createFormBox("Tên khách hàng", txtTenKhachHang = new JTextField()));
-        b2.add(createFormBox("Địa chỉ", txtDiaChi = new JTextField()));
-        b2.add(createFormBox("Số điện thoại", txtSDT = new JTextField()));
-        b2.add(createFormBox("Email", txtEmail = new JTextField()));
-        b2.add(createFormBox("CCCD", txtCCCD = new JTextField()));
+        b2.add(createFormBox("Mã dịch vụ", txtMaDV = new JTextField()));
+        b2.add(createFormBox("Tên dịch vụ", txtTenDV = new JTextField()));
+        b2.add(createFormBox("Gíá dịch vụ", txtGiaDV = new JTextField()));
+        b2.add(createFormBox("Mô tả", txtMoTa = new JTextField()));
 
         Dimension b2Size = new Dimension(1642, 100);
         b2.setPreferredSize(b2Size);
@@ -105,11 +110,14 @@ public class CapNhatKhachHang_FORM extends JPanel  implements ActionListener, Mo
         Box b3 = Box.createHorizontalBox();
         Box b4 = Box.createHorizontalBox();
 
+        RoundedButton btnThem = createHandleButton("Thêm");
         RoundedButton btnSua = createHandleButton("Sửa");
         RoundedButton btnXoa = createHandleButton("Xóa");
         RoundedButton btnLamMoi = createHandleButton("Làm mới");
 
         b4.add(Box.createHorizontalGlue());
+        b4.add(btnThem);
+        b4.add(Box.createHorizontalStrut(72));
         b4.add(btnSua);
         b4.add(Box.createHorizontalStrut(72));
         b4.add(btnXoa);
@@ -144,7 +152,7 @@ public class CapNhatKhachHang_FORM extends JPanel  implements ActionListener, Mo
 
         // Tạo bang
         Box b6 = Box.createHorizontalBox();
-        String[] colName = {"Mã khách hàng", "Tên khách hàng", "Địa chỉ", "Số điện thoại", "Email", "CCCD"};
+        String[] colName = {"Mã dịch vụ", "Tên dịch vụ", "Mô tả", "Giá dịch vụ"};
         tableModel = new DefaultTableModel(colName, 0) {
             private static final long serialVersionUID = 1L;
 
@@ -185,14 +193,14 @@ public class CapNhatKhachHang_FORM extends JPanel  implements ActionListener, Mo
         mainBox.add(Box.createVerticalStrut(5));
         mainBox.add(b6);
         add(mainBox);
-        /*btnSua.addActionListener(this);
-        btnXoa.addActionListener(this);
-        btnLamMoi.addActionListener(this);*/
+
+
         table.addMouseListener(this);
         loadTableData();
 
 
     }
+
     private Box createFormBox(String label, JTextField txt) {
         Box b = Box.createVerticalBox();
         Dimension boxSize = new Dimension(332, 110);
@@ -232,7 +240,7 @@ public class CapNhatKhachHang_FORM extends JPanel  implements ActionListener, Mo
                 txt.setBorder(emptyBorder);
             }
         });
-        
+
 
         b.add(lblBox);
         b.add(Box.createVerticalStrut(6));
@@ -241,8 +249,6 @@ public class CapNhatKhachHang_FORM extends JPanel  implements ActionListener, Mo
 
         return b;
     }
-
-
     private RoundedButton createHandleButton(String buttonLabel) {
         RoundedButton button = new RoundedButton(buttonLabel, 5);
         Dimension buttonSize = new Dimension(259, 45);
@@ -275,103 +281,55 @@ public class CapNhatKhachHang_FORM extends JPanel  implements ActionListener, Mo
         return button;
     }
 
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow != -1) { // Kiểm tra xem có hàng nào được chọn không
+            txtMaDV.setText(tableModel.getValueAt(selectedRow,0).toString());
+            txtTenDV.setText(tableModel.getValueAt(selectedRow,1).toString());
+            txtMoTa.setText(tableModel.getValueAt(selectedRow,2).toString());
+            txtGiaDV.setText(tableModel.getValueAt(selectedRow,3).toString());
+
+
+        }
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
 
     private void loadTableData() {
         // Xóa tất cả các dòng trong bảng trước khi tải dữ liệu mới
         tableModel.setRowCount(0);
 
-        ArrayList<KhachHang> dsKhachHang = khachHangDAO.getDSKhachHang();
-        for (KhachHang kh : dsKhachHang) {
-            if (kh.getTrangThai() == 1) { // Chỉ thêm khách hàng có trạng thái khác 0
+        ArrayList<DichVu> dsDichVu = dichVuDao.getDSDichVu();
+        for (DichVu dv: dsDichVu) {
+            if (dv.getTrangThai() == 1) { // Chỉ thêm khách hàng có trạng thái khác 0
                 tableModel.addRow(new Object[]{
-                        kh.getMaKH(),
-                        kh.getHoTen(),
-                        kh.getDiaChi(),
-                        kh.getSdt(),
-                        kh.getEmail(),
-                        kh.getcCCD()
+                        dv.getMaDV(),
+                        dv.getTenDV(),
+                        dv.getMoTa(),
+                        dv.getGiaDV()
                 });
             }
         }
     }
-
-
-    private void lamMoi(){
-    txtTenKhachHang.setText("");
-    txtDiaChi.setText("");
-    txtSDT.setText("");
-    txtEmail.setText("");
-    txtCCCD.setText("");
-    txtTenKhachHang.requestFocus();
-    loadTableData();
-}
-    private void xoaKhachHang() {
-        int selectedRow = table.getSelectedRow();
-        if (selectedRow != -1) {
-            String maKH = (String) tableModel.getValueAt(selectedRow, 0);
-            try {
-                if (khachHangDAO.xoaKH(maKH)) {
-                    tableModel.removeRow(selectedRow); // Xóa dòng khỏi bảng
-                    lamMoi();
-                    JOptionPane.showMessageDialog(this, "Xóa khách hàng thành công!");
-
-                    // Đặt lại trạng thái lựa chọn của bảng
-                    table.clearSelection();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Xóa khách hàng thất bại!");
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-                JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi khi xóa khách hàng!");
-            }
-        }else {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn một dòng để xóa!");
-        }
-    }
-
-
-
-    private void suaKhachHang() {
-        int selectedRow = table.getSelectedRow();
-        if (selectedRow != -1) {
-            String maKH = (String) tableModel.getValueAt(selectedRow, 0);
-            String hoTen = txtTenKhachHang.getText();
-            String diaChi = txtDiaChi.getText();
-            String sdt = txtSDT.getText();
-            String email = txtEmail.getText();
-            String cccd = txtCCCD.getText();
-
-
-            if (!hoTen.isEmpty() && !diaChi.isEmpty() && !sdt.isEmpty() && !email.isEmpty() && !cccd.isEmpty()) {
-                try {
-                    KhachHang kh = new KhachHang(maKH, hoTen, diaChi, sdt, email, cccd,1);
-                    if (khachHangDAO.suaKhachHang(kh)) {
-                        // Update table values after successful update
-                        tableModel.setValueAt(hoTen, selectedRow, 1);
-                        tableModel.setValueAt(diaChi, selectedRow, 2);
-                        tableModel.setValueAt(sdt, selectedRow, 3);
-                        tableModel.setValueAt(email, selectedRow, 4);
-                        tableModel.setValueAt(cccd, selectedRow, 5);
-                        lamMoi();
-                        
-
-                        JOptionPane.showMessageDialog(this, "Cập nhật khách hàng thành công!");
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Cập nhật khách hàng thất bại!");
-                    }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi khi cập nhật khách hàng!");
-                }
-            } else {
-                JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin!");
-            }
-        } else {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn một dòng để sửa!");
-        }
-    }
-
-
     private void timKiem(String keyword) {
         table.clearSelection(); // Xóa lựa chọn cũ trên bảng
 
@@ -400,11 +358,10 @@ public class CapNhatKhachHang_FORM extends JPanel  implements ActionListener, Mo
             moveRowToTop(foundRow);
 
             // Điền thông tin từ dòng được tìm thấy vào các ô nhập liệu
-            txtTenKhachHang.setText(tableModel.getValueAt(0, 1).toString());
-            txtDiaChi.setText(tableModel.getValueAt(0, 2).toString());
-            txtSDT.setText(tableModel.getValueAt(0, 3).toString());
-            txtEmail.setText(tableModel.getValueAt(0, 4).toString());
-            txtCCCD.setText(tableModel.getValueAt(0, 5).toString());
+            txtTenDV.setText(tableModel.getValueAt(0, 1).toString());
+            txtMoTa.setText(tableModel.getValueAt(0, 2).toString());
+            txtGiaDV.setText(tableModel.getValueAt(0, 3).toString());
+
 
             // Tạo hiệu ứng hover cho dòng đầu tiên
             table.addRowSelectionInterval(0, 0);
@@ -421,81 +378,171 @@ public class CapNhatKhachHang_FORM extends JPanel  implements ActionListener, Mo
         tableModel.removeRow(rowIndex); // Xóa dòng cũ
         tableModel.insertRow(0, rowData); // Chèn dòng vào đầu bảng
     }
-    private boolean isValidInput(String input, String regex) {
-        return input.matches(regex);
+    public void lamMoi(){
+        txtMaDV.setText("");
+        txtTenDV.setText("");
+        txtMoTa.setText("");
+        txtGiaDV.setText("");
+        txtMaDV.requestFocus();
+        loadTableData();
     }
-    private void showError(String message, JTextField field) {
-        JOptionPane.showMessageDialog(this, message, "Thông báo lỗi", JOptionPane.ERROR_MESSAGE);
-        field.requestFocus();
+    private void themDichVu() {
+        try {
+            // Lấy thông tin từ các trường nhập liệu
+            String maDV = txtMaDV.getText().trim();
+            String tenDV = txtTenDV.getText().trim();
+            String moTa = txtMoTa.getText().trim();
+            String giaDVText = txtGiaDV.getText().trim();
+
+            // Gọi hàm kiểm tra đầu vào
+            if (!kiemTraDauVao(maDV, tenDV, moTa, giaDVText)) {
+                return; // Dừng nếu dữ liệu không hợp lệ
+            }
+
+            // Kiểm tra trùng mã dịch vụ
+            if (dichVuDao.kiemTraTrungMaDichVu(maDV)) {
+                JOptionPane.showMessageDialog(this, "Mã dịch vụ đã tồn tại. Vui lòng nhập mã khác!");
+                return; // Dừng nếu mã dịch vụ đã tồn tại
+            }
+
+            double giaDV = Double.parseDouble(giaDVText); // Giá trị đã được kiểm tra
+
+            // Tạo đối tượng DichVu
+            DichVu dv = new DichVu(maDV, tenDV, giaDV, moTa, 1);
+
+            // Gọi hàm thêm dịch vụ từ lớp xử lý
+            boolean isAdded = dichVuDao.themDichVu(dv);
+
+            // Kiểm tra kết quả và thông báo
+            if (isAdded) {
+                JOptionPane.showMessageDialog(this, "Thêm dịch vụ thành công!");
+                lamMoi(); // Hàm xóa dữ liệu nhập sau khi thêm thành công
+            } else {
+                JOptionPane.showMessageDialog(this, "Thêm dịch vụ thất bại. Vui lòng thử lại!");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Có lỗi xảy ra: " + e.getMessage());
+        }
     }
 
+    private void xoaDichVu() {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow != -1) {
+            String maDV = (String) tableModel.getValueAt(selectedRow, 0);
+            try {
+                if (dichVuDao.xoaDV(maDV)) {
+                    tableModel.removeRow(selectedRow); // Xóa dòng khỏi bảng
+                    lamMoi();
+                    JOptionPane.showMessageDialog(this, "Xóa dịch vụ thành công!");
+
+                    // Đặt lại trạng thái lựa chọn của bảng
+                    table.clearSelection();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Xóa dịch vụ thất bại!");
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi khi xóa dịch vụ!");
+            }
+        }else {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một dòng để xóa!");
+        }
+    }
+    private void suaDichVu() {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow != -1) {
+            String maDV = (String) tableModel.getValueAt(selectedRow, 0); // Lấy mã dịch vụ từ bảng
+
+            String tenDV = txtTenDV.getText().trim();
+            String moTa = txtMoTa.getText().trim();
+            String giaDVText = txtGiaDV.getText().trim();
+
+            // Gọi hàm kiểm tra đầu vào
+            if (!kiemTraDauVao(maDV, tenDV, moTa, giaDVText)) {
+                return; // Dừng nếu dữ liệu không hợp lệ
+            }
+
+            double giaDV = Double.parseDouble(giaDVText); // Giá trị đã được kiểm tra
+
+            try {
+                // Tạo đối tượng DichVu mới
+                DichVu dv = new DichVu(maDV, tenDV, giaDV, moTa, 1);
+
+                if (dichVuDao.suaDichVu(dv)) {
+                    // Cập nhật dữ liệu trên bảng
+                    tableModel.setValueAt(tenDV, selectedRow, 1);
+                    tableModel.setValueAt(moTa, selectedRow, 2);
+                    tableModel.setValueAt(giaDV, selectedRow, 3);
+                    lamMoi();
+
+                    JOptionPane.showMessageDialog(this, "Cập nhật dịch vụ thành công!");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Cập nhật dịch vụ thất bại!");
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi khi cập nhật dịch vụ: " + e.getMessage());
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một dòng để sửa!");
+        }
+    }
+
+    private boolean kiemTraDauVao(String maDV, String tenDV, String moTa, String giaDVText) {
+        // Lấy năm hiện tại
+        int currentYear = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR);
+        int lastTwoDigitsOfYear = currentYear % 100;
+
+        // Kiểm tra mã dịch vụ (2 số đầu và 4 ký tự tiếp theo là chữ in hoa hoặc số)
+        if (!maDV.matches("^[0-9]{2}[A-Z0-9]{4}$")) {
+            JOptionPane.showMessageDialog(this, "Mã dịch vụ phải có 2 ký tự đầu là số, 4 ký tự sau là chữ in hoa hoặc số!");
+            return false;
+        }
+        int firstTwoDigits = Integer.parseInt(maDV.substring(0, 2));
+        if (firstTwoDigits > lastTwoDigitsOfYear) {
+            JOptionPane.showMessageDialog(this, "Hai ký tự đầu của mã dịch vụ không được lớn hơn 2 số cuối của năm hiện tại!");
+            return false;
+        }
+
+        // Kiểm tra tên dịch vụ
+        if (tenDV == null || tenDV.isEmpty() || tenDV.length() > 100) {
+            JOptionPane.showMessageDialog(this, "Tên dịch vụ không hợp lệ! (Không được để trống, tối đa 100 ký tự)");
+            return false;
+        }
+
+        // Kiểm tra mô tả dịch vụ
+        if (moTa == null || moTa.isEmpty() || moTa.length() > 200) {
+            JOptionPane.showMessageDialog(this, "Mô tả dịch vụ không hợp lệ! (Không được để trống, tối đa 200 ký tự)");
+            return false;
+        }
+
+        // Kiểm tra giá dịch vụ
+        try {
+            double giaDV = Double.parseDouble(giaDVText);
+            if (giaDV <= 0) {
+                JOptionPane.showMessageDialog(this, "Giá dịch vụ phải lớn hơn 0!");
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Giá dịch vụ phải là số hợp lệ!");
+            return false;
+        }
+
+        return true; // Dữ liệu hợp lệ
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         RoundedButton btn = (RoundedButton) e.getSource();
 
         if (btn.getText().equals("Sửa")) {
-            // Kiểm tra dữ liệu trước khi sửa
-            if (validateAllInputs()) {
-                suaKhachHang(); // Thực hiện sửa nếu dữ liệu hợp lệ
-            }
+
+            suaDichVu();
         } else if (btn.getText().equals("Xóa")) {
-            xoaKhachHang();
+           xoaDichVu();
         } else if (btn.getText().equals("Làm mới")) {
             lamMoi();
+        } else if(btn.getText().equals("Thêm")){
+            themDichVu();
         }
-    }
-
-    private boolean validateAllInputs() {
-        if (!isValidInput(txtTenKhachHang.getText().trim(), "^[\\p{L} ]+$")) {
-            showError("Tên khách hàng không hợp lệ.", txtTenKhachHang);
-            return false;
-        }
-        if (!isValidInput(txtSDT.getText().trim(), "^\\d{10,11}$")) {
-            showError("Số điện thoại không hợp lệ.", txtSDT);
-            return false;
-        }
-        if (!isValidInput(txtEmail.getText().trim(), "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$")) {
-            showError("Email không hợp lệ.", txtEmail);
-            return false;
-        }
-        if (!isValidInput(txtCCCD.getText().trim(), "^\\d{12}$")) {
-            showError("CCCD không hợp lệ.", txtCCCD);
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        int selectedRow = table.getSelectedRow();
-        if (selectedRow != -1) { // Kiểm tra xem có hàng nào được chọn không
-            txtTenKhachHang.setText(tableModel.getValueAt(selectedRow,1).toString());
-            txtDiaChi.setText(tableModel.getValueAt(selectedRow,2).toString());
-            txtSDT.setText(tableModel.getValueAt(selectedRow,3).toString());
-            txtEmail.setText(tableModel.getValueAt(selectedRow,4).toString());
-            txtCCCD.setText(tableModel.getValueAt(selectedRow,5).toString());
-
-        }
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-
     }
 }

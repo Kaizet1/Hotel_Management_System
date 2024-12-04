@@ -485,54 +485,58 @@ public class CapNhatNhanVien_FORM extends JPanel implements Openable, ActionList
     private void suaNhanVien() {
         int selectedRow = table.getSelectedRow();
         if (selectedRow != -1) {
+            // Lấy thông tin từ các trường nhập liệu
             String maNV = (String) tableModel.getValueAt(selectedRow, 0);
-            String hoTen = txtHoTen.getText();
+            String hoTen = txtHoTen.getText().trim();
             String chucVu = cmbChucVu.getSelectedItem().toString();
-            String soDT = txtSoDT.getText();
-            String diaChi = txtDiaChi.getText();
-            String email = txtEmail.getText();
+            String soDT = txtSoDT.getText().trim();
+            String diaChi = txtDiaChi.getText().trim();
+            String email = txtEmail.getText().trim();
             double hsl = Double.parseDouble(txtHSL.getText());
             double luong = Double.parseDouble(txtLuong.getText());
             Date ngaySinh = dateNgaySinh.getDate();
             Date ngayVaoLam = dateNgayVaoLam.getDate();
 
-// Định dạng lại ngày sinh và ngày vào làm
+            // Kiểm tra dữ liệu đầu vào trước khi tiếp tục
+            if (!kiemTraDuLieu()) {
+                return; // Nếu kiểm tra không hợp lệ, dừng lại và không tiếp tục
+            }
+
+            // Định dạng lại ngày sinh và ngày vào làm
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
             String formattedNgaySinh = ngaySinh != null ? dateFormat.format(ngaySinh) : "";
             String formattedNgayVaoLam = ngayVaoLam != null ? dateFormat.format(ngayVaoLam) : "";
-            if (!hoTen.isEmpty() || !chucVu.isEmpty() || !soDT.isEmpty() || !diaChi.isEmpty() || !email.isEmpty() || hsl >0  || luong>0 || ngaySinh != null || ngayVaoLam != null) {
-                try {
-                    NhanVien nv = new NhanVien(maNV, hoTen, chucVu, soDT, diaChi, email, ngaySinh,  ngayVaoLam, luong, hsl,1);
-                    if (NhanVien_DAO.suaNhanVien(nv)) {
-                        // Update table values after successful update
-                        tableModel.setValueAt(hoTen, selectedRow, 1);
-                        tableModel.setValueAt(chucVu, selectedRow, 2);
-                        tableModel.setValueAt(soDT, selectedRow, 5);
-                        tableModel.setValueAt(diaChi, selectedRow, 6);
-                        tableModel.setValueAt(email, selectedRow, 7);
-                        tableModel.setValueAt(hsl, selectedRow, 9);
-                        tableModel.setValueAt(luong, selectedRow, 8);
-                        tableModel.setValueAt(ngaySinh, selectedRow, 3);
-                        tableModel.setValueAt(ngayVaoLam, selectedRow, 4);
 
-                        lamMoi();
+            // Nếu dữ liệu hợp lệ, tiến hành cập nhật
+            try {
+                NhanVien nv = new NhanVien(maNV, hoTen, chucVu, soDT, diaChi, email, ngaySinh, ngayVaoLam, luong, hsl, 1);
+                if (NhanVien_DAO.suaNhanVien(nv)) {
+                    // Cập nhật lại thông tin trên bảng
+                    tableModel.setValueAt(hoTen, selectedRow, 1);
+                    tableModel.setValueAt(chucVu, selectedRow, 2);
+                    tableModel.setValueAt(soDT, selectedRow, 5);
+                    tableModel.setValueAt(diaChi, selectedRow, 6);
+                    tableModel.setValueAt(email, selectedRow, 7);
+                    tableModel.setValueAt(hsl, selectedRow, 9);
+                    tableModel.setValueAt(luong, selectedRow, 8);
+                    tableModel.setValueAt(ngaySinh, selectedRow, 3);
+                    tableModel.setValueAt(ngayVaoLam, selectedRow, 4);
 
+                    lamMoi(); // Làm mới giao diện
 
-                        JOptionPane.showMessageDialog(this, "Cập nhật khách hàng thành công!");
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Cập nhật khách hàng thất bại!");
-                    }
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                    JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi khi cập nhật khách hàng!");
+                    JOptionPane.showMessageDialog(this, "Cập nhật nhân viên thành công!");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Cập nhật nhân viên thất bại!");
                 }
-            } else {
-                JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin!");
+            } catch (SQLException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi khi cập nhật nhân viên!");
             }
         } else {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn một dòng để sửa!");
         }
     }
+
     private boolean kiemTraDuLieu() {
         // Kiểm tra ngày sinh đủ 18 tuổi khi vào làm
         java.util.Date ngaySinh = dateNgaySinh.getDate();
@@ -570,6 +574,11 @@ public class CapNhatNhanVien_FORM extends JPanel implements Openable, ActionList
             return false;
         }
 
+        // Kiểm tra email có bị trùng không
+        if (NhanVien_DAO.kiemTraTrungEmail(email)) {
+            JOptionPane.showMessageDialog(this, "Email đã tồn tại trong hệ thống. Vui lòng sử dụng email khác!");
+            return false;
+        }
         // Kiểm tra tên đầy đủ (hoặc thêm các quy định khác)
         String hoTen = txtHoTen.getText().trim();
         if (hoTen.isEmpty()) {
@@ -650,15 +659,6 @@ public class CapNhatNhanVien_FORM extends JPanel implements Openable, ActionList
         return maNV;
     }
 
-
-
-    private boolean isValidInput(String input, String regex) {
-        return input.matches(regex);
-    }
-    private void showError(String message, JTextField field) {
-        JOptionPane.showMessageDialog(this, message, "Thông báo lỗi", JOptionPane.ERROR_MESSAGE);
-        field.requestFocus();
-    }
 
 
     @Override

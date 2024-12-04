@@ -1,7 +1,7 @@
 ﻿--tao moi database
-create database myDatabase3
+create database myDatabase
 go
-use myDatabase3
+use myDatabase
 go
 --tao cac table
 --khach hang
@@ -236,7 +236,7 @@ VALUES
 --tai khoan
 INSERT INTO TaiKhoan (tenDN, matKhau, maNV)
 VALUES
-('nv', '2', '18-MN90'),
+('nv', 'a', '18-MN90'),
 ('admin', '1', 'ADMIN'),
 ('nguyenthiện', 'H@ppy1', '20-AB12'),
 ('tranphuong', 'S3cure!2', '20-CD34'),

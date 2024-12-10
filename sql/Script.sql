@@ -1,7 +1,7 @@
 ﻿--tao moi database
-create database myDatabase
+create database myDatabase5
 go
-use myDatabase
+use myDatabase5
 go
 --tao cac table
 --khach hang
@@ -60,6 +60,8 @@ create table DichVu(
 	tenDV nvarchar(20) not null, 
 	giaDV float not null check(giaDV >0), 
 	moTa nvarchar(200)not null,
+	donViTinh nvarchar(20),
+	soLuongTon int ,
 	trangThai int
 )
 
@@ -303,23 +305,24 @@ VALUES
 ('E006', N'Phòng VIP E6', 1700000, 0, 2, N'Phòng VIP với dịch vụ đặc biệt.', N'Phòng VIP', 1);
 
 --dich vu
-INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, trangThai) VALUES
-('24AB1C', N'Giặt ủi', N'Dịch vụ giặt ủi quần áo cho khách', 150000.0, 1),
-('24D3F2', N'Thức ăn tại phòng', N'Dịch vụ phục vụ đồ ăn ngay tại phòng', 200000.0, 1),
-('24G5H4', N'Mát xa', N'Dịch vụ mát xa thư giãn', 300000.0, 1),
-('24J8K9', N'Đưa đón sân bay', N'Dịch vụ đưa đón khách từ sân bay', 500000.0, 1),
-('24L2N7', N'Tiệc tùng', N'Dịch vụ tổ chức tiệc tại khách sạn', 1000000.0, 1),
-('24P4Q6', N'Spa', N'Dịch vụ chăm sóc sắc đẹp tại spa', 700000.0, 1),
-('24R9T1', N'Giải trí', N'Dịch vụ giải trí tại khách sạn', 400000.0, 1),
-('24V6X8', N'Cho thuê xe', N'Dịch vụ cho thuê xe cho khách', 250000.0, 1),
-('24Z3M2', N'Hướng dẫn du lịch', N'Dịch vụ hướng dẫn tham quan các địa điểm', 600000.0, 1),
-('24B4S5', N'Sự kiện', N'Tổ chức sự kiện cho khách hàng', 1200000.0, 1),
-('24C8D0', N'Bể bơi', N'Sử dụng bể bơi trong khuôn viên khách sạn', 100000.0, 1),
-('24E6F3', N'Phòng tập gym', N'Sử dụng phòng tập gym tại khách sạn', 80000.0, 1),
-('24K1L8', N'Dịch vụ tiễn khách', N'Tiễn khách ra sân bay', 300000.0, 1),
-('24N9O4', N'Đặt tour', N'Dịch vụ đặt tour du lịch cho khách', 200000.0, 1),
-('24T5U0', N'Dịch vụ đặt bàn ăn', N'Đặt bàn ăn tại nhà hàng của khách sạn', 150000.0, 1),
-('24X9Z3', N'Chăm sóc thú cưng', N'Dịch vụ chăm sóc thú cưng cho khách', 350000.0, 1);
+INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, donViTinh, soLuongTon, trangThai) VALUES
+('24AB1C', N'Giặt ủi', N'Dịch vụ giặt ủi quần áo cho khách', 50000.0, N'Lần', 50, 1),
+('24D3F2', N'Thức ăn tại phòng', N'Dịch vụ phục vụ đồ ăn ngay tại phòng', 150000.0, N'Món', 100, 1),
+('24G5H4', N'Mát xa', N'Dịch vụ mát xa thư giãn', 250000.0, N'Giờ', 30, 1),
+('24J8K9', N'Đưa đón sân bay', N'Dịch vụ đưa đón khách từ sân bay', 300000.0, N'Lượt', 20, 1),
+('24L2N7', N'Tiệc tùng', N'Dịch vụ tổ chức tiệc tại khách sạn', 800000.0, N'Buổi', 10, 1),
+('24P4Q6', N'Spa', N'Dịch vụ chăm sóc sắc đẹp tại spa', 500000.0, N'Lượt', 25, 1),
+('24R9T1', N'Giải trí', N'Dịch vụ giải trí tại khách sạn', 200000.0, N'Lượt', 40, 1),
+('24V6X8', N'Cho thuê xe', N'Dịch vụ cho thuê xe cho khách', 150000.0, N'Ngày', 15, 1),
+('24Z3M2', N'Hướng dẫn du lịch', N'Dịch vụ hướng dẫn tham quan các địa điểm', 400000.0, N'Chuyến', 10, 1),
+('24B4S5', N'Sự kiện', N'Tổ chức sự kiện cho khách hàng', 1000000.0, N'Lần', 5, 1),
+('24C8D0', N'Bể bơi', N'Sử dụng bể bơi trong khuôn viên khách sạn', 50000.0, N'Lượt', 100, 1),
+('24E6F3', N'Phòng tập gym', N'Sử dụng phòng tập gym tại khách sạn', 60000.0, N'Lượt', 150, 1),
+('24K1L8', N'Dịch vụ tiễn khách', N'Tiễn khách ra sân bay', 200000.0, N'Lượt', 30, 1),
+('24N9O4', N'Đặt tour', N'Dịch vụ đặt tour du lịch cho khách', 150000.0, N'Tour', 20, 1),
+('24T5U0', N'Dịch vụ đặt bàn ăn', N'Đặt bàn ăn tại nhà hàng của khách sạn', 100000.0, N'Lần', 50, 1),
+('24X9Z3', N'Chăm sóc thú cưng', N'Dịch vụ chăm sóc thú cưng cho khách', 200000.0, N'Lượt', 15, 1);
+
 
 --phieu giam gia
 INSERT INTO PhieuGiamGia (maPGG, ngayBatDau, ngayKetThuc, dieuKienApDung, luotSuDung, mucGiamGia, tenPGG, trangThai) VALUES
@@ -434,4 +437,6 @@ INSERT INTO ChiTietHoaDon (maHD, maPhong, maDV, thoiGianThuePhong, soLuongGiuong
 ('23456789', 'C006', '24J8K9', '2024-09-18', 0, 1, 2),
 ('87654321', 'D001', '24P4Q6', '2024-09-19', 1, 2, 1),
 ('54321987', 'D002', '24R9T1', '2024-09-20', 0, 1, 1);
+
+
 

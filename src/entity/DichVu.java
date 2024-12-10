@@ -6,28 +6,26 @@ public class DichVu {
     private String maDV;
     private String tenDV;
     private double giaDV;
+    private String donViTinh;
+    private int soLuongTon;
     private String moTa;
     private int trangThai;
 
-    public DichVu(String maDV, String tenDV, double giaDV, String moTa, int trangThai) {
+    public DichVu(String maDV, String tenDV, double giaDV, String donViTinh, int soLuongTon, String moTa, int trangThai) {
         this.maDV = maDV;
         this.tenDV = tenDV;
         this.giaDV = giaDV;
+        this.donViTinh = donViTinh;
+        this.soLuongTon = soLuongTon;
         this.moTa = moTa;
         this.trangThai = trangThai;
     }
 
     public DichVu() {
     }
-    public DichVu(String maDV) {
-        this(maDV, "", 0.0, "", 1);
-    }
 
-    public int getTrangThai() {
-        return trangThai;
-    }
-    public void setTrangThai(int trangThai) {
-        this.trangThai = trangThai;
+    public DichVu(String maDV) {
+        this(maDV, "", 0.0, "",0,"", 1);
     }
 
     public String getMaDV() {
@@ -54,12 +52,36 @@ public class DichVu {
         this.giaDV = giaDV;
     }
 
+    public String getDonViTinh() {
+        return donViTinh;
+    }
+
+    public void setDonViTinh(String donViTinh) {
+        this.donViTinh = donViTinh;
+    }
+
+    public int getSoLuongTon() {
+        return soLuongTon;
+    }
+
+    public void setSoLuongTon(int soLuongTon) {
+        this.soLuongTon = soLuongTon;
+    }
+
     public String getMoTa() {
         return moTa;
     }
 
     public void setMoTa(String moTa) {
         this.moTa = moTa;
+    }
+
+    public int getTrangThai() {
+        return trangThai;
+    }
+
+    public void setTrangThai(int trangThai) {
+        this.trangThai = trangThai;
     }
 
     @Override

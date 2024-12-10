@@ -32,10 +32,12 @@ public class DichVu_DAO {
                 String maDV = rs.getString("maDV");
                 String tenDV = rs.getString("tenDV");
                 String moTa = rs.getString("moTa");
+                String dVT = rs.getString("donViTinh");
+                int soLT = rs.getInt("soLuongTon");
                 double giaDV = rs.getDouble("giaDV");
                 int trangThai = rs.getInt("trangThai");
                 // Khởi tạo đối tượng KhachHang và thêm vào danh sách
-                DichVu dv = new DichVu(maDV, tenDV, giaDV, moTa, trangThai);
+                DichVu dv = new DichVu(maDV, tenDV, giaDV, dVT, soLT, moTa, trangThai);
                 dsdv.add(dv);
             }
         } catch (SQLException e) {
@@ -47,14 +49,16 @@ public class DichVu_DAO {
 
         int kq=0;
         try  {
-            String query = "INSERT INTO DichVu (maDV, tenDV, moTa, giaDV, trangThai) VALUES (?, ?, ?, ?, ?)";
+            String query = "INSERT INTO DichVu (maDV, tenDV, moTa, giaDV,donViTinh,soLuongTon, trangThai) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setString(1, dv.getMaDV());
             stmt.setString(2, dv.getTenDV());
             stmt.setString(3, dv.getMoTa());
             stmt.setDouble(4, dv.getGiaDV());
-            stmt.setInt(5, 1);
+            stmt.setString(5, dv.getDonViTinh());
+            stmt.setInt(6, dv.getSoLuongTon());
+            stmt.setInt(7, 1);
 
             kq = stmt.executeUpdate();
         }catch (SQLException e) {
@@ -78,12 +82,14 @@ public class DichVu_DAO {
         int kq=0;
 
         try  {
-            String query = "UPDATE DichVu SET tenDV=?, moTa=?, giaDV=? WHERE maDV = ?";
+            String query = "UPDATE DichVu SET tenDV=?, moTa=?, giaDV=? ,donViTinh=?, soLuongTon=? WHERE maDV = ?";
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setString(1, dv.getTenDV());
             stmt.setString(2, dv.getMoTa());
             stmt.setDouble(3, dv.getGiaDV());
-            stmt.setString(4,dv.getMaDV());
+            stmt.setString(4, dv.getDonViTinh());
+            stmt.setInt(5, dv.getSoLuongTon());
+            stmt.setString(6,dv.getMaDV());
 
             kq=stmt.executeUpdate();
         }catch (SQLException e) {

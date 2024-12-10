@@ -16,7 +16,7 @@ public class ConnectDB {
     }
 
     public void connect() {
-        String url = "jdbc:sqlserver://localhost:1433;databasename=myDatabase3;trustServerCertificate=true;encrypt=true";
+        String url = "jdbc:sqlserver://localhost:1433;databasename=myDatabase5;trustServerCertificate=true;encrypt=true";
         String user = "sa";
         String password = "tranvanhau";
         try {

@@ -25,6 +25,8 @@ public class CapNhatDichVu_FORM extends JPanel implements ActionListener, MouseL
     private final JTextField txtMoTa;
     private final JTextField txtGiaDV;
     private final JTable table;
+    private final JTextField txtDVT;
+    private final JTextField txtSLT;
     private  DefaultTableModel tableModel;
     private DichVu_DAO dichVuDao;
 
@@ -99,7 +101,9 @@ public class CapNhatDichVu_FORM extends JPanel implements ActionListener, MouseL
         b2.add(createFormBox("Mã dịch vụ", txtMaDV = new JTextField()));
         b2.add(createFormBox("Tên dịch vụ", txtTenDV = new JTextField()));
         b2.add(createFormBox("Gíá dịch vụ", txtGiaDV = new JTextField()));
-        b2.add(createFormBox("Mô tả", txtMoTa = new JTextField()));
+        b2.add(createFormBox("Đơn vị tính", txtDVT = new JTextField()));
+        b2.add(createFormBox("Số lượng tồn", txtSLT = new JTextField()));
+
 
         Dimension b2Size = new Dimension(1642, 100);
         b2.setPreferredSize(b2Size);
@@ -116,12 +120,14 @@ public class CapNhatDichVu_FORM extends JPanel implements ActionListener, MouseL
         RoundedButton btnLamMoi = createHandleButton("Làm mới");
 
         b4.add(Box.createHorizontalGlue());
+        b4.add(createFormBox("Mô tả", txtMoTa = new JTextField()));
+        b4.add(Box.createHorizontalStrut(72));
         b4.add(btnThem);
-        b4.add(Box.createHorizontalStrut(72));
+        b4.add(Box.createHorizontalStrut(50));
         b4.add(btnSua);
-        b4.add(Box.createHorizontalStrut(72));
+        b4.add(Box.createHorizontalStrut(50));
         b4.add(btnXoa);
-        b4.add(Box.createHorizontalStrut(72));
+        b4.add(Box.createHorizontalStrut(50));
         b4.add(btnLamMoi);
         b4.add(Box.createHorizontalStrut(55));
 
@@ -152,7 +158,7 @@ public class CapNhatDichVu_FORM extends JPanel implements ActionListener, MouseL
 
         // Tạo bang
         Box b6 = Box.createHorizontalBox();
-        String[] colName = {"Mã dịch vụ", "Tên dịch vụ", "Mô tả", "Giá dịch vụ"};
+        String[] colName = {"Mã dịch vụ", "Tên dịch vụ", "Mô tả", "Giá dịch vụ", "Đơn vị tính", "Số lượng tồn"};
         tableModel = new DefaultTableModel(colName, 0) {
             private static final long serialVersionUID = 1L;
 
@@ -289,6 +295,8 @@ public class CapNhatDichVu_FORM extends JPanel implements ActionListener, MouseL
             txtTenDV.setText(tableModel.getValueAt(selectedRow,1).toString());
             txtMoTa.setText(tableModel.getValueAt(selectedRow,2).toString());
             txtGiaDV.setText(tableModel.getValueAt(selectedRow,3).toString());
+            txtDVT.setText(tableModel.getValueAt(selectedRow,4).toString());
+            txtSLT.setText(tableModel.getValueAt(selectedRow,5).toString());
 
 
         }
@@ -325,7 +333,9 @@ public class CapNhatDichVu_FORM extends JPanel implements ActionListener, MouseL
                         dv.getMaDV(),
                         dv.getTenDV(),
                         dv.getMoTa(),
-                        dv.getGiaDV()
+                        dv.getGiaDV(),
+                        dv.getDonViTinh(),
+                        dv.getSoLuongTon()
                 });
             }
         }
@@ -358,6 +368,7 @@ public class CapNhatDichVu_FORM extends JPanel implements ActionListener, MouseL
             moveRowToTop(foundRow);
 
             // Điền thông tin từ dòng được tìm thấy vào các ô nhập liệu
+            txtMaDV.setText(tableModel.getValueAt(0,0).toString());
             txtTenDV.setText(tableModel.getValueAt(0, 1).toString());
             txtMoTa.setText(tableModel.getValueAt(0, 2).toString());
             txtGiaDV.setText(tableModel.getValueAt(0, 3).toString());
@@ -383,6 +394,8 @@ public class CapNhatDichVu_FORM extends JPanel implements ActionListener, MouseL
         txtTenDV.setText("");
         txtMoTa.setText("");
         txtGiaDV.setText("");
+        txtDVT.setText("");
+        txtSLT.setText("");
         txtMaDV.requestFocus();
         loadTableData();
     }
@@ -393,6 +406,8 @@ public class CapNhatDichVu_FORM extends JPanel implements ActionListener, MouseL
             String tenDV = txtTenDV.getText().trim();
             String moTa = txtMoTa.getText().trim();
             String giaDVText = txtGiaDV.getText().trim();
+            String donVT = txtDVT.getText().trim();
+            int soLT = Integer.parseInt(txtSLT.getText().trim());
 
             // Gọi hàm kiểm tra đầu vào
             if (!kiemTraDauVao(maDV, tenDV, moTa, giaDVText)) {
@@ -408,7 +423,7 @@ public class CapNhatDichVu_FORM extends JPanel implements ActionListener, MouseL
             double giaDV = Double.parseDouble(giaDVText); // Giá trị đã được kiểm tra
 
             // Tạo đối tượng DichVu
-            DichVu dv = new DichVu(maDV, tenDV, giaDV, moTa, 1);
+            DichVu dv = new DichVu(maDV, tenDV, giaDV, donVT, soLT, moTa, 1);
 
             // Gọi hàm thêm dịch vụ từ lớp xử lý
             boolean isAdded = dichVuDao.themDichVu(dv);
@@ -456,6 +471,8 @@ public class CapNhatDichVu_FORM extends JPanel implements ActionListener, MouseL
             String tenDV = txtTenDV.getText().trim();
             String moTa = txtMoTa.getText().trim();
             String giaDVText = txtGiaDV.getText().trim();
+            String donVT = txtDVT.getText().trim();
+            int soLT = Integer.parseInt(txtSLT.getText().trim());
 
             // Gọi hàm kiểm tra đầu vào
             if (!kiemTraDauVao(maDV, tenDV, moTa, giaDVText)) {
@@ -466,7 +483,7 @@ public class CapNhatDichVu_FORM extends JPanel implements ActionListener, MouseL
 
             try {
                 // Tạo đối tượng DichVu mới
-                DichVu dv = new DichVu(maDV, tenDV, giaDV, moTa, 1);
+                DichVu dv = new DichVu(maDV, tenDV, giaDV, donVT, soLT, moTa, 1);
 
                 if (dichVuDao.suaDichVu(dv)) {
                     // Cập nhật dữ liệu trên bảng

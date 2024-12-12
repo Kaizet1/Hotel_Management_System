@@ -5,7 +5,8 @@
  * 
  */
 module PTUD {
-	requires java.desktop;
-	requires java.sql;
+    requires java.sql;
 	requires swingx;
+    requires org.apache.poi.ooxml;
+    requires java.desktop;
 }

@@ -16,7 +16,7 @@ public class ConnectDB {
     }
 
     public void connect() {
-        String url = "jdbc:sqlserver://localhost:1433;databasename=myDatabase3;trustServerCertificate=true;encrypt=true";
+        String url = "jdbc:sqlserver://localhost:1433;databasename=myDatabase6;trustServerCertificate=true;encrypt=true";
         String user = "sa";
         String password = "tranvanhau";
         try {
@@ -26,15 +26,7 @@ public class ConnectDB {
         }
     }
 
-    public static void disconnect() {
-        if (con != null)
-            try {
-                con.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
 
-    }
 
     public static Connection getConnection() {
         return con;

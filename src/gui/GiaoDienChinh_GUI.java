@@ -324,6 +324,7 @@ public class GiaoDienChinh_GUI extends JFrame {
 		JPanel datDichVuPanel = new DatDichVu_FORM();
 		JPanel capNhatDichVuPanel = new CapNhatDichVu_FORM();
 		JPanel huyDatDichVu = new HuyDatDichVu_FORM();
+		JPanel thongKeDoanhTHu = new ThongKeDoanhThu_FORM();
 
 		trangChuPanel.setName("TrangChu");
 		datPhongPanel.setName("DatPhong");
@@ -340,6 +341,7 @@ public class GiaoDienChinh_GUI extends JFrame {
 		datDichVuPanel.setName("DatDichVu");
 		capNhatDichVuPanel.setName("CapNhatDichVu");
 		huyDatDichVu.setName("HuyDatDichVu");
+		thongKeDoanhTHu.setName("ThongKeDoanhThu");
 		// Thêm màn hình
 		center.add(trangChuPanel, "TrangChu");
 		center.add(datPhongPanel, "DatPhong");
@@ -355,6 +357,7 @@ public class GiaoDienChinh_GUI extends JFrame {
 		center.add(datDichVuPanel, "DatDichVu");
 		center.add(capNhatDichVuPanel, "CapNhatDichVu");
 		center.add(huyDatDichVu, "HuyDatDichVu");
+		center.add(thongKeDoanhTHu, "ThongKeDoanhThu");
 		return center;
 	}
 

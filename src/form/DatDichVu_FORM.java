@@ -19,7 +19,11 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class DatDichVu_FORM extends  JPanel implements ActionListener, MouseListener {
     private  JButton btnDatDV;
@@ -668,13 +672,16 @@ public class DatDichVu_FORM extends  JPanel implements ActionListener, MouseList
         }
 
     }
+
+
     private void loadDichVuDaDat(String maHD, String maPhong) {
         try {
             Connection connection = ConnectDB.getConnection();
             String query = """
-        SELECT tenDV, soLuongDV FROM ChiTietHoaDon
-        INNER JOIN DichVu ON ChiTietHoaDon.maDV = DichVu.maDV
-        WHERE maHD = ? AND maPhong = ? AND soLuongDV > 0
+            SELECT tenDV, soLuongDV, giaDV 
+            FROM ChiTietHoaDon
+            INNER JOIN DichVu ON ChiTietHoaDon.maDV = DichVu.maDV
+            WHERE maHD = ? AND maPhong = ? AND soLuongDV > 0
         """;
             var preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, maHD);
@@ -684,17 +691,28 @@ public class DatDichVu_FORM extends  JPanel implements ActionListener, MouseList
             // Xóa tất cả các hàng trong table trước khi load lại
             tableModel2.setRowCount(0);
 
+            // Định dạng số
+            DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+
             // Thêm các dòng mới từ cơ sở dữ liệu
             while (resultSet.next()) {
                 String tenDV = resultSet.getString("tenDV");
                 int soLuongDV = resultSet.getInt("soLuongDV");
-                tableModel2.addRow(new Object[] { tenDV, soLuongDV });
+                double giaDV = resultSet.getDouble("giaDV"); // Lấy giá dịch vụ từ cơ sở dữ liệu
+                double thanhTien = soLuongDV * giaDV;       // Tính toán thành tiền
+
+                // Định dạng thành tiền
+                String thanhTienFormatted = decimalFormat.format(thanhTien);
+
+                // Thêm hàng vào bảng với giá trị đã định dạng
+                tableModel2.addRow(new Object[] { tenDV, soLuongDV, thanhTienFormatted });
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Lỗi khi tải dịch vụ đã đặt! Lỗi SQL: " + ex.getMessage());
         }
     }
+
 
 
     private void lamMoiDichVu() {
@@ -812,6 +830,7 @@ public class DatDichVu_FORM extends  JPanel implements ActionListener, MouseList
     }
 
 
+
     private void themDichVu() {
         int selectedRow = table1.getSelectedRow(); // Lấy dòng được chọn từ bảng dịch vụ
         if (selectedRow != -1) {
@@ -824,24 +843,42 @@ public class DatDichVu_FORM extends  JPanel implements ActionListener, MouseList
             }
 
             int soLuong = 1; // Mặc định số lượng thêm là 1
-            double gia = Double.parseDouble(tableModel1.getValueAt(selectedRow, 2).toString().replace(".", "").replace(",", ""));
+
+            // Định dạng Locale để xử lý số tiền (vi-VN sử dụng ',' làm dấu phân cách thập phân)
+            NumberFormat format = NumberFormat.getInstance(Locale.getDefault());
+            double gia = 0.0;
+            try {
+                gia = format.parse(tableModel1.getValueAt(selectedRow, 2).toString()).doubleValue();
+            } catch (ParseException e) {
+                JOptionPane.showMessageDialog(this, "Lỗi chuyển đổi giá trị số tiền!");
+                return;
+            }
+
             double thanhTien = soLuong * gia;
+
+            // Sử dụng DecimalFormat để định dạng thành tiền
+            DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+            String thanhTienFormatted = decimalFormat.format(thanhTien);
 
             // Kiểm tra dịch vụ đã tồn tại trong bảng phiếu đặt
             boolean isExist = false;
             for (int i = 0; i < tableModel2.getRowCount(); i++) {
                 if (tableModel2.getValueAt(i, 0).toString().equals(tenDichVu)) {
                     int currentSoLuong = Integer.parseInt(tableModel2.getValueAt(i, 1).toString());
-                    tableModel2.setValueAt(currentSoLuong + 1, i, 1); // Tăng số lượng
-                    tableModel2.setValueAt((currentSoLuong + 1) * gia, i, 2); // Cập nhật thành tiền
+                    int newSoLuong = currentSoLuong + 1;
+                    double newThanhTien = newSoLuong * gia;
+
+                    // Cập nhật số lượng và thành tiền đã định dạng
+                    tableModel2.setValueAt(newSoLuong, i, 1); // Tăng số lượng
+                    tableModel2.setValueAt(decimalFormat.format(newThanhTien), i, 2); // Cập nhật thành tiền
                     isExist = true;
                     break;
                 }
             }
 
             if (!isExist) {
-                // Thêm dịch vụ mới vào bảng phiếu đặt
-                tableModel2.addRow(new Object[]{tenDichVu, soLuong, String.format("%.2f", thanhTien)});
+                // Thêm dịch vụ mới vào bảng phiếu đặt với thành tiền đã định dạng
+                tableModel2.addRow(new Object[]{tenDichVu, soLuong, thanhTienFormatted});
             }
 
             // Giảm số lượng tồn trong table1
@@ -850,6 +887,8 @@ public class DatDichVu_FORM extends  JPanel implements ActionListener, MouseList
             JOptionPane.showMessageDialog(this, "Vui lòng chọn một dịch vụ!");
         }
     }
+
+
     private void xoaDichVu() {
         int selectedRow = table2.getSelectedRow(); // Lấy dòng được chọn
         if (selectedRow != -1) {

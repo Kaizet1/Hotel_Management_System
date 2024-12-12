@@ -16,6 +16,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 
 public class HuyDatDichVu_FORM extends JPanel implements ActionListener,MouseListener {
     private JButton btnDatDV;
@@ -615,9 +616,10 @@ public class HuyDatDichVu_FORM extends JPanel implements ActionListener,MouseLis
         try {
             Connection connection = ConnectDB.getConnection();
             String query = """
-        SELECT tenDV, soLuongDV FROM ChiTietHoaDon
-        INNER JOIN DichVu ON ChiTietHoaDon.maDV = DichVu.maDV
-        WHERE maHD = ? AND maPhong = ? AND soLuongDV > 0
+            SELECT tenDV, soLuongDV, giaDV 
+            FROM ChiTietHoaDon
+            INNER JOIN DichVu ON ChiTietHoaDon.maDV = DichVu.maDV
+            WHERE maHD = ? AND maPhong = ? AND soLuongDV > 0
         """;
             var preparedStatement = connection.prepareStatement(query);
             preparedStatement.setString(1, maHD);
@@ -627,16 +629,27 @@ public class HuyDatDichVu_FORM extends JPanel implements ActionListener,MouseLis
             // Xóa tất cả các hàng trong table trước khi load lại
             tableModel2.setRowCount(0);
 
+            // Định dạng số
+            DecimalFormat decimalFormat = new DecimalFormat("#,###.##");
+
             // Thêm các dòng mới từ cơ sở dữ liệu
             while (resultSet.next()) {
                 String tenDV = resultSet.getString("tenDV");
                 int soLuongDV = resultSet.getInt("soLuongDV");
-                tableModel2.addRow(new Object[] { tenDV, soLuongDV });
+                double giaDV = resultSet.getDouble("giaDV"); // Lấy giá dịch vụ từ cơ sở dữ liệu
+                double thanhTien = soLuongDV * giaDV;       // Tính toán thành tiền
+
+                // Định dạng thành tiền
+                String thanhTienFormatted = decimalFormat.format(thanhTien);
+
+                // Thêm hàng vào bảng với giá trị đã định dạng
+                tableModel2.addRow(new Object[] { tenDV, soLuongDV, thanhTienFormatted });
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
             JOptionPane.showMessageDialog(this, "Lỗi khi tải dịch vụ đã đặt! Lỗi SQL: " + ex.getMessage());
         }
     }
+
 
 }

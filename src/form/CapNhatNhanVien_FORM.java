@@ -635,17 +635,12 @@ public class CapNhatNhanVien_FORM extends JPanel implements Openable, ActionList
     private String taoMaNhanVien(java.util.Date ngayVaoLam) {
         String maNV;
         do {
-            // Lấy hai chữ số cuối của năm vào làm
             SimpleDateFormat sdf = new SimpleDateFormat("yy");
             String nam = sdf.format(ngayVaoLam);
-
-            // Tạo số ngẫu nhiên từ 10 đến 99
-            int soNgauNhien = 10 + (int) (Math.random() * 90); // Random số trong khoảng [10, 99]
-
-            // Tạo 2 ký tự ngẫu nhiên in hoa
+            int soNgauNhien = 10 + (int) (Math.random() * 90);
             String kyTuNgauNhien = "";
             for (int i = 0; i < 2; i++) {
-                char kyTu = (char) ('A' + (int) (Math.random() * 26)); // Random ký tự từ 'A' đến 'Z'
+                char kyTu = (char) ('A' + (int) (Math.random() * 26));
                 kyTuNgauNhien += kyTu;
             }
 
